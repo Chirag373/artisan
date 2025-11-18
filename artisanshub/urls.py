@@ -21,4 +21,8 @@ from apps.core import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    path('profile/', views.view_profile, name='view_profile'),
+    path('login/', views.login_view, name='login'),
+    path('join-artist/', views.join_artist, name='join_artist'),
+    path('signup/', views.signup, name='signup'),
 ]
