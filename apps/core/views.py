@@ -57,3 +57,7 @@ def signup_artist(request):
 def explorer_dashboard(request):
     """Explorer dashboard page"""
     return render(request, 'explorer_dashboard.html')
+
+def artist_dashboard(request):
+    """Artist dashboard page"""
+    return render(request, 'artists/artist_dashboard.html')

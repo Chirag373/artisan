@@ -27,4 +27,5 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('signup/explorer/', views.signup_explorer, name='signup_explorer'),
     path('explorer/dashboard/', views.explorer_dashboard, name='explorer_dashboard'),
+    path('artist/dashboard/', views.artist_dashboard, name='artist_dashboard'),
 ]
