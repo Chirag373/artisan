@@ -26,4 +26,5 @@ urlpatterns = [
     path('join-artist/', views.join_artist, name='join_artist'),
     path('signup/', views.signup, name='signup'),
     path('signup/explorer/', views.signup_explorer, name='signup_explorer'),
+    path('explorer/dashboard/', views.explorer_dashboard, name='explorer_dashboard'),
 ]
