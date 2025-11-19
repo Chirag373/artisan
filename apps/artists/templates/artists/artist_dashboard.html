@@ -4,7 +4,7 @@
 <style>
     .hero-banner { display: none !important; }
 </style>
-<div class="w-full md:container md:mx-auto">
+<div class="w-full">
     <!-- Header -->
     <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900 mb-2">Artist Dashboard</h1>
@@ -12,7 +12,7 @@
     </div>
 
     <!-- Product Entry Section (Internal Only) -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-8">
         <div class="mb-4">
             <h2 class="text-xl font-semibold text-gray-900 mb-2">Product Entry</h2>
             <p class="text-sm text-gray-600">Internal use only - this data helps with search functionality</p>
@@ -43,7 +43,7 @@
     </div>
 
     <!-- Artist Profile & SEO Data Entry -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-8">
         <div class="mb-6">
             <h2 class="text-xl font-semibold text-gray-900 mb-2">Artist Profile & SEO Settings</h2>
             <p class="text-sm text-gray-600">Configure your public profile and SEO information</p>
@@ -73,14 +73,14 @@
                             URL Slug *
                         </label>
                         <div class="flex">
-                            <span class="inline-flex items-center px-3 py-2 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm rounded-l-md">
+                            <span class="inline-flex items-center px-2 sm:px-3 py-2 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-xs sm:text-sm rounded-l-md whitespace-nowrap">
                                 ArtisansHub.com/artists/
                             </span>
                             <input
                                 type="text"
                                 id="slug"
                                 name="slug"
-                                class="flex-1 px-3 py-2 border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                class="flex-1 px-3 py-2 border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-0"
                                 placeholder="your-artist-name"
                                 required
                             >
