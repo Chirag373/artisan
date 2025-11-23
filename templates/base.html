@@ -288,13 +288,44 @@
                     <a href="#" class="text-gray-600 hover:text-blue-600 font-medium transition-colors">Our Services</a>
                 </div>
 
-                <div class="hidden md:flex items-center space-x-4">
+                <!-- Unauthenticated Nav -->
+                <div id="nav-unauthenticated" class="hidden md:flex items-center space-x-4">
                     <a href="{% url 'login' %}"
                         class="text-gray-600 hover:text-blue-600 font-medium transition-colors">Log In</a>
                     <a href="{% url 'signup' %}"
                         class="bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm">
                         Sign Up
                     </a>
+                </div>
+
+                <!-- Authenticated Nav -->
+                <div id="nav-authenticated" class="hidden md:flex items-center space-x-4">
+                    <div class="relative">
+                        <button type="button" id="user-menu-button"
+                            class="flex items-center space-x-2 text-gray-600 hover:text-blue-600 font-medium transition-colors focus:outline-none">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span id="nav-username">User</span>
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        <div id="user-dropdown"
+                            class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                            <a id="dashboard-link" href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                                Dashboard
+                            </a>
+                            <button id="logout-button"
+                                class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors">
+                                Logout
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="md:hidden flex items-center">
@@ -356,7 +387,9 @@
                         </svg>
                     </a>
                 </nav>
-                <div class="mt-6 px-6">
+
+                <!-- Mobile Unauthenticated -->
+                <div id="mobile-nav-unauthenticated" class="mt-6 px-6">
                     <p class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Account</p>
                     <a href="{% url 'login' %}"
                         class="group flex justify-between items-center py-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
@@ -374,6 +407,31 @@
                                 d="M17 8l4 4m0 0l-4 4m4-4H3" />
                         </svg>
                     </a>
+                </div>
+
+                <!-- Mobile Authenticated -->
+                <div id="mobile-nav-authenticated" class="hidden mt-6 px-6">
+                    <p class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Account</p>
+                    <div class="py-4 border-b border-gray-50">
+                        <p class="text-sm text-gray-500">Logged in as</p>
+                        <p id="mobile-nav-username" class="text-[17px] font-semibold text-gray-800">User</p>
+                    </div>
+                    <a id="mobile-dashboard-link" href="#"
+                        class="group flex justify-between items-center py-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                        <span class="text-[17px] font-semibold text-gray-800 group-hover:text-blue-600">Dashboard</span>
+                        <svg class="h-5 w-5 text-gray-400 group-hover:text-blue-600" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                    <button id="mobile-logout-button"
+                        class="w-full group flex justify-between items-center py-4 hover:bg-gray-50 transition-colors">
+                        <span class="text-[17px] font-semibold text-red-600">Logout</span>
+                        <svg class="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -442,6 +500,91 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Global authentication handler
+        (function () {
+            const token = localStorage.getItem('access_token');
+            const username = localStorage.getItem('username');
+            const role = localStorage.getItem('user_role');
+
+            const navUnauth = document.getElementById('nav-unauthenticated');
+            const navAuth = document.getElementById('nav-authenticated');
+            const mobileNavUnauth = document.getElementById('mobile-nav-unauthenticated');
+            const mobileNavAuth = document.getElementById('mobile-nav-authenticated');
+
+            if (token && username) {
+                // User is authenticated
+
+                // Desktop: Hide unauth, Show auth
+                // We must remove md:flex to ensure it hides on desktop
+                navUnauth.classList.remove('md:flex');
+                navUnauth.classList.add('hidden');
+
+                navAuth.classList.add('md:flex');
+                navAuth.classList.remove('hidden');
+
+                document.getElementById('nav-username').textContent = username;
+
+                // Mobile: Hide unauth, Show auth
+                mobileNavUnauth.classList.add('hidden');
+                mobileNavAuth.classList.remove('hidden');
+                document.getElementById('mobile-nav-username').textContent = username;
+
+                // Set dashboard link based on role
+                const dashboardUrl = role === 'artist' ? "{% url 'artist_dashboard' %}" : "{% url 'explorer_dashboard' %}";
+                document.getElementById('dashboard-link').href = dashboardUrl;
+                document.getElementById('mobile-dashboard-link').href = dashboardUrl;
+
+                // Dropdown toggle
+                const userMenuButton = document.getElementById('user-menu-button');
+                const userDropdown = document.getElementById('user-dropdown');
+
+                // Remove existing listeners to prevent duplicates if any (though this is IIFE)
+                // Cloning node is a cheap way to wipe listeners if needed, but here we just add.
+
+                userMenuButton.onclick = function (e) {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('hidden');
+                };
+
+                // Close dropdown when clicking outside
+                document.onclick = function () {
+                    if (!userDropdown.classList.contains('hidden')) {
+                        userDropdown.classList.add('hidden');
+                    }
+                };
+
+                // Logout handlers
+                function handleLogout() {
+                    localStorage.removeItem('access_token');
+                    localStorage.removeItem('refresh_token');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('user_role');
+                    window.location.href = "{% url 'login' %}";
+                }
+
+                document.getElementById('logout-button').onclick = handleLogout;
+                document.getElementById('mobile-logout-button').onclick = handleLogout;
+
+            } else {
+                // User is not authenticated
+
+                // Desktop: Show unauth, Hide auth
+                navUnauth.classList.add('md:flex');
+                navUnauth.classList.remove('hidden');
+
+                navAuth.classList.remove('md:flex');
+                navAuth.classList.add('hidden');
+
+                // Mobile: Show unauth, Hide auth
+                mobileNavUnauth.classList.remove('hidden');
+                mobileNavAuth.classList.add('hidden');
+            }
+        })();
+    </script>
+
+    {% block scripts %}{% endblock %}
 </body>
 
 </html>

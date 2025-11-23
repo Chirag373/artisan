@@ -12,6 +12,27 @@
 
 <div class="w-full bg-[#FEFCE8] min-h-screen sm:py-6">
 
+    <!-- Warning Banner -->
+    <div id="incomplete-profile-warning" class="hidden container mx-auto mb-6">
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg shadow-sm">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-yellow-700">
+                        <span class="font-bold">Action Required:</span> Your profile is incomplete. Please fill in the
+                        missing information to unlock all features.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div
         class="bg-[#FEFCE8] w-full -mx-4 -my-12 container mx-auto sm:mx-auto sm:my-0 sm:rounded-2xl sm:border sm:border-gray-400 sm:shadow-sm overflow-hidden">
 
@@ -32,7 +53,7 @@
             </div>
         </div>
 
-        <form method="POST" action="" class="divide-y divide-gray-400">
+        <form id="explorerProfileForm" class="divide-y divide-gray-400">
             {% csrf_token %}
 
             <div class="px-6 py-6 sm:px-8">
@@ -49,13 +70,13 @@
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">First
                                 Name</label>
-                            <input type="text" value="{{ user.first_name|default:'' }}" readonly
+                            <input type="text" id="first_name" readonly
                                 class="block w-full px-4 py-3 border border-gray-200 rounded-xl bg-[#FEFCE8] text-gray-500 cursor-not-allowed text-sm">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Last
                                 Name</label>
-                            <input type="text" value="{{ user.last_name|default:'' }}" readonly
+                            <input type="text" id="last_name" readonly
                                 class="block w-full px-4 py-3 border border-gray-200 rounded-xl bg-[#FEFCE8] text-gray-500 cursor-not-allowed text-sm">
                         </div>
                     </div>
@@ -63,7 +84,7 @@
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Email
                             Address</label>
-                        <input type="email" value="{{ user.email|default:'' }}" readonly
+                        <input type="email" id="email" readonly
                             class="block w-full px-4 py-3 border border-gray-200 rounded-xl bg-[#FEFCE8] text-gray-500 cursor-not-allowed text-sm">
                     </div>
 
@@ -95,6 +116,8 @@
                         Phone Number <span class="text-red-500">*</span>
                     </label>
                     <input type="tel" name="phone_number" id="phone_number" required
+                        pattern="^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$"
+                        title="Phone number must be in a valid format like (555) 555-1234 or 555-555-1234"
                         class="block w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                         placeholder="(555) 555-1234">
                     <p class="mt-1 text-xs text-gray-500">
@@ -134,18 +157,17 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label for="state" class="block text-sm font-bold text-gray-700 mb-1">State</label>
-                            <select name="state" id="state"
+                            <label for="state" class="block text-sm font-bold text-gray-700 mb-1">State <span
+                                    class="text-red-500">*</span></label>
+                            <select name="state" id="state" required
                                 class="block w-full px-4 py-3 border border-gray-200 rounded-xl bg-[#FEFCE8] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
                                 <option value="">Select State</option>
-                                <option value="TX">Texas</option>
-                                <option value="CA">California</option>
-                                <option value="NY">New York</option>
                             </select>
                         </div>
                         <div>
-                            <label for="city" class="block text-sm font-bold text-gray-700 mb-1">City</label>
-                            <select name="city" id="city"
+                            <label for="city" class="block text-sm font-bold text-gray-700 mb-1">City <span
+                                    class="text-red-500">*</span></label>
+                            <select name="city" id="city" required
                                 class="block w-full px-4 py-3 border border-gray-200 rounded-xl bg-[#FEFCE8] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
                                 <option value="">Select City</option>
                             </select>
@@ -154,15 +176,10 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="county" class="block text-sm font-bold text-gray-700 mb-1">County <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" name="county" id="county" required
-                                class="block w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
-                        </div>
-                        <div>
                             <label for="zip_code" class="block text-sm font-bold text-gray-700 mb-1">ZIP Code <span
                                     class="text-red-500">*</span></label>
-                            <input type="text" name="zip_code" id="zip_code" required
+                            <input type="text" name="zip_code" id="zip_code" required pattern="^\d{5}(-\d{4})?$"
+                                title="ZIP code must be 5 digits (e.g. 12345) or 5+4 format (e.g. 12345-6789)"
                                 class="block w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
                         </div>
                     </div>
@@ -210,4 +227,221 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = "{% url 'login' %}";
+            return;
+        }
+
+        const form = document.getElementById('explorerProfileForm');
+        const warningBanner = document.getElementById('incomplete-profile-warning');
+
+        // CountryStateCity API Configuration for USA only
+        const locationAPI = {
+            config: {
+                cUrl: 'https://api.countrystatecity.in/v1/countries',
+                ckey: 'WnVWTGlEejlKbzMyOXd4c2VmdVQzZzFWTVJTb0xXWk1pNExvWVFzZQ==',
+                countryCode: 'US' // Hardcoded to USA
+            },
+
+            loadStates: async function (selectedState) {
+                const stateSelect = document.getElementById('state');
+                stateSelect.innerHTML = '<option value="">Select State</option>';
+                document.getElementById('city').innerHTML = '<option value="">Select City</option>';
+
+                try {
+                    const response = await fetch(`${this.config.cUrl}/${this.config.countryCode}/states`, {
+                        headers: { "X-CSCAPI-KEY": this.config.ckey }
+                    });
+                    const states = await response.json();
+
+                    states.forEach(state => {
+                        const option = document.createElement('option');
+                        option.value = state.iso2;
+                        option.textContent = state.name;
+                        stateSelect.appendChild(option);
+                    });
+
+                    if (selectedState) {
+                        stateSelect.value = selectedState;
+                    }
+                } catch (error) {
+                    console.error('Error loading states:', error);
+                }
+            },
+
+            loadCities: async function (stateCode, selectedCity) {
+                const citySelect = document.getElementById('city');
+                citySelect.innerHTML = '<option value="">Select City</option>';
+
+                if (!stateCode) return;
+
+                try {
+                    const response = await fetch(`${this.config.cUrl}/${this.config.countryCode}/states/${stateCode}/cities`, {
+                        headers: { "X-CSCAPI-KEY": this.config.ckey }
+                    });
+                    const cities = await response.json();
+
+                    cities.forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city.name;
+                        option.textContent = city.name;
+                        citySelect.appendChild(option);
+                    });
+
+                    if (selectedCity) {
+                        citySelect.value = selectedCity;
+                    }
+                } catch (error) {
+                    console.error('Error loading cities:', error);
+                }
+            }
+        };
+
+        // Setup location listeners
+        document.getElementById('state').addEventListener('change', function () {
+            locationAPI.loadCities(this.value);
+        });
+
+        // Load USA states initially
+        await locationAPI.loadStates();
+
+        // Fetch Profile Data
+        try {
+            const response = await fetch('/api/explorer/profile/', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+
+                // Populate fields
+                const firstNameInput = document.getElementById('first_name');
+                const lastNameInput = document.getElementById('last_name');
+                const emailInput = document.getElementById('email');
+
+                // Handle First Name
+                if (data.first_name) {
+                    firstNameInput.value = data.first_name;
+                } else {
+                    firstNameInput.removeAttribute('readonly');
+                    firstNameInput.required = true;
+                    firstNameInput.classList.remove('bg-[#FEFCE8]', 'cursor-not-allowed', 'text-gray-500');
+                    firstNameInput.classList.add('focus:ring-2', 'focus:ring-blue-500', 'focus:border-blue-500');
+                    firstNameInput.name = "first_name"; // Ensure it submits
+                }
+
+                // Handle Last Name
+                if (data.last_name) {
+                    lastNameInput.value = data.last_name;
+                } else {
+                    lastNameInput.removeAttribute('readonly');
+                    lastNameInput.required = true;
+                    lastNameInput.classList.remove('bg-[#FEFCE8]', 'cursor-not-allowed', 'text-gray-500');
+                    lastNameInput.classList.add('focus:ring-2', 'focus:ring-blue-500', 'focus:border-blue-500');
+                    lastNameInput.name = "last_name"; // Ensure it submits
+                }
+
+                emailInput.value = data.email || '';
+
+                // Handle location fields with cascading (USA only)
+                const stateValue = data.state || '';
+                const cityValue = data.city || '';
+
+                // Set the state value first, which will trigger the change event if it's different
+                // and then load cities based on the selected state.
+                const stateSelect = document.getElementById('state');
+                if (stateValue) {
+                    stateSelect.value = stateValue;
+                    // Manually trigger change event if the value was set programmatically
+                    // to ensure cities are loaded if the state was already populated.
+                    const event = new Event('change');
+                    stateSelect.dispatchEvent(event);
+                }
+
+                // Load cities after state is set and potentially selected
+                if (stateValue) {
+                    await locationAPI.loadCities(stateValue, cityValue);
+                }
+
+                const fields = ['phone_number', 'street_number', 'street_address', 'county', 'zip_code', 'promotion_keywords'];
+                fields.forEach(field => {
+                    const input = document.getElementById(field);
+                    if (input) {
+                        input.value = data[field] || '';
+                    }
+                });
+
+                // Show warning if incomplete
+                if (!data.is_complete) {
+                    warningBanner.classList.remove('hidden');
+                }
+            } else if (response.status === 401) {
+                // Token expired or invalid
+                localStorage.removeItem('access_token');
+                window.location.href = "{% url 'login' %}";
+            }
+        } catch (error) {
+            console.error('Error fetching profile:', error);
+        }
+
+        // Handle Form Submission
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/api/explorer/profile/', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('Profile updated successfully!');
+
+                    // Lock name fields if they were updated
+                    if (result.first_name) {
+                        const firstNameInput = document.getElementById('first_name');
+                        firstNameInput.setAttribute('readonly', true);
+                        firstNameInput.classList.add('bg-[#FEFCE8]', 'cursor-not-allowed', 'text-gray-500');
+                        firstNameInput.classList.remove('focus:ring-2', 'focus:ring-blue-500', 'focus:border-blue-500');
+                    }
+                    if (result.last_name) {
+                        const lastNameInput = document.getElementById('last_name');
+                        lastNameInput.setAttribute('readonly', true);
+                        lastNameInput.classList.add('bg-[#FEFCE8]', 'cursor-not-allowed', 'text-gray-500');
+                        lastNameInput.classList.remove('focus:ring-2', 'focus:ring-blue-500', 'focus:border-blue-500');
+                    }
+
+                    // Re-check completeness
+                    if (result.is_complete) {
+                        warningBanner.classList.add('hidden');
+                    } else {
+                        warningBanner.classList.remove('hidden');
+                    }
+                } else {
+                    alert('Failed to update profile. Please check your inputs.');
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+    });
+</script>
 {% endblock %}

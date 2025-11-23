@@ -21,11 +21,9 @@
             </div>
 
             <div class="px-8 pb-8">
-                <form method="POST" action="{% url 'login' %}" class="space-y-6">
+                <form id="loginForm" class="space-y-6">
                     {% csrf_token %}
-
-                    {% if form.errors %}
-                    <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4 rounded-r-lg">
+                    <div id="error-message" class="hidden bg-red-50 border-l-4 border-red-500 p-4 mb-4 rounded-r-lg">
                         <div class="flex">
                             <div class="flex-shrink-0">
                                 <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -35,13 +33,12 @@
                                 </svg>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm text-red-700">
+                                <p class="text-sm text-red-700" id="error-text">
                                     Please check your credentials and try again.
                                 </p>
                             </div>
                         </div>
                     </div>
-                    {% endif %}
 
                     <div>
                         <label for="id_username" class="block text-sm font-semibold text-gray-700 mb-2">Username or
@@ -110,4 +107,60 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        const errorDiv = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+
+        // Reset error message
+        errorDiv.classList.add('hidden');
+
+        try {
+            const response = await fetch('/api/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Store tokens
+                localStorage.setItem('access_token', result.access);
+                localStorage.setItem('refresh_token', result.refresh);
+                localStorage.setItem('user_role', result.role);
+                localStorage.setItem('username', result.username);
+
+                // Redirect based on role
+                if (result.role === 'artist') {
+                    window.location.href = "{% url 'artist_dashboard' %}";
+                } else if (result.role === 'explorer') {
+                    window.location.href = "{% url 'explorer_dashboard' %}";
+                } else {
+                    // Fallback
+                    window.location.href = "/";
+                }
+            } else {
+                // Show errors
+                errorDiv.classList.remove('hidden');
+                errorText.innerText = result.detail || 'Invalid credentials. Please try again.';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            errorDiv.classList.remove('hidden');
+            errorText.innerText = 'An unexpected error occurred. Please try again later.';
+        }
+    });
+</script>
 {% endblock %}

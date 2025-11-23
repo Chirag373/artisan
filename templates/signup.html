@@ -27,14 +27,13 @@
             </div>
 
             <div class="px-8 pb-8">
-                <form method="POST" action="{% url 'signup' %}" class="space-y-6">
+                <form id="artistSignupForm" class="space-y-6">
                     {% csrf_token %}
                     {% if package %}
                     <input type="hidden" name="package" value="{{ package }}">
                     {% endif %}
 
-                    {% if form.errors %}
-                    <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4 rounded-r-lg">
+                    <div id="error-message" class="hidden bg-red-50 border-l-4 border-red-500 p-4 mb-4 rounded-r-lg">
                         <div class="flex">
                             <div class="flex-shrink-0">
                                 <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -44,27 +43,10 @@
                                 </svg>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm text-red-700">
+                                <p class="text-sm text-red-700" id="error-text">
                                     Please correct the errors below and try again.
                                 </p>
                             </div>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    <div>
-                        <label for="id_username" class="block text-sm font-semibold text-gray-700 mb-2">Username</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                            </div>
-                            <input type="text" name="username" id="id_username" required
-                                class="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl leading-5 bg-[#FEFCE8] placeholder-gray-400 focus:outline-none focus:bg-[#FEFCE8] focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm transition duration-150 ease-in-out"
-                                placeholder="Choose a username">
                         </div>
                     </div>
 
@@ -147,4 +129,59 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('artistSignupForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        const errorDiv = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+
+        // Reset error message
+        errorDiv.classList.add('hidden');
+
+        try {
+            const response = await fetch('/api/signup/artist/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Success - redirect to login or dashboard
+                // For now redirecting to login as per standard flow
+                window.location.href = "{% url 'login' %}";
+            } else {
+                // Show errors
+                errorDiv.classList.remove('hidden');
+                let errorMessage = '';
+                // Handle different error formats (string or object)
+                if (typeof result === 'string') {
+                    errorMessage = result;
+                } else {
+                    for (const [key, value] of Object.entries(result)) {
+                        const fieldName = key.charAt(0).toUpperCase() + key.slice(1);
+                        const errorMsg = Array.isArray(value) ? value.join(', ') : value;
+                        errorMessage += `${fieldName}: ${errorMsg}\n`;
+                    }
+                }
+                errorText.innerText = errorMessage || 'Something went wrong. Please try again.';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            errorDiv.classList.remove('hidden');
+            errorText.innerText = 'An unexpected error occurred. Please try again later.';
+        }
+    });
+</script>
 {% endblock %}

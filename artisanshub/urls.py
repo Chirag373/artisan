@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from apps.core import views
+from apps.core import api_views
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,4 +30,10 @@ urlpatterns = [
     path('signup/explorer/', views.signup_explorer, name='signup_explorer'),
     path('explorer/dashboard/', views.explorer_dashboard, name='explorer_dashboard'),
     path('artist/dashboard/', views.artist_dashboard, name='artist_dashboard'),
+
+    # API Endpoints
+    path('api/signup/explorer/', api_views.ExplorerSignupAPIView.as_view(), name='api_signup_explorer'),
+    path('api/signup/artist/', api_views.ArtistSignupAPIView.as_view(), name='api_signup_artist'),
+    path('api/login/', api_views.CustomTokenObtainPairView.as_view(), name='api_login'),
+    path('api/explorer/profile/', api_views.ExplorerProfileDetailView.as_view(), name='api_explorer_profile'),
 ]
