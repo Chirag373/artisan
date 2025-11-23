@@ -2,7 +2,9 @@
 
 {% block content %}
 <style>
-    .hero-banner { display: none !important; }
+    .hero-banner {
+        display: none !important;
+    }
 </style>
 <div class="w-full">
     <!-- Header -->
@@ -12,7 +14,7 @@
     </div>
 
     <!-- Product Entry Section (Internal Only) -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-8">
+    <div class="bg-[#FEFCE8] rounded-lg shadow-sm border border-gray-400 p-4 md:p-6 mb-8">
         <div class="mb-4">
             <h2 class="text-xl font-semibold text-gray-900 mb-2">Product Entry</h2>
             <p class="text-sm text-gray-600">Internal use only - this data helps with search functionality</p>
@@ -23,19 +25,16 @@
                 <label for="product_keywords" class="block text-sm font-medium text-gray-700 mb-2">
                     Please enter your product item name, ie: Barbie, Pokema, the more the better
                 </label>
-                <textarea
-                    id="product_keywords"
-                    name="product_keywords"
-                    rows="4"
+                <textarea id="product_keywords" name="product_keywords" rows="4"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
                     placeholder="Enter comma-separated product names (e.g., Barbie, Pokemon, Harry Potter, Marvel, Disney...)"
-                    maxlength="3000"
-                ></textarea>
+                    maxlength="3000"></textarea>
                 <p class="mt-1 text-sm text-gray-500">Maximum 300 words. Separate items with commas.</p>
             </div>
 
             <div class="flex justify-end">
-                <button type="button" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                <button type="button"
+                    class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                     Save Product Keywords
                 </button>
             </div>
@@ -43,7 +42,7 @@
     </div>
 
     <!-- Artist Profile & SEO Data Entry -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-8">
+    <div class="bg-[#FEFCE8] rounded-lg shadow-sm border border-gray-400 p-4 md:p-6 mb-8">
         <div class="mb-6">
             <h2 class="text-xl font-semibold text-gray-900 mb-2">Artist Profile & SEO Settings</h2>
             <p class="text-sm text-gray-600">Configure your public profile and SEO information</p>
@@ -51,21 +50,16 @@
 
         <form class="space-y-8">
             <!-- Basic Information -->
-            <div class="border-b border-gray-200 pb-6">
+            <div class="border-b border-gray-400 pb-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="artist_name" class="block text-sm font-medium text-gray-700 mb-2">
                             Artist Name *
                         </label>
-                        <input
-                            type="text"
-                            id="artist_name"
-                            name="artist_name"
+                        <input type="text" id="artist_name" name="artist_name"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Your artist/display name"
-                            required
-                        >
+                            placeholder="Your artist/display name" required>
                     </div>
 
                     <div>
@@ -73,17 +67,13 @@
                             URL Slug *
                         </label>
                         <div class="flex">
-                            <span class="inline-flex items-center px-2 sm:px-3 py-2 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-xs sm:text-sm rounded-l-md whitespace-nowrap">
+                            <span
+                                class="inline-flex items-center px-2 sm:px-3 py-2 border border-r-0 border-gray-300 bg-[#FEFCE8] text-gray-500 text-xs sm:text-sm rounded-l-md whitespace-nowrap">
                                 ArtisansHub.com/artists/
                             </span>
-                            <input
-                                type="text"
-                                id="slug"
-                                name="slug"
+                            <input type="text" id="slug" name="slug"
                                 class="flex-1 px-3 py-2 border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-0"
-                                placeholder="your-artist-name"
-                                required
-                            >
+                                placeholder="your-artist-name" required>
                         </div>
                         <p class="mt-1 text-sm text-gray-500">URL-friendly version of your name</p>
                     </div>
@@ -91,28 +81,22 @@
             </div>
 
             <!-- Bio -->
-            <div class="border-b border-gray-200 pb-6">
+            <div class="border-b border-gray-400 pb-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Biography</h3>
                 <div>
                     <label for="full_bio" class="block text-sm font-medium text-gray-700 mb-2">
                         Full Bio *
                     </label>
-                    <textarea
-                        id="full_bio"
-                        name="full_bio"
-                        rows="6"
+                    <textarea id="full_bio" name="full_bio" rows="6"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
                         placeholder="Tell your story, describe your art style, experience, and what makes your work unique..."
-                        minlength="300"
-                        maxlength="2000"
-                        required
-                    ></textarea>
+                        minlength="300" maxlength="2000" required></textarea>
                     <p class="mt-1 text-sm text-gray-500">300-500+ characters recommended for SEO optimization</p>
                 </div>
             </div>
 
             <!-- Categories -->
-            <div class="border-b border-gray-200 pb-6">
+            <div class="border-b border-gray-400 pb-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Categories</h3>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-3">
@@ -120,39 +104,48 @@
                     </label>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                         <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="stickers" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <input type="checkbox" name="categories" value="stickers"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                             <span class="ml-2 text-sm text-gray-700">Stickers</span>
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="fan_art" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <input type="checkbox" name="categories" value="fan_art"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                             <span class="ml-2 text-sm text-gray-700">Fan Art</span>
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="keychains" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <input type="checkbox" name="categories" value="keychains"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                             <span class="ml-2 text-sm text-gray-700">Keychains</span>
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="prints" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <input type="checkbox" name="categories" value="prints"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                             <span class="ml-2 text-sm text-gray-700">Prints</span>
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="t-shirts" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <input type="checkbox" name="categories" value="t-shirts"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                             <span class="ml-2 text-sm text-gray-700">T-Shirts</span>
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="posters" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <input type="checkbox" name="categories" value="posters"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                             <span class="ml-2 text-sm text-gray-700">Posters</span>
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="pins" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <input type="checkbox" name="categories" value="pins"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                             <span class="ml-2 text-sm text-gray-700">Pins</span>
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="mugs" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <input type="checkbox" name="categories" value="mugs"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                             <span class="ml-2 text-sm text-gray-700">Mugs</span>
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="other" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <input type="checkbox" name="categories" value="other"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                             <span class="ml-2 text-sm text-gray-700">Other</span>
                         </label>
                     </div>
@@ -160,77 +153,57 @@
             </div>
 
             <!-- Tags -->
-            <div class="border-b border-gray-200 pb-6">
+            <div class="border-b border-gray-400 pb-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">SEO Tags</h3>
                 <div>
                     <label for="seo_tags" class="block text-sm font-medium text-gray-700 mb-2">
                         SEO Keywords
                     </label>
-                    <input
-                        type="text"
-                        id="seo_tags"
-                        name="seo_tags"
+                    <input type="text" id="seo_tags" name="seo_tags"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="art, illustration, digital art, fan art, stickers, custom design..."
-                    >
+                        placeholder="art, illustration, digital art, fan art, stickers, custom design...">
                     <p class="mt-1 text-sm text-gray-500">Comma-separated keywords for search engine optimization</p>
                 </div>
             </div>
 
             <!-- External Links -->
-            <div class="border-b border-gray-200 pb-6">
+            <div class="border-b border-gray-400 pb-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">External Links</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="etsy_url" class="block text-sm font-medium text-gray-700 mb-2">
                             Etsy URL
                         </label>
-                        <input
-                            type="url"
-                            id="etsy_url"
-                            name="etsy_url"
+                        <input type="url" id="etsy_url" name="etsy_url"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="https://etsy.com/shop/yourshop"
-                        >
+                            placeholder="https://etsy.com/shop/yourshop">
                     </div>
 
                     <div>
                         <label for="shopify_url" class="block text-sm font-medium text-gray-700 mb-2">
                             Shopify URL
                         </label>
-                        <input
-                            type="url"
-                            id="shopify_url"
-                            name="shopify_url"
+                        <input type="url" id="shopify_url" name="shopify_url"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="https://yourshop.shopify.com"
-                        >
+                            placeholder="https://yourshop.shopify.com">
                     </div>
 
                     <div>
                         <label for="instagram_url" class="block text-sm font-medium text-gray-700 mb-2">
                             Instagram URL
                         </label>
-                        <input
-                            type="url"
-                            id="instagram_url"
-                            name="instagram_url"
+                        <input type="url" id="instagram_url" name="instagram_url"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="https://instagram.com/yourusername"
-                        >
+                            placeholder="https://instagram.com/yourusername">
                     </div>
 
                     <div>
                         <label for="tiktok_url" class="block text-sm font-medium text-gray-700 mb-2">
                             TikTok URL
                         </label>
-                        <input
-                            type="url"
-                            id="tiktok_url"
-                            name="tiktok_url"
+                        <input type="url" id="tiktok_url" name="tiktok_url"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="https://tiktok.com/@yourusername"
-                        >
+                            placeholder="https://tiktok.com/@yourusername">
                     </div>
                 </div>
             </div>
@@ -243,14 +216,9 @@
                         <label for="profile_image_url" class="block text-sm font-medium text-gray-700 mb-2">
                             Profile Image URL *
                         </label>
-                        <input
-                            type="url"
-                            id="profile_image_url"
-                            name="profile_image_url"
+                        <input type="url" id="profile_image_url" name="profile_image_url"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="https://example.com/your-profile-image.jpg"
-                            required
-                        >
+                            placeholder="https://example.com/your-profile-image.jpg" required>
                         <p class="mt-1 text-sm text-gray-500">Square image recommended (400x400px)</p>
                     </div>
 
@@ -258,21 +226,18 @@
                         <label for="banner_image_url" class="block text-sm font-medium text-gray-700 mb-2">
                             Banner Image URL
                         </label>
-                        <input
-                            type="url"
-                            id="banner_image_url"
-                            name="banner_image_url"
+                        <input type="url" id="banner_image_url" name="banner_image_url"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="https://example.com/your-banner-image.jpg"
-                        >
+                            placeholder="https://example.com/your-banner-image.jpg">
                         <p class="mt-1 text-sm text-gray-500">Optional header image (1200x400px recommended)</p>
                     </div>
                 </div>
             </div>
 
             <!-- Submit Button -->
-            <div class="flex justify-end pt-6 border-t border-gray-200">
-                <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 font-medium">
+            <div class="flex justify-end pt-6 border-t border-gray-400">
+                <button type="submit"
+                    class="bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 font-medium">
                     Save Profile Settings
                 </button>
             </div>
