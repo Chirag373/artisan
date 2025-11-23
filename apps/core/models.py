@@ -13,7 +13,7 @@ class ExplorerProfile(models.Model):
     phone_number = models.CharField(max_length=20, blank=True)
     
     # Address Information
-    street_number = models.CharField(max_length=20, blank=True)
+    street_number = models.CharField(max_length=100, blank=True)
     street_address = models.CharField(max_length=255, blank=True)
     city = models.CharField(max_length=100, blank=True)
     state = models.CharField(max_length=100, blank=True)

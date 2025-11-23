@@ -133,6 +133,23 @@
 
 {% block scripts %}
 <script>
+    // Check if user is already logged in on page load
+    (function checkExistingAuth() {
+        const accessToken = localStorage.getItem('access_token');
+        const userRole = localStorage.getItem('user_role');
+
+        if (accessToken && userRole) {
+            // User is already logged in, redirect to their dashboard
+            if (userRole === 'artist') {
+                window.location.href = "{% url 'artist_dashboard' %}";
+            } else if (userRole === 'explorer') {
+                window.location.href = "{% url 'explorer_dashboard' %}";
+            } else {
+                window.location.href = "/";
+            }
+        }
+    })();
+
     document.getElementById('artistSignupForm').addEventListener('submit', async function (e) {
         e.preventDefault();
 

@@ -64,6 +64,10 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import ExplorerProfileSerializer
 
 class ExplorerProfileDetailView(APIView):
+    """
+    API endpoint for the Explorer Profile Detail.
+    Allows authenticated explorers to retrieve and update their profile data.
+    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request):

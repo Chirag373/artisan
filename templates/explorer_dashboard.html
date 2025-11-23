@@ -231,6 +231,14 @@
 
 {% block scripts %}
 <script>
+    // Check authentication on page load and when navigating back (bfcache)
+    window.addEventListener('pageshow', function (event) {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = "{% url 'login' %}";
+        }
+    });
+
     document.addEventListener('DOMContentLoaded', async function () {
         const token = localStorage.getItem('access_token');
         if (!token) {

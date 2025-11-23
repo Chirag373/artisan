@@ -54,10 +54,14 @@ def signup_artist(request):
     }
     return render(request, 'signup.html', context)
 
+from django.views.decorators.cache import never_cache
+
+@never_cache
 def explorer_dashboard(request):
     """Explorer dashboard page"""
     return render(request, 'explorer_dashboard.html')
 
+@never_cache
 def artist_dashboard(request):
     """Artist dashboard page"""
     return render(request, 'artists/artist_dashboard.html')

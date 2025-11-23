@@ -60,6 +60,7 @@
                                 class="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl leading-5 bg-[#FEFCE8] placeholder-gray-400 focus:outline-none focus:bg-[#FEFCE8] focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm transition duration-150 ease-in-out"
                                 placeholder="your@email.com">
                         </div>
+                        <p id="email-error" class="mt-1 text-xs text-red-600 hidden"></p>
                     </div>
 
                     <div>
@@ -75,6 +76,22 @@
                             <input type="password" name="password" id="id_password" required
                                 class="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl leading-5 bg-[#FEFCE8] placeholder-gray-400 focus:outline-none focus:bg-[#FEFCE8] focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm transition duration-150 ease-in-out"
                                 placeholder="••••••••">
+                        </div>
+                        <p id="password-error" class="mt-1 text-xs text-red-600 hidden"></p>
+                        <div id="password-strength" class="mt-2 space-y-1">
+                            <p class="text-xs text-gray-600 font-medium">Password must contain:</p>
+                            <div class="flex items-center space-x-2">
+                                <span id="length-check" class="text-xs">✗ At least 8 characters</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span id="uppercase-check" class="text-xs">✗ One uppercase letter</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span id="lowercase-check" class="text-xs">✗ One lowercase letter</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span id="number-check" class="text-xs">✗ One number</span>
+                            </div>
                         </div>
                     </div>
 
@@ -93,6 +110,7 @@
                                 class="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl leading-5 bg-[#FEFCE8] placeholder-gray-400 focus:outline-none focus:bg-[#FEFCE8] focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm transition duration-150 ease-in-out"
                                 placeholder="••••••••">
                         </div>
+                        <p id="password-confirm-error" class="mt-1 text-xs text-red-600 hidden"></p>
                     </div>
 
                     <button type="submit"
@@ -135,17 +153,228 @@
 
 {% block scripts %}
 <script>
-    document.getElementById('explorerSignupForm').addEventListener('submit', async function (e) {
+    // Check if user is already logged in on page load
+    (function checkExistingAuth() {
+        const accessToken = localStorage.getItem('access_token');
+        const userRole = localStorage.getItem('user_role');
+
+        if (accessToken && userRole) {
+            // User is already logged in, redirect to their dashboard
+            if (userRole === 'artist') {
+                window.location.href = "{% url 'artist_dashboard' %}";
+            } else if (userRole === 'explorer') {
+                window.location.href = "{% url 'explorer_dashboard' %}";
+            } else {
+                window.location.href = "/";
+            }
+        }
+    })();
+
+    // Get form elements
+    const form = document.getElementById('explorerSignupForm');
+    const emailInput = document.getElementById('id_email');
+    const passwordInput = document.getElementById('id_password');
+    const passwordConfirmInput = document.getElementById('id_password_confirm');
+
+    // Get error elements
+    const emailError = document.getElementById('email-error');
+    const passwordError = document.getElementById('password-error');
+    const passwordConfirmError = document.getElementById('password-confirm-error');
+    const errorDiv = document.getElementById('error-message');
+    const errorText = document.getElementById('error-text');
+
+    // Get password strength indicators
+    const lengthCheck = document.getElementById('length-check');
+    const uppercaseCheck = document.getElementById('uppercase-check');
+    const lowercaseCheck = document.getElementById('lowercase-check');
+    const numberCheck = document.getElementById('number-check');
+
+    // Validation functions
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    function validatePassword(password) {
+        return {
+            hasLength: password.length >= 8,
+            hasUppercase: /[A-Z]/.test(password),
+            hasLowercase: /[a-z]/.test(password),
+            hasNumber: /\d/.test(password)
+        };
+    }
+
+    function updateCheckIndicator(element, isValid) {
+        if (isValid) {
+            element.innerHTML = element.innerHTML.replace('✗', '✓');
+            element.classList.add('text-green-600');
+            element.classList.remove('text-gray-600');
+        } else {
+            element.innerHTML = element.innerHTML.replace('✓', '✗');
+            element.classList.add('text-gray-600');
+            element.classList.remove('text-green-600');
+        }
+    }
+
+    function showFieldError(errorElement, message, inputElement) {
+        errorElement.textContent = message;
+        errorElement.classList.remove('hidden');
+        inputElement.classList.add('border-red-500');
+        inputElement.classList.remove('border-gray-200');
+    }
+
+    function hideFieldError(errorElement, inputElement) {
+        errorElement.textContent = '';
+        errorElement.classList.add('hidden');
+        inputElement.classList.remove('border-red-500');
+        inputElement.classList.add('border-gray-200');
+    }
+
+    // Real-time email validation
+    emailInput.addEventListener('blur', function () {
+        const email = this.value.trim();
+        if (email === '') {
+            showFieldError(emailError, 'Email is required', emailInput);
+        } else if (!isValidEmail(email)) {
+            showFieldError(emailError, 'Please enter a valid email address', emailInput);
+        } else {
+            hideFieldError(emailError, emailInput);
+        }
+    });
+
+    emailInput.addEventListener('input', function () {
+        if (emailError.textContent !== '') {
+            const email = this.value.trim();
+            if (email !== '' && isValidEmail(email)) {
+                hideFieldError(emailError, emailInput);
+            }
+        }
+    });
+
+    // Real-time password strength checking
+    passwordInput.addEventListener('input', function () {
+        const password = this.value;
+        const strength = validatePassword(password);
+
+        updateCheckIndicator(lengthCheck, strength.hasLength);
+        updateCheckIndicator(uppercaseCheck, strength.hasUppercase);
+        updateCheckIndicator(lowercaseCheck, strength.hasLowercase);
+        updateCheckIndicator(numberCheck, strength.hasNumber);
+
+        // Hide error if password meets all requirements
+        if (strength.hasLength && strength.hasUppercase && strength.hasLowercase && strength.hasNumber) {
+            hideFieldError(passwordError, passwordInput);
+        }
+
+        // Check password match on the fly if confirm field has value
+        if (passwordConfirmInput.value !== '') {
+            if (password === passwordConfirmInput.value) {
+                hideFieldError(passwordConfirmError, passwordConfirmInput);
+            } else {
+                showFieldError(passwordConfirmError, 'Passwords do not match', passwordConfirmInput);
+            }
+        }
+    });
+
+    // Password validation on blur
+    passwordInput.addEventListener('blur', function () {
+        const password = this.value;
+        if (password === '') {
+            showFieldError(passwordError, 'Password is required', passwordInput);
+        } else {
+            const strength = validatePassword(password);
+            if (!strength.hasLength || !strength.hasUppercase || !strength.hasLowercase || !strength.hasNumber) {
+                showFieldError(passwordError, 'Password does not meet the requirements', passwordInput);
+            } else {
+                hideFieldError(passwordError, passwordInput);
+            }
+        }
+    });
+
+    // Real-time password confirmation checking
+    passwordConfirmInput.addEventListener('input', function () {
+        const confirmPassword = this.value;
+        const password = passwordInput.value;
+
+        if (confirmPassword !== '' && confirmPassword === password) {
+            hideFieldError(passwordConfirmError, passwordConfirmInput);
+        }
+    });
+
+    passwordConfirmInput.addEventListener('blur', function () {
+        const confirmPassword = this.value;
+        const password = passwordInput.value;
+
+        if (confirmPassword === '') {
+            showFieldError(passwordConfirmError, 'Please confirm your password', passwordConfirmInput);
+        } else if (confirmPassword !== password) {
+            showFieldError(passwordConfirmError, 'Passwords do not match', passwordConfirmInput);
+        } else {
+            hideFieldError(passwordConfirmError, passwordConfirmInput);
+        }
+    });
+
+    // Form submission
+    form.addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        const form = e.target;
+        // Reset global error message
+        errorDiv.classList.add('hidden');
+
+        // Validate all fields
+        let isValid = true;
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        const confirmPassword = passwordConfirmInput.value;
+
+        // Email validation
+        if (email === '') {
+            showFieldError(emailError, 'Email is required', emailInput);
+            isValid = false;
+        } else if (!isValidEmail(email)) {
+            showFieldError(emailError, 'Please enter a valid email address', emailInput);
+            isValid = false;
+        } else {
+            hideFieldError(emailError, emailInput);
+        }
+
+        // Password validation
+        if (password === '') {
+            showFieldError(passwordError, 'Password is required', passwordInput);
+            isValid = false;
+        } else {
+            const strength = validatePassword(password);
+            if (!strength.hasLength || !strength.hasUppercase || !strength.hasLowercase || !strength.hasNumber) {
+                showFieldError(passwordError, 'Password does not meet all requirements', passwordInput);
+                isValid = false;
+            } else {
+                hideFieldError(passwordError, passwordInput);
+            }
+        }
+
+        // Password confirmation validation
+        if (confirmPassword === '') {
+            showFieldError(passwordConfirmError, 'Please confirm your password', passwordConfirmInput);
+            isValid = false;
+        } else if (confirmPassword !== password) {
+            showFieldError(passwordConfirmError, 'Passwords do not match', passwordConfirmInput);
+            isValid = false;
+        } else {
+            hideFieldError(passwordConfirmError, passwordConfirmInput);
+        }
+
+        // If validation fails, stop here
+        if (!isValid) {
+            errorDiv.classList.remove('hidden');
+            errorText.innerText = 'Please correct the errors above and try again.';
+            // Scroll to top to show error message
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        // If all validations pass, submit the form
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
-        const errorDiv = document.getElementById('error-message');
-        const errorText = document.getElementById('error-text');
-
-        // Reset error message
-        errorDiv.classList.add('hidden');
 
         try {
             const response = await fetch('/api/signup/explorer/', {
@@ -163,7 +392,7 @@
                 // Success - redirect to login
                 window.location.href = "{% url 'login' %}";
             } else {
-                // Show errors
+                // Show errors from backend
                 errorDiv.classList.remove('hidden');
                 let errorMessage = '';
                 // Handle different error formats (string or object)
@@ -171,17 +400,19 @@
                     errorMessage = result;
                 } else {
                     for (const [key, value] of Object.entries(result)) {
-                        const fieldName = key.charAt(0).toUpperCase() + key.slice(1);
+                        const fieldName = key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ');
                         const errorMsg = Array.isArray(value) ? value.join(', ') : value;
                         errorMessage += `${fieldName}: ${errorMsg}\n`;
                     }
                 }
                 errorText.innerText = errorMessage || 'Something went wrong. Please try again.';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         } catch (error) {
             console.error('Error:', error);
             errorDiv.classList.remove('hidden');
             errorText.innerText = 'An unexpected error occurred. Please try again later.';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     });
 </script>

@@ -56,7 +56,22 @@ class SignupSerializer(serializers.ModelSerializer):
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    username_field = 'username'
+    
     def validate(self, attrs):
+        # Check if the provided username is actually an email
+        username_or_email = attrs.get(self.username_field)
+        
+        # If it looks like an email, try to find the user by email
+        if '@' in username_or_email:
+            try:
+                from django.contrib.auth.models import User
+                user = User.objects.get(email=username_or_email)
+                # Replace the email with the actual username for authentication
+                attrs[self.username_field] = user.username
+            except User.DoesNotExist:
+                pass  # Let the parent validation handle the error
+        
         data = super().validate(attrs)
         
         # Add custom claims
