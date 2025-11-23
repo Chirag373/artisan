@@ -88,3 +88,31 @@ class ExplorerProfileDetailView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except ExplorerProfile.DoesNotExist:
             return Response({"error": "Profile not found"}, status=status.HTTP_404_NOT_FOUND)
+
+from .serializers import ArtistProfileSerializer
+
+class ArtistDashboardAPIView(APIView):
+    """
+    API endpoint for the Artist Dashboard.
+    Allows authenticated artists to retrieve and update their profile data.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            profile = request.user.artist_profile
+            serializer = ArtistProfileSerializer(profile)
+            return Response(serializer.data)
+        except ArtistProfile.DoesNotExist:
+            return Response({"error": "Artist profile not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request):
+        try:
+            profile = request.user.artist_profile
+            serializer = ArtistProfileSerializer(profile, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except ArtistProfile.DoesNotExist:
+            return Response({"error": "Artist profile not found"}, status=status.HTTP_404_NOT_FOUND)

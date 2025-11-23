@@ -36,4 +36,5 @@ urlpatterns = [
     path('api/signup/artist/', api_views.ArtistSignupAPIView.as_view(), name='api_signup_artist'),
     path('api/login/', api_views.CustomTokenObtainPairView.as_view(), name='api_login'),
     path('api/explorer/profile/', api_views.ExplorerProfileDetailView.as_view(), name='api_explorer_profile'),
+    path('api/artist/dashboard/', api_views.ArtistDashboardAPIView.as_view(), name='api_artist_dashboard'),
 ]

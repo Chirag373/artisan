@@ -61,7 +61,17 @@ def explorer_dashboard(request):
     """Explorer dashboard page"""
     return render(request, 'explorer_dashboard.html')
 
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
+
 @never_cache
 def artist_dashboard(request):
     """Artist dashboard page"""
+    try:
+        # Check if user has an artist profile
+        if not hasattr(request.user, 'artist_profile'):
+            return redirect('join_artist')
+    except ObjectDoesNotExist:
+        return redirect('join_artist')
+        
     return render(request, 'artists/artist_dashboard.html')
