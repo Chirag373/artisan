@@ -80,6 +80,32 @@
                 </div>
             </div>
 
+            <!-- Location -->
+            <div class="border-b border-gray-400 pb-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Location</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="location_state" class="block text-sm font-medium text-gray-700 mb-2">
+                            State
+                        </label>
+                        <select name="location_state" id="location_state"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-[#FEFCE8] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Select State</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="location_city" class="block text-sm font-medium text-gray-700 mb-2">
+                            City
+                        </label>
+                        <select name="location_city" id="location_city"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-[#FEFCE8] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Select City</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <!-- Bio -->
             <div class="border-b border-gray-400 pb-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Biography</h3>
@@ -213,22 +239,28 @@
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Profile Images</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="profile_image_url" class="block text-sm font-medium text-gray-700 mb-2">
-                            Profile Image URL *
+                        <label for="profile_image" class="block text-sm font-medium text-gray-700 mb-2">
+                            Profile Image *
                         </label>
-                        <input type="url" id="profile_image_url" name="profile_image_url"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="https://example.com/your-profile-image.jpg" required>
+                        <div class="mb-2">
+                            <img id="current_profile_image" src="" alt="Current Profile Image"
+                                class="w-32 h-32 object-cover rounded-md hidden">
+                        </div>
+                        <input type="file" id="profile_image" name="profile_image" accept="image/*"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <p class="mt-1 text-sm text-gray-500">Square image recommended (400x400px)</p>
                     </div>
 
                     <div>
-                        <label for="banner_image_url" class="block text-sm font-medium text-gray-700 mb-2">
-                            Banner Image URL
+                        <label for="banner_image" class="block text-sm font-medium text-gray-700 mb-2">
+                            Banner Image
                         </label>
-                        <input type="url" id="banner_image_url" name="banner_image_url"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="https://example.com/your-banner-image.jpg">
+                        <div class="mb-2">
+                            <img id="current_banner_image" src="" alt="Current Banner Image"
+                                class="w-full h-32 object-cover rounded-md hidden">
+                        </div>
+                        <input type="file" id="banner_image" name="banner_image" accept="image/*"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <p class="mt-1 text-sm text-gray-500">Optional header image (1200x400px recommended)</p>
                     </div>
                 </div>
@@ -246,10 +278,10 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const productKeywordsBtn = document.getElementById('save-product-keywords-btn');
         const profileForm = document.getElementById('artist-profile-form');
-        
+
         // Helper to get CSRF token
         function getCookie(name) {
             let cookieValue = null;
@@ -267,31 +299,123 @@
         }
         const csrftoken = getCookie('csrftoken');
 
+        // CountryStateCity API Configuration for USA only
+        const locationAPI = {
+            config: {
+                cUrl: 'https://api.countrystatecity.in/v1/countries',
+                ckey: 'WnVWTGlEejlKbzMyOXd4c2VmdVQzZzFWTVJTb0xXWk1pNExvWVFzZQ==',
+                countryCode: 'US' // Hardcoded to USA
+            },
+
+            loadStates: async function (selectedState) {
+                const stateSelect = document.getElementById('location_state');
+                stateSelect.innerHTML = '<option value="">Select State</option>';
+                document.getElementById('location_city').innerHTML = '<option value="">Select City</option>';
+
+                try {
+                    const response = await fetch(`${this.config.cUrl}/${this.config.countryCode}/states`, {
+                        headers: { "X-CSCAPI-KEY": this.config.ckey }
+                    });
+                    const states = await response.json();
+
+                    states.forEach(state => {
+                        const option = document.createElement('option');
+                        option.value = state.iso2;
+                        option.textContent = state.name;
+                        stateSelect.appendChild(option);
+                    });
+
+                    if (selectedState) {
+                        stateSelect.value = selectedState;
+                    }
+                } catch (error) {
+                    console.error('Error loading states:', error);
+                }
+            },
+
+            loadCities: async function (stateCode, selectedCity) {
+                const citySelect = document.getElementById('location_city');
+                citySelect.innerHTML = '<option value="">Select City</option>';
+
+                if (!stateCode) return;
+
+                try {
+                    const response = await fetch(`${this.config.cUrl}/${this.config.countryCode}/states/${stateCode}/cities`, {
+                        headers: { "X-CSCAPI-KEY": this.config.ckey }
+                    });
+                    const cities = await response.json();
+
+                    cities.forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city.name;
+                        option.textContent = city.name;
+                        citySelect.appendChild(option);
+                    });
+
+                    if (selectedCity) {
+                        citySelect.value = selectedCity;
+                    }
+                } catch (error) {
+                    console.error('Error loading cities:', error);
+                }
+            }
+        };
+
+        // Setup location listeners
+        document.getElementById('location_state').addEventListener('change', function () {
+            locationAPI.loadCities(this.value);
+        });
+
+        // Load USA states initially
+        locationAPI.loadStates();
+
         // Fetch and populate data
         fetch('/api/artist/dashboard/')
             .then(response => {
                 if (!response.ok) throw new Error('Failed to load profile data');
                 return response.json();
             })
-            .then(data => {
+            .then(async data => {
                 // Populate Product Keywords
                 if (data.product_keywords) {
                     document.getElementById('product_keywords').value = data.product_keywords;
                 }
 
-                // Populate Text Inputs
+                // Populate Text Inputs (excluding location fields)
                 const textFields = [
-                    'artist_name', 'slug', 'full_bio', 'seo_tags', 
-                    'etsy_url', 'shopify_url', 'instagram_url', 'tiktok_url',
-                    'profile_image_url', 'banner_image_url'
+                    'artist_name', 'slug', 'full_bio', 'seo_tags',
+                    'etsy_url', 'shopify_url', 'instagram_url', 'tiktok_url'
                 ];
-                
+
                 textFields.forEach(field => {
                     if (data[field]) {
                         const input = document.getElementById(field);
                         if (input) input.value = data[field];
                     }
                 });
+
+                // Handle location fields with cascading
+                const stateValue = data.location_state || '';
+                const cityValue = data.location_city || '';
+
+                if (stateValue) {
+                    await locationAPI.loadStates(stateValue);
+                    if (cityValue) {
+                        await locationAPI.loadCities(stateValue, cityValue);
+                    }
+                }
+
+                // Populate Images
+                if (data.profile_image) {
+                    const img = document.getElementById('current_profile_image');
+                    img.src = data.profile_image;
+                    img.classList.remove('hidden');
+                }
+                if (data.banner_image) {
+                    const img = document.getElementById('current_banner_image');
+                    img.src = data.banner_image;
+                    img.classList.remove('hidden');
+                }
 
                 // Populate Categories
                 if (data.categories && Array.isArray(data.categories)) {
@@ -304,9 +428,9 @@
             .catch(error => console.error('Error:', error));
 
         // Save Product Keywords
-        productKeywordsBtn.addEventListener('click', function() {
+        productKeywordsBtn.addEventListener('click', function () {
             const keywords = document.getElementById('product_keywords').value;
-            
+
             fetch('/api/artist/dashboard/', {
                 method: 'PUT',
                 headers: {
@@ -315,54 +439,46 @@
                 },
                 body: JSON.stringify({ product_keywords: keywords })
             })
-            .then(response => {
-                if (response.ok) {
-                    alert('Product keywords saved successfully!');
-                } else {
-                    alert('Failed to save product keywords.');
-                }
-            })
-            .catch(error => console.error('Error:', error));
+                .then(response => {
+                    if (response.ok) {
+                        alert('Product keywords saved successfully!');
+                    } else {
+                        alert('Failed to save product keywords.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         });
 
         // Save Profile Settings
-        profileForm.addEventListener('submit', function(e) {
+        profileForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            
+
             const formData = new FormData(profileForm);
-            const data = {};
-            
-            // Handle standard fields
-            formData.forEach((value, key) => {
-                if (key !== 'categories') {
-                    data[key] = value;
-                }
-            });
-            
-            // Handle categories
+
+            // Handle categories - remove individual entries and add as JSON string
             const categories = Array.from(document.querySelectorAll('input[name="categories"]:checked'))
-                                   .map(cb => cb.value);
-            data.categories = categories;
+                .map(cb => cb.value);
+            formData.delete('categories');
+            formData.append('categories', JSON.stringify(categories));
 
             fetch('/api/artist/dashboard/', {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-CSRFToken': csrftoken
                 },
-                body: JSON.stringify(data)
+                body: formData
             })
-            .then(response => {
-                if (response.ok) {
-                    alert('Profile settings saved successfully!');
-                } else {
-                    return response.json().then(err => {
-                        console.error('Validation errors:', err);
-                        alert('Failed to save profile settings. Please check the form.');
-                    });
-                }
-            })
-            .catch(error => console.error('Error:', error));
+                .then(response => {
+                    if (response.ok) {
+                        alert('Profile settings saved successfully!');
+                    } else {
+                        return response.json().then(err => {
+                            console.error('Validation errors:', err);
+                            alert('Failed to save profile settings. Please check the form.');
+                        });
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         });
     });
 </script>

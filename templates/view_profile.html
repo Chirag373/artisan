@@ -201,7 +201,7 @@
 
         // Images
         const profileImg = document.getElementById('profile-image');
-        profileImg.src = artist.profile_image_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(artist.artist_name)}&background=random`;
+        profileImg.src = artist.profile_image || `https://ui-avatars.com/api/?name=${encodeURIComponent(artist.artist_name)}&background=random`;
 
         // Featured Badge
         if (artist.is_featured) {
@@ -238,6 +238,26 @@
         // Social Links
         const socialContainer = document.getElementById('social-links');
         let socialHtml = '';
+
+        if (artist.etsy_url) {
+            socialHtml += `
+                <a href="${artist.etsy_url}" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group border border-transparent hover:border-gray-100">
+                    <div class="w-10 h-10 rounded-full bg-[#F1641E] flex items-center justify-center text-white shrink-0">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 24C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12z" fill-opacity=".2"/><path d="M9.42 14.727c.226.16.48.256.75.28.448.03.885-.17 1.15-.53.29-.41.34-.94.14-1.41-.16-.37-.47-.66-.85-.79-.38-.12-.8-.07-1.14.13-.26.16-.46.42-.55.71-.09.32-.05.66.1.96zm3.96-2.36c.27.16.57.21.87.16.38-.07.71-.32.88-.67.15-.32.16-.7.02-1.04-.13-.32-.39-.57-.71-.71"/></svg>
+                    </div>
+                    <span class="font-medium text-gray-700 group-hover:text-[#F1641E]">Etsy Shop</span>
+                </a>`;
+        }
+
+        if (artist.shopify_url) {
+            socialHtml += `
+                <a href="${artist.shopify_url}" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group border border-transparent hover:border-gray-100">
+                    <div class="w-10 h-10 rounded-full bg-[#95BF47] flex items-center justify-center text-white shrink-0">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M21.94 7.66l-1.46-3.41c-.2-.48-.67-.79-1.19-.79H4.71c-.52 0-.99.31-1.19.79L2.06 7.66c-.09.2-.13.42-.13.64 0 1.29 1.05 2.33 2.33 2.33.4 0 .78-.1 1.11-.28.51.68 1.31 1.11 2.22 1.11.91 0 1.71-.43 2.22-1.11.33.18.71.28 1.11.28s.78-.1 1.11-.28c.51.68 1.31 1.11 2.22 1.11.91 0 1.71-.43 2.22-1.11.33.18.71.28 1.11.28 1.29 0 2.33-1.05 2.33-2.33 0-.22-.04-.44-.13-.64zM12 19.75c-2.07 0-3.75-1.68-3.75-3.75h7.5c0 2.07-1.68 3.75-3.75 3.75z"/></svg>
+                    </div>
+                    <span class="font-medium text-gray-700 group-hover:text-[#95BF47]">Shopify Store</span>
+                </a>`;
+        }
 
         if (artist.instagram_url) {
             socialHtml += `

@@ -41,3 +41,9 @@ urlpatterns = [
     path('api/featured-artists/', api_views.FeaturedArtistsAPIView.as_view(), name='api_featured_artists'),
     path('api/artists/<slug:slug>/', api_views.ArtistProfileDetailAPIView.as_view(), name='api_artist_profile_detail'),
 ]
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

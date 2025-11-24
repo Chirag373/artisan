@@ -137,7 +137,7 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             'artist_name', 'slug', 'full_bio', 'location_city', 'location_state',
             'product_keywords', 'seo_tags', 'categories',
             'etsy_url', 'shopify_url', 'instagram_url', 'tiktok_url',
-            'profile_image_url', 'banner_image_url',
+            'profile_image', 'banner_image',
             'subscription_plan', 'email', 'rating', 'is_featured'
         ]
         read_only_fields = ['slug', 'subscription_plan', 'email']

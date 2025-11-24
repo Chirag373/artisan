@@ -87,9 +87,9 @@ class ArtistProfile(models.Model):
     instagram_url = models.URLField(blank=True, max_length=500)
     tiktok_url = models.URLField(blank=True, max_length=500)
 
-    # Images (Using URLFields to match template inputs)
-    profile_image_url = models.URLField(max_length=500, help_text="URL to profile image (400x400px)")
-    banner_image_url = models.URLField(max_length=500, blank=True, help_text="URL to banner image")
+    # Images
+    profile_image = models.ImageField(upload_to='artist_profiles/', blank=True, null=True, help_text="Profile image (400x400px)")
+    banner_image = models.ImageField(upload_to='artist_banners/', blank=True, null=True, help_text="Banner image")
 
     # Business Logic
     subscription_plan = models.CharField(max_length=20, choices=SUBSCRIPTION_CHOICES, default='basic')

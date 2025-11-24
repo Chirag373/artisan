@@ -120,7 +120,7 @@ class ArtistDashboardAPIView(APIView):
     def get(self, request):
         try:
             profile = request.user.artist_profile
-            serializer = ArtistProfileSerializer(profile)
+            serializer = ArtistProfileSerializer(profile, context={'request': request})
             return Response(serializer.data)
         except ArtistProfile.DoesNotExist:
             return Response({"error": "Artist profile not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -128,7 +128,7 @@ class ArtistDashboardAPIView(APIView):
     def put(self, request):
         try:
             profile = request.user.artist_profile
-            serializer = ArtistProfileSerializer(profile, data=request.data, partial=True)
+            serializer = ArtistProfileSerializer(profile, data=request.data, partial=True, context={'request': request})
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -153,7 +153,7 @@ class FeaturedArtistsAPIView(APIView):
         if not artists.exists():
             artists = ArtistProfile.objects.all().order_by('-created_at')[:6]
             
-        serializer = ArtistProfileSerializer(artists, many=True)
+        serializer = ArtistProfileSerializer(artists, many=True, context={'request': request})
         return Response(serializer.data)
 
 class ArtistProfileDetailAPIView(APIView):
@@ -166,7 +166,7 @@ class ArtistProfileDetailAPIView(APIView):
     def get(self, request, slug):
         try:
             profile = ArtistProfile.objects.get(slug=slug)
-            serializer = ArtistProfileSerializer(profile)
+            serializer = ArtistProfileSerializer(profile, context={'request': request})
             return Response(serializer.data)
         except ArtistProfile.DoesNotExist:
             return Response({"error": "Artist not found"}, status=status.HTTP_404_NOT_FOUND)
