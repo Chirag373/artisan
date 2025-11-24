@@ -116,8 +116,24 @@
         const accessToken = localStorage.getItem('access_token');
         const userRole = localStorage.getItem('user_role');
 
+        // Check if we were redirected here (e.g. session expired but token exists)
+        const urlParams = new URLSearchParams(window.location.search);
+        const nextParam = urlParams.get('next');
+
         if (accessToken && userRole) {
-            // User is already logged in, redirect to their dashboard
+            if (nextParam) {
+                // If we have a token but were redirected to login, it means the server session is missing/expired.
+                // We should NOT auto-redirect, as that causes an infinite loop.
+                // Instead, we clear the local storage and let the user log in again to establish a new session.
+                console.log("Session missing but token exists. Clearing tokens and requiring re-login.");
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                localStorage.removeItem('user_role');
+                localStorage.removeItem('username');
+                return;
+            }
+
+            // User is already logged in and not redirected here, redirect to their dashboard
             if (userRole === 'artist') {
                 window.location.href = "{% url 'artist_dashboard' %}";
             } else if (userRole === 'explorer') {

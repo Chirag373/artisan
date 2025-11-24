@@ -4,9 +4,10 @@ def home(request):
     """Homepage view"""
     return render(request, 'homepage.html')
 
-def view_profile(request):
+def view_profile(request, slug=None):
     """View profile page"""
-    return render(request, 'view_profile.html')
+    context = {'slug': slug} if slug else {}
+    return render(request, 'view_profile.html', context)
 
 def login_view(request):
     """Login page view"""
@@ -14,13 +15,16 @@ def login_view(request):
 
 def join_artist(request):
     """Join as artist page - shows pricing plans"""
-    # If accessed directly (not from signup selection), redirect to signup
-    # Check if 'from' parameter is set or if referrer suggests it came from signup
+    # If accessed directly (not from signup selection or dashboard), redirect to signup
+    # Check if 'from' parameter is set or if referrer suggests it came from signup or dashboard
     from_param = request.GET.get('from', '')
     referer = request.META.get('HTTP_REFERER', '')
     
-    # If no 'from' parameter and referrer doesn't contain 'signup', redirect to signup
-    if not from_param and 'signup' not in referer:
+    # Allow access if:
+    # 1. 'from' parameter is set
+    # 2. Referrer contains 'signup' or 'dashboard' (user came from signup flow or was redirected from dashboard)
+    # 3. User is authenticated (they might have been redirected from artist_dashboard)
+    if not from_param and 'signup' not in referer and 'dashboard' not in referer and not request.user.is_authenticated:
         return redirect('signup')
     
     # Otherwise show the pricing page
@@ -64,6 +68,7 @@ def explorer_dashboard(request):
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 
+@login_required
 @never_cache
 def artist_dashboard(request):
     """Artist dashboard page"""
@@ -71,7 +76,9 @@ def artist_dashboard(request):
         # Check if user has an artist profile
         if not hasattr(request.user, 'artist_profile'):
             return redirect('join_artist')
-    except ObjectDoesNotExist:
+        # Try to access the artist_profile to ensure it exists
+        artist_profile = request.user.artist_profile
+    except (ObjectDoesNotExist, AttributeError):
         return redirect('join_artist')
         
     return render(request, 'artists/artist_dashboard.html')

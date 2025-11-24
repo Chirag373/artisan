@@ -57,8 +57,27 @@ class ArtistSignupAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+from django.contrib.auth import login
+
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        # We need to validate first to get the user
+        serializer = self.get_serializer(data=request.data)
+        
+        try:
+            serializer.is_valid(raise_exception=True)
+        except Exception:
+            # If validation fails, let the parent class handle the response generation
+            return super().post(request, *args, **kwargs)
+            
+        # If valid, log the user in to the Django session
+        # This is crucial for hybrid apps that use both API tokens and Django templates/sessions
+        login(request, serializer.user)
+        
+        # Return the standard token response
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 from rest_framework.permissions import IsAuthenticated
 from .serializers import ExplorerProfileSerializer
@@ -116,3 +135,38 @@ class ArtistDashboardAPIView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except ArtistProfile.DoesNotExist:
             return Response({"error": "Artist profile not found"}, status=status.HTTP_404_NOT_FOUND)
+
+from rest_framework.permissions import AllowAny
+
+class FeaturedArtistsAPIView(APIView):
+    """
+    API endpoint to retrieve featured artists for the homepage.
+    Returns a list of artists marked as featured.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        # Fetch featured artists
+        artists = ArtistProfile.objects.filter(is_featured=True)
+        
+        # If no featured artists, fallback to showing recent ones (limit 6)
+        if not artists.exists():
+            artists = ArtistProfile.objects.all().order_by('-created_at')[:6]
+            
+        serializer = ArtistProfileSerializer(artists, many=True)
+        return Response(serializer.data)
+
+class ArtistProfileDetailAPIView(APIView):
+    """
+    API endpoint to retrieve a single artist profile by slug.
+    Publicly accessible.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request, slug):
+        try:
+            profile = ArtistProfile.objects.get(slug=slug)
+            serializer = ArtistProfileSerializer(profile)
+            return Response(serializer.data)
+        except ArtistProfile.DoesNotExist:
+            return Response({"error": "Artist not found"}, status=status.HTTP_404_NOT_FOUND)
