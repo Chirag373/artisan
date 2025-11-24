@@ -283,9 +283,10 @@
                 </div>
 
                 <div class="hidden md:flex md:items-center md:space-x-8">
-                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium transition-colors">Explorer</a>
+                    <a href="/" class="text-gray-600 hover:text-blue-600 font-medium transition-colors">Explorer</a>
                     <a href="#" class="text-gray-600 hover:text-blue-600 font-medium transition-colors">Premium</a>
-                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium transition-colors">Our Services</a>
+                    <a href="{% url 'services' %}"
+                        class="text-gray-600 hover:text-blue-600 font-medium transition-colors">Our Services</a>
                 </div>
 
                 <!-- Unauthenticated Nav -->
@@ -361,7 +362,7 @@
             </div>
             <div class="flex-1 overflow-y-auto no-scrollbar py-2">
                 <nav class="flex flex-col">
-                    <a href="#"
+                    <a href="/"
                         class="group flex justify-between items-center px-6 py-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
                         <span class="text-[17px] font-semibold text-gray-800 group-hover:text-blue-600">Explorer</span>
                         <svg class="h-5 w-5 text-gray-400 group-hover:text-blue-600" fill="none" viewBox="0 0 24 24"
@@ -377,7 +378,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
                     </a>
-                    <a href="#"
+                    <a href="{% url 'services' %}"
                         class="group flex justify-between items-center px-6 py-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
                         <span class="text-[17px] font-semibold text-gray-800 group-hover:text-blue-600">Our
                             Services</span>

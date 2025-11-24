@@ -31,6 +31,7 @@ urlpatterns = [
     path('signup/explorer/', views.signup_explorer, name='signup_explorer'),
     path('explorer/dashboard/', views.explorer_dashboard, name='explorer_dashboard'),
     path('artist/dashboard/', views.artist_dashboard, name='artist_dashboard'),
+    path('services/', views.services, name='services'),
 
     # API Endpoints
     path('api/signup/explorer/', api_views.ExplorerSignupAPIView.as_view(), name='api_signup_explorer'),

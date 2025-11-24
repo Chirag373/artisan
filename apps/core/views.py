@@ -82,3 +82,7 @@ def artist_dashboard(request):
         return redirect('join_artist')
         
     return render(request, 'artists/artist_dashboard.html')
+
+def services(request):
+    """Services page view"""
+    return render(request, 'services.html')

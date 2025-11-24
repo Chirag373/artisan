@@ -59,7 +59,7 @@
                         </label>
                         <input type="text" id="artist_name" name="artist_name"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Your artist/display name" required>
+                            placeholder="Your artist/display name" required minlength="2" maxlength="255">
                     </div>
 
                     <div>
@@ -73,7 +73,8 @@
                             </span>
                             <input type="text" id="slug" name="slug"
                                 class="flex-1 px-3 py-2 border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-0"
-                                placeholder="your-artist-name" required>
+                                placeholder="your-artist-name" required pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                                title="Only lowercase letters, numbers, and hyphens. Must start and end with letter or number.">
                         </div>
                         <p class="mt-1 text-sm text-gray-500">URL-friendly version of your name</p>
                     </div>
@@ -187,7 +188,8 @@
                     </label>
                     <input type="text" id="seo_tags" name="seo_tags"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="art, illustration, digital art, fan art, stickers, custom design...">
+                        placeholder="art, illustration, digital art, fan art, stickers, custom design..."
+                        maxlength="500">
                     <p class="mt-1 text-sm text-gray-500">Comma-separated keywords for search engine optimization</p>
                 </div>
             </div>
@@ -202,7 +204,7 @@
                         </label>
                         <input type="url" id="etsy_url" name="etsy_url"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="https://etsy.com/shop/yourshop">
+                            placeholder="https://etsy.com/shop/yourshop" pattern="https?://.+" maxlength="500">
                     </div>
 
                     <div>
@@ -211,7 +213,7 @@
                         </label>
                         <input type="url" id="shopify_url" name="shopify_url"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="https://yourshop.shopify.com">
+                            placeholder="https://yourshop.shopify.com" pattern="https?://.+" maxlength="500">
                     </div>
 
                     <div>
@@ -220,7 +222,7 @@
                         </label>
                         <input type="url" id="instagram_url" name="instagram_url"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="https://instagram.com/yourusername">
+                            placeholder="https://instagram.com/yourusername" pattern="https?://.+" maxlength="500">
                     </div>
 
                     <div>
@@ -229,7 +231,7 @@
                         </label>
                         <input type="url" id="tiktok_url" name="tiktok_url"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="https://tiktok.com/@yourusername">
+                            placeholder="https://tiktok.com/@yourusername" pattern="https?://.+" maxlength="500">
                     </div>
                 </div>
             </div>
@@ -246,7 +248,8 @@
                             <img id="current_profile_image" src="" alt="Current Profile Image"
                                 class="w-32 h-32 object-cover rounded-md hidden">
                         </div>
-                        <input type="file" id="profile_image" name="profile_image" accept="image/*"
+                        <input type="file" id="profile_image" name="profile_image"
+                            accept="image/jpeg,image/png,image/jpg,image/webp"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <p class="mt-1 text-sm text-gray-500">Square image recommended (400x400px)</p>
                     </div>
@@ -259,7 +262,8 @@
                             <img id="current_banner_image" src="" alt="Current Banner Image"
                                 class="w-full h-32 object-cover rounded-md hidden">
                         </div>
-                        <input type="file" id="banner_image" name="banner_image" accept="image/*"
+                        <input type="file" id="banner_image" name="banner_image"
+                            accept="image/jpeg,image/png,image/jpg,image/webp"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <p class="mt-1 text-sm text-gray-500">Optional header image (1200x400px recommended)</p>
                     </div>
