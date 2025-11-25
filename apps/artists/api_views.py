@@ -2,10 +2,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import ArtistProfile
-from .serializers import ArtistProfileSerializer
+from django.db.models import Q, Avg
+from django.db import transaction
+from .models import ArtistProfile, Rating
+from .serializers import ArtistProfileSerializer, RatingSerializer
 from apps.users.serializers import SignupSerializer
-from django.db.models import Q
 
 
 class ArtistSignupAPIView(APIView):
@@ -16,15 +17,16 @@ class ArtistSignupAPIView(APIView):
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
-            
             package = request.data.get('package', 'basic')
             
-            ArtistProfile.objects.create(
-                user=user,
-                artist_name=user.username,
-                subscription_plan=package
-            )
+            # Wrap in transaction to prevent zombie users
+            with transaction.atomic():
+                user = serializer.save()
+                ArtistProfile.objects.create(
+                    user=user,
+                    artist_name=user.username,
+                    subscription_plan=package
+                )
             
             return Response({
                 "message": "Artist account created successfully",
@@ -79,7 +81,8 @@ class FeaturedArtistsAPIView(APIView):
         offset = (page - 1) * page_size
         
         if query or location:
-            artists = ArtistProfile.objects.all()
+            # Fix N+1 query problem with select_related
+            artists = ArtistProfile.objects.select_related('user').all()
             
             if query:
                 artists = artists.filter(
@@ -100,11 +103,12 @@ class FeaturedArtistsAPIView(APIView):
             artists = artists.order_by('-rating', '-created_at')
         else:
             # Default behavior: show featured artists
-            artists = ArtistProfile.objects.filter(is_featured=True)
+            # Fix N+1 query problem with select_related
+            artists = ArtistProfile.objects.select_related('user').filter(is_featured=True)
             
             # Fallback if no featured artists
             if not artists.exists():
-                artists = ArtistProfile.objects.all().order_by('-created_at')
+                artists = ArtistProfile.objects.select_related('user').all().order_by('-created_at')
         
         # Get total count before pagination
         total_count = artists.count()
@@ -132,7 +136,8 @@ class ArtistProfileDetailAPIView(APIView):
 
     def get(self, request, slug):
         try:
-            profile = ArtistProfile.objects.get(slug=slug)
+            # Fix N+1 query problem with select_related
+            profile = ArtistProfile.objects.select_related('user').get(slug=slug)
             serializer = ArtistProfileSerializer(profile, context={'request': request})
             return Response(serializer.data)
         except ArtistProfile.DoesNotExist:
@@ -142,8 +147,6 @@ class ArtistProfileDetailAPIView(APIView):
 class RateArtistAPIView(APIView):
     """
     API endpoint for explorers to rate artists.
-    Only authenticated explorers can rate.
-    Artists cannot rate other artists.
     """
     permission_classes = [IsAuthenticated]
 
@@ -153,50 +156,37 @@ class RateArtistAPIView(APIView):
         except ArtistProfile.DoesNotExist:
             return Response({"error": "Artist not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Check if user is an artist (artists cannot rate)
+        # 1. Role Checks (Kept manual as per your specific business logic requirements)
         if hasattr(request.user, 'artist_profile'):
-            return Response({
-                "error": "Artists cannot rate other artists"
-            }, status=status.HTTP_403_FORBIDDEN)
+            return Response({"error": "Artists cannot rate other artists"}, status=status.HTTP_403_FORBIDDEN)
 
-        # Check if user is an explorer
         if not hasattr(request.user, 'explorer_profile'):
-            return Response({
-                "error": "Only explorers can rate artists"
-            }, status=status.HTTP_403_FORBIDDEN)
+            return Response({"error": "Only explorers can rate artists"}, status=status.HTTP_403_FORBIDDEN)
 
-        rating_value = request.data.get('rating')
-        
-        if not rating_value:
-            return Response({"error": "Rating value is required"}, status=status.HTTP_400_BAD_REQUEST)
+        # 2. Use Serializer for Validation (Pattern Match)
+        # We pass data={'rating': ...} to validate just that field against model rules
+        validation_serializer = RatingSerializer(data=request.data, partial=True)
+        if not validation_serializer.is_valid():
+            return Response(validation_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            rating_value = int(rating_value)
-            if rating_value < 1 or rating_value > 5:
-                return Response({"error": "Rating must be between 1 and 5"}, status=status.HTTP_400_BAD_REQUEST)
-        except (ValueError, TypeError):
-            return Response({"error": "Invalid rating value"}, status=status.HTTP_400_BAD_REQUEST)
+        validated_rating = validation_serializer.validated_data['rating']
 
-        # Create or update rating
-        from .models import Rating
+        # 3. Create or Update Logic
         rating, created = Rating.objects.update_or_create(
             artist=artist_profile,
             explorer=request.user,
-            defaults={'rating': rating_value}
+            defaults={'rating': validated_rating}
         )
 
-        # Update artist's average rating
-        from django.db.models import Avg
+        # 4. Update Aggregates (With your race condition fix)
         avg_rating = Rating.objects.filter(artist=artist_profile).aggregate(Avg('rating'))['rating__avg']
         artist_profile.rating = round(avg_rating, 1) if avg_rating else None
-        artist_profile.save()
+        artist_profile.save(update_fields=['rating'])
 
-        from .serializers import RatingSerializer
-        serializer = RatingSerializer(rating)
-        
+        # 5. Return Response
         return Response({
             "message": "Rating submitted successfully" if created else "Rating updated successfully",
-            "rating": serializer.data,
+            "rating": RatingSerializer(rating).data,
             "average_rating": float(artist_profile.rating) if artist_profile.rating else None
         }, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
 
@@ -210,11 +200,8 @@ class RateArtistAPIView(APIView):
         except ArtistProfile.DoesNotExist:
             return Response({"error": "Artist not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        from .models import Rating
         try:
             rating = Rating.objects.get(artist=artist_profile, explorer=request.user)
-            from .serializers import RatingSerializer
-            serializer = RatingSerializer(rating)
-            return Response(serializer.data)
+            return Response(RatingSerializer(rating).data)
         except Rating.DoesNotExist:
             return Response({"rating": None}, status=status.HTTP_200_OK)

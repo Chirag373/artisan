@@ -30,24 +30,33 @@ class SignupSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+        from django.db import IntegrityError
+        
         validated_data.pop('password_confirm', None)
         package = validated_data.pop('package', None)
         
         email = validated_data['email']
         base_username = email.split('@')[0]
         
-        username = base_username
-        counter = 1
-        while User.objects.filter(username=username).exists():
-            username = f"{base_username}{counter}"
-            counter += 1
-        
-        user = User.objects.create_user(
-            username=username,
-            email=validated_data['email'],
-            password=validated_data['password']
-        )
-        return user
+        # Fix race condition: retry on IntegrityError
+        max_attempts = 10
+        for attempt in range(max_attempts):
+            username = base_username if attempt == 0 else f"{base_username}{attempt}"
+            
+            try:
+                user = User.objects.create_user(
+                    username=username,
+                    email=validated_data['email'],
+                    password=validated_data['password']
+                )
+                return user
+            except IntegrityError:
+                # Username was taken between check and create, try next one
+                if attempt == max_attempts - 1:
+                    raise serializers.ValidationError({
+                        "username": "Unable to generate unique username. Please try again."
+                    })
+                continue
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import login
+from django.db import transaction
 from .models import ExplorerProfile
 from .serializers import SignupSerializer, CustomTokenObtainPairSerializer, ExplorerProfileSerializer
 
@@ -15,10 +16,11 @@ class ExplorerSignupAPIView(APIView):
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
-            
-            # Create the associated ExplorerProfile
-            ExplorerProfile.objects.create(user=user)
+            # Wrap in transaction to prevent zombie users
+            with transaction.atomic():
+                user = serializer.save()
+                # Create the associated ExplorerProfile
+                ExplorerProfile.objects.create(user=user)
             
             return Response({
                 "message": "Explorer account created successfully",
