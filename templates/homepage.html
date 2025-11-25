@@ -54,6 +54,11 @@
 
 {% block scripts %}
 <script>
+    let currentPage = 1;
+    let isLoading = false;
+    let hasMore = true;
+    let searchParams = '';
+
     document.addEventListener('DOMContentLoaded', async () => {
         const grid = document.getElementById('featured-artists-grid');
 
@@ -61,30 +66,105 @@
         const urlParams = new URLSearchParams(window.location.search);
         const query = urlParams.get('q');
         const location = urlParams.get('location');
+        searchParams = window.location.search;
 
         // Pre-fill search inputs if params exist
         if (query) document.getElementById('keywords').value = query;
         if (location) document.getElementById('location').value = location;
 
+        // Load initial artists
+        await loadArtists();
+
+        // Setup infinite scroll
+        setupInfiniteScroll();
+    });
+
+    function createSkeletonCard() {
+        return `
+            <article class="skeleton-card bg-[#FEFCE8] rounded-2xl border border-gray-400 shadow-sm flex flex-col h-full overflow-hidden animate-pulse">
+                <div class="relative h-40 w-full bg-gray-200"></div>
+                <div class="px-6 pb-6 flex flex-col flex-grow relative">
+                    <div class="-mt-10 mb-3">
+                        <div class="w-20 h-20 rounded-2xl bg-gray-200 border-4 border-[#FEFCE8]"></div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                    <div class="flex gap-2 mb-4">
+                        <div class="h-6 bg-gray-200 rounded w-16"></div>
+                        <div class="h-6 bg-gray-200 rounded w-20"></div>
+                    </div>
+                    <div class="mb-6">
+                        <div class="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                        <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+                    </div>
+                    <div class="mt-auto pt-4">
+                        <div class="h-10 bg-gray-200 rounded-lg w-full"></div>
+                    </div>
+                </div>
+            </article>
+        `;
+    }
+
+    function showLoadingCards(count = 6) {
+        const grid = document.getElementById('featured-artists-grid');
+        const skeletons = Array(count).fill(null).map(() => createSkeletonCard()).join('');
+        grid.insertAdjacentHTML('beforeend', skeletons);
+    }
+
+    function removeLoadingCards() {
+        document.querySelectorAll('.skeleton-card').forEach(card => card.remove());
+    }
+
+    async function loadArtists() {
+        if (isLoading || !hasMore) return;
+        
+        isLoading = true;
+        const grid = document.getElementById('featured-artists-grid');
+
         try {
-            // Append query string to API call
-            const apiEndpoint = '/api/featured-artists/' + window.location.search;
+            // Show loading skeletons
+            if (currentPage === 1) {
+                grid.innerHTML = '';
+            }
+            showLoadingCards();
+
+            // Add 3 second delay
+            await new Promise(resolve => setTimeout(resolve, 3000));
+
+            // Build API URL with pagination
+            const params = new URLSearchParams(searchParams);
+            params.set('page', currentPage);
+            params.set('page_size', 6);
+            const apiEndpoint = '/api/featured-artists/?' + params.toString();
+            
             const response = await fetch(apiEndpoint);
             if (!response.ok) throw new Error('Failed to fetch artists');
 
-            const artists = await response.json();
+            const data = await response.json();
+            const artists = data.results || data;
 
-            if (artists.length === 0) {
+            // Remove loading skeletons
+            removeLoadingCards();
+
+            if (artists.length === 0 && currentPage === 1) {
                 grid.innerHTML = `
                     <div class="col-span-full text-center py-12">
                         <p class="text-gray-500 text-lg">No artists found matching your criteria.</p>
                         <a href="/" class="mt-4 inline-block text-blue-600 hover:underline">Clear Search</a>
                     </div>
                 `;
+                hasMore = false;
+                isLoading = false;
                 return;
             }
 
-            grid.innerHTML = artists.map(artist => `
+            // Update hasMore flag
+            hasMore = data.has_more !== undefined ? data.has_more : false;
+
+            // Append new artists to grid
+            const artistsHTML = artists.map(artist => `
                 <article class="group bg-[#FEFCE8] rounded-2xl border border-gray-400 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 flex flex-col h-full overflow-hidden">
                     <div class="relative h-40 w-full overflow-hidden bg-gray-100">
                         <img src="${artist.banner_image || 'https://images.unsplash.com/photo-1579783902614-a3fb39279c0f?q=80&w=800&auto=format&fit=crop'}"
@@ -159,6 +239,11 @@
                 </article>
             `).join('');
 
+            grid.insertAdjacentHTML('beforeend', artistsHTML);
+
+            // Increment page for next load
+            currentPage++;
+
             // Add event listeners for Read More/Less buttons
             document.querySelectorAll('.read-more-btn').forEach(button => {
                 button.addEventListener('click', function (e) {
@@ -179,12 +264,37 @@
 
         } catch (error) {
             console.error('Error loading artists:', error);
-            grid.innerHTML = `
-                <div class="col-span-full text-center py-12">
-                    <p class="text-red-500">Failed to load artists. Please try again later.</p>
-                </div>
-            `;
+            removeLoadingCards();
+            if (currentPage === 1) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <p class="text-red-500">Failed to load artists. Please try again later.</p>
+                    </div>
+                `;
+            }
+        } finally {
+            isLoading = false;
         }
-    });
+    }
+
+    function setupInfiniteScroll() {
+        let scrollTimeout;
+        
+        window.addEventListener('scroll', () => {
+            // Clear previous timeout
+            clearTimeout(scrollTimeout);
+            
+            // Set new timeout to check scroll position
+            scrollTimeout = setTimeout(() => {
+                const scrollPosition = window.innerHeight + window.scrollY;
+                const pageHeight = document.documentElement.scrollHeight;
+                
+                // Load more when user is 300px from bottom
+                if (scrollPosition >= pageHeight - 300 && !isLoading && hasMore) {
+                    loadArtists();
+                }
+            }, 100);
+        });
+    }
 </script>
 {% endblock %}

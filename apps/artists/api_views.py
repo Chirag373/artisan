@@ -73,6 +73,11 @@ class FeaturedArtistsAPIView(APIView):
         query = request.query_params.get('q')
         location = request.query_params.get('location')
         
+        # Get pagination parameters
+        page = int(request.GET.get('page', 1))
+        page_size = int(request.GET.get('page_size', 6))
+        offset = (page - 1) * page_size
+        
         if query or location:
             artists = ArtistProfile.objects.all()
             
@@ -99,10 +104,23 @@ class FeaturedArtistsAPIView(APIView):
             
             # Fallback if no featured artists
             if not artists.exists():
-                artists = ArtistProfile.objects.all().order_by('-created_at')[:6]
+                artists = ArtistProfile.objects.all().order_by('-created_at')
+        
+        # Get total count before pagination
+        total_count = artists.count()
+        
+        # Apply pagination
+        artists = artists[offset:offset + page_size]
             
         serializer = ArtistProfileSerializer(artists, many=True, context={'request': request})
-        return Response(serializer.data)
+        
+        return Response({
+            'results': serializer.data,
+            'count': total_count,
+            'page': page,
+            'page_size': page_size,
+            'has_more': offset + page_size < total_count
+        })
 
 
 class ArtistProfileDetailAPIView(APIView):
