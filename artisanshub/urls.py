@@ -15,36 +15,28 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from apps.core import views
-from apps.core import api_views
-from rest_framework_simplejwt.views import TokenObtainPairView
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from apps.artists import views as artist_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
-    path('profile/', views.view_profile, name='view_profile'),
-    path('profile/<slug:slug>/', views.view_profile, name='view_profile_with_slug'),
-    path('login/', views.login_view, name='login'),
-    path('join-artist/', views.join_artist, name='join_artist'),
-    path('signup/', views.signup, name='signup'),
-    path('signup/explorer/', views.signup_explorer, name='signup_explorer'),
-    path('explorer/dashboard/', views.explorer_dashboard, name='explorer_dashboard'),
-    path('artist/dashboard/', views.artist_dashboard, name='artist_dashboard'),
-    path('services/', views.services, name='services'),
-
-    # API Endpoints
-    path('api/signup/explorer/', api_views.ExplorerSignupAPIView.as_view(), name='api_signup_explorer'),
-    path('api/signup/artist/', api_views.ArtistSignupAPIView.as_view(), name='api_signup_artist'),
-    path('api/login/', api_views.CustomTokenObtainPairView.as_view(), name='api_login'),
-    path('api/explorer/profile/', api_views.ExplorerProfileDetailView.as_view(), name='api_explorer_profile'),
-    path('api/artist/dashboard/', api_views.ArtistDashboardAPIView.as_view(), name='api_artist_dashboard'),
-    path('api/featured-artists/', api_views.FeaturedArtistsAPIView.as_view(), name='api_featured_artists'),
-    path('api/artists/<slug:slug>/', api_views.ArtistProfileDetailAPIView.as_view(), name='api_artist_profile_detail'),
+    
+    # Core app (shared/base views)
+    path('', include('apps.core.urls')),
+    
+    # Users app (Explorer logic and authentication)
+    path('', include('apps.users.urls')),
+    
+    # Artists app
+    path('artists/', include('apps.artists.urls')),
+    
+    # Legacy profile routes (for backward compatibility)
+    path('profile/', artist_views.view_profile, name='view_profile'),
+    path('profile/<slug:slug>/', artist_views.view_profile, name='view_profile_with_slug'),
+    path('join-artist/', artist_views.join_artist, name='join_artist'),
 ]
-
-from django.conf import settings
-from django.conf.urls.static import static
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
