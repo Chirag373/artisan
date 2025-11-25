@@ -75,17 +75,26 @@ class FeaturedArtistsAPIView(APIView):
         query = request.query_params.get('q')
         location = request.query_params.get('location')
         
-        # Get pagination parameters
-        page = int(request.GET.get('page', 1))
-        page_size = int(request.GET.get('page_size', 6))
+        # 1. Robust Pagination Validation (Pattern Match)
+        try:
+            page = int(request.query_params.get('page', 1))
+            page_size = int(request.query_params.get('page_size', 6))
+            if page < 1 or page_size < 1:
+                raise ValueError
+        except (ValueError, TypeError):
+            # Return a proper 400 error instead of crashing with 500
+            return Response({"error": "Invalid pagination parameters"}, status=status.HTTP_400_BAD_REQUEST)
+        
         offset = (page - 1) * page_size
         
+        # 2. Fix N+1 Query Problem globally
+        # We use select_related('user') immediately because we always need User data (email)
+        queryset = ArtistProfile.objects.select_related('user')
+        
+        # 3. Filtering Logic
         if query or location:
-            # Fix N+1 query problem with select_related
-            artists = ArtistProfile.objects.select_related('user').all()
-            
             if query:
-                artists = artists.filter(
+                queryset = queryset.filter(
                     Q(artist_name__icontains=query) |
                     Q(full_bio__icontains=query) |
                     Q(product_keywords__icontains=query) |
@@ -94,28 +103,27 @@ class FeaturedArtistsAPIView(APIView):
                 )
             
             if location:
-                artists = artists.filter(
+                queryset = queryset.filter(
                     Q(location_city__icontains=location) |
                     Q(location_state__icontains=location)
                 )
             
-            # If search yields results, order by rating or relevance (here just rating/created_at)
-            artists = artists.order_by('-rating', '-created_at')
+            # Order by rating for search results
+            queryset = queryset.order_by('-rating', '-created_at')
         else:
-            # Default behavior: show featured artists
-            # Fix N+1 query problem with select_related
-            artists = ArtistProfile.objects.select_related('user').filter(is_featured=True)
+            # Default behavior: Featured artists
+            featured_queryset = queryset.filter(is_featured=True)
             
-            # Fallback if no featured artists
-            if not artists.exists():
-                artists = ArtistProfile.objects.select_related('user').all().order_by('-created_at')
+            # Fallback if no featured artists exist
+            if featured_queryset.exists():
+                queryset = featured_queryset
+            else:
+                queryset = queryset.order_by('-created_at')
         
-        # Get total count before pagination
-        total_count = artists.count()
+        # 4. Execution & Response
+        total_count = queryset.count()
+        artists = queryset[offset:offset + page_size]
         
-        # Apply pagination
-        artists = artists[offset:offset + page_size]
-            
         serializer = ArtistProfileSerializer(artists, many=True, context={'request': request})
         
         return Response({
