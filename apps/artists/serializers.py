@@ -14,7 +14,7 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             'profile_image', 'banner_image',
             'subscription_plan', 'email', 'rating', 'is_featured'
         ]
-        read_only_fields = ['slug', 'subscription_plan', 'email']
+        read_only_fields = ['subscription_plan', 'email']
 
     def update(self, instance, validated_data):
         # Categories are expected to be a list

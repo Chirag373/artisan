@@ -64,7 +64,11 @@ class ArtistProfile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
+        # Auto-generate slug only if it doesn't exist
         if not self.slug:
+            self.slug = slugify(self.artist_name)
+        # If slug is provided but empty string, generate from artist_name
+        elif self.slug == '':
             self.slug = slugify(self.artist_name)
         super().save(*args, **kwargs)
 
