@@ -457,13 +457,36 @@
         profileForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            const formData = new FormData(profileForm);
+            const formData = new FormData();
 
-            // Handle categories - remove individual entries and add as JSON string
+            // Add text fields
+            const textFields = [
+                'artist_name', 'slug', 'full_bio', 'location_city', 'location_state',
+                'seo_tags', 'etsy_url', 'shopify_url', 'instagram_url', 'tiktok_url'
+            ];
+
+            textFields.forEach(field => {
+                const input = document.getElementById(field);
+                if (input && input.value) {
+                    formData.append(field, input.value);
+                }
+            });
+
+            // Handle categories - add as JSON string
             const categories = Array.from(document.querySelectorAll('input[name="categories"]:checked'))
                 .map(cb => cb.value);
-            formData.delete('categories');
             formData.append('categories', JSON.stringify(categories));
+
+            // Only add file fields if new files are selected
+            const profileImageInput = document.getElementById('profile_image');
+            if (profileImageInput.files.length > 0) {
+                formData.append('profile_image', profileImageInput.files[0]);
+            }
+
+            const bannerImageInput = document.getElementById('banner_image');
+            if (bannerImageInput.files.length > 0) {
+                formData.append('banner_image', bannerImageInput.files[0]);
+            }
 
             fetch('/api/artist/dashboard/', {
                 method: 'PUT',
@@ -475,6 +498,7 @@
                 .then(response => {
                     if (response.ok) {
                         alert('Profile settings saved successfully!');
+                        location.reload(); // Reload to show updated images
                     } else {
                         return response.json().then(err => {
                             console.error('Validation errors:', err);

@@ -124,9 +124,18 @@
                             `).join('')}
                         </div>
 
-                        <p class="text-gray-600 text-sm mb-6 line-clamp-2 leading-relaxed">
-                            ${artist.full_bio || 'No bio available.'}
-                        </p>
+                        <div class="text-gray-600 text-sm mb-6 leading-relaxed">
+                            <p class="bio-text" data-full-text="${(artist.full_bio || 'No bio available.').replace(/"/g, '&quot;')}">
+                                ${artist.full_bio && artist.full_bio.length > 120 
+                                    ? artist.full_bio.substring(0, 120) + '...' 
+                                    : (artist.full_bio || 'No bio available.')}
+                            </p>
+                            ${artist.full_bio && artist.full_bio.length > 120 ? `
+                                <button class="read-more-btn text-blue-600 hover:text-blue-700 font-medium text-xs mt-1 focus:outline-none">
+                                    Read More
+                                </button>
+                            ` : ''}
+                        </div>
 
                         <div class="mt-auto pt-4 border-t border-gray-50">
                             <a href="/profile/${artist.slug}/"
@@ -137,6 +146,24 @@
                     </div>
                 </article>
             `).join('');
+
+            // Add event listeners for Read More/Less buttons
+            document.querySelectorAll('.read-more-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const bioText = this.previousElementSibling;
+                    const fullText = bioText.getAttribute('data-full-text');
+                    const isExpanded = this.textContent === 'Read Less';
+                    
+                    if (isExpanded) {
+                        bioText.textContent = fullText.substring(0, 120) + '...';
+                        this.textContent = 'Read More';
+                    } else {
+                        bioText.textContent = fullText;
+                        this.textContent = 'Read Less';
+                    }
+                });
+            });
 
         } catch (error) {
             console.error('Error loading artists:', error);

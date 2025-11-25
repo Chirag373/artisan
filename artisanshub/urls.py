@@ -19,6 +19,12 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from apps.artists.views import ViewProfileView, JoinArtistView
+from apps.artists.api_views import (
+    FeaturedArtistsAPIView,
+    ArtistSignupAPIView,
+    ArtistDashboardAPIView,
+    ArtistProfileDetailAPIView,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +34,12 @@ urlpatterns = [
     path('', include('apps.users.urls')),
     
     path('artists/', include('apps.artists.urls')),
+    
+    # API endpoints at root level
+    path('api/featured-artists/', FeaturedArtistsAPIView.as_view(), name='api_featured_artists'),
+    path('api/signup/artist/', ArtistSignupAPIView.as_view(), name='api_signup_artist'),
+    path('api/artist/dashboard/', ArtistDashboardAPIView.as_view(), name='api_artist_dashboard'),
+    path('api/artists/<slug:slug>/', ArtistProfileDetailAPIView.as_view(), name='api_artist_profile_detail'),
     
     path('profile/', ViewProfileView.as_view(), name='view_profile'),
     path('profile/<slug:slug>/', ViewProfileView.as_view(), name='view_profile_with_slug'),
