@@ -292,7 +292,8 @@
                 <!-- Unauthenticated Nav -->
                 <div id="nav-unauthenticated" class="hidden md:flex items-center space-x-4">
                     <a href="{% url 'login' %}"
-                        class="hidden md:inline-block text-gray-600 hover:text-blue-600 font-medium transition-colors">Log In</a>
+                        class="hidden md:inline-block text-gray-600 hover:text-blue-600 font-medium transition-colors">Log
+                        In</a>
                     <a href="{% url 'signup' %}"
                         class="hidden md:inline-block bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm">
                         Sign Up
@@ -320,6 +321,10 @@
                             <a id="dashboard-link" href="#"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
                                 Dashboard
+                            </a>
+                            <a href="{% url 'customer_portal' %}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                                Subscription
                             </a>
                             <button id="logout-button"
                                 class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors">
@@ -420,6 +425,15 @@
                     <a id="mobile-dashboard-link" href="#"
                         class="group flex justify-between items-center py-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
                         <span class="text-[17px] font-semibold text-gray-800 group-hover:text-blue-600">Dashboard</span>
+                        <svg class="h-5 w-5 text-gray-400 group-hover:text-blue-600" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                    <a href="{% url 'customer_portal' %}"
+                        class="group flex justify-between items-center py-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                        <span
+                            class="text-[17px] font-semibold text-gray-800 group-hover:text-blue-600">Subscription</span>
                         <svg class="h-5 w-5 text-gray-400 group-hover:text-blue-600" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
