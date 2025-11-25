@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import ArtistProfile
 from .serializers import ArtistProfileSerializer
 from apps.users.serializers import SignupSerializer
+from django.db.models import Q
 
 
 class ArtistSignupAPIView(APIView):
@@ -69,10 +70,36 @@ class FeaturedArtistsAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        artists = ArtistProfile.objects.filter(is_featured=True)
+        query = request.query_params.get('q')
+        location = request.query_params.get('location')
         
-        if not artists.exists():
-            artists = ArtistProfile.objects.all().order_by('-created_at')[:6]
+        if query or location:
+            artists = ArtistProfile.objects.all()
+            
+            if query:
+                artists = artists.filter(
+                    Q(artist_name__icontains=query) |
+                    Q(full_bio__icontains=query) |
+                    Q(product_keywords__icontains=query) |
+                    Q(seo_tags__icontains=query) |
+                    Q(categories__icontains=query)
+                )
+            
+            if location:
+                artists = artists.filter(
+                    Q(location_city__icontains=location) |
+                    Q(location_state__icontains=location)
+                )
+            
+            # If search yields results, order by rating or relevance (here just rating/created_at)
+            artists = artists.order_by('-rating', '-created_at')
+        else:
+            # Default behavior: show featured artists
+            artists = ArtistProfile.objects.filter(is_featured=True)
+            
+            # Fallback if no featured artists
+            if not artists.exists():
+                artists = ArtistProfile.objects.all().order_by('-created_at')[:6]
             
         serializer = ArtistProfileSerializer(artists, many=True, context={'request': request})
         return Response(serializer.data)

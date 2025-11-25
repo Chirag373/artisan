@@ -57,8 +57,19 @@
     document.addEventListener('DOMContentLoaded', async () => {
         const grid = document.getElementById('featured-artists-grid');
 
+        // Get query parameters from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const query = urlParams.get('q');
+        const location = urlParams.get('location');
+
+        // Pre-fill search inputs if params exist
+        if (query) document.getElementById('keywords').value = query;
+        if (location) document.getElementById('location').value = location;
+
         try {
-            const response = await fetch('/api/featured-artists/');
+            // Append query string to API call
+            const apiEndpoint = '/api/featured-artists/' + window.location.search;
+            const response = await fetch(apiEndpoint);
             if (!response.ok) throw new Error('Failed to fetch artists');
 
             const artists = await response.json();
@@ -66,7 +77,8 @@
             if (artists.length === 0) {
                 grid.innerHTML = `
                     <div class="col-span-full text-center py-12">
-                        <p class="text-gray-500">No artists found.</p>
+                        <p class="text-gray-500 text-lg">No artists found matching your criteria.</p>
+                        <a href="/" class="mt-4 inline-block text-blue-600 hover:underline">Clear Search</a>
                     </div>
                 `;
                 return;
@@ -126,9 +138,9 @@
 
                         <div class="text-gray-600 text-sm mb-6 leading-relaxed">
                             <p class="bio-text" data-full-text="${(artist.full_bio || 'No bio available.').replace(/"/g, '&quot;')}">
-                                ${artist.full_bio && artist.full_bio.length > 120 
-                                    ? artist.full_bio.substring(0, 120) + '...' 
-                                    : (artist.full_bio || 'No bio available.')}
+                                ${artist.full_bio && artist.full_bio.length > 120
+                    ? artist.full_bio.substring(0, 120) + '...'
+                    : (artist.full_bio || 'No bio available.')}
                             </p>
                             ${artist.full_bio && artist.full_bio.length > 120 ? `
                                 <button class="read-more-btn text-blue-600 hover:text-blue-700 font-medium text-xs mt-1 focus:outline-none">
@@ -149,12 +161,12 @@
 
             // Add event listeners for Read More/Less buttons
             document.querySelectorAll('.read-more-btn').forEach(button => {
-                button.addEventListener('click', function(e) {
+                button.addEventListener('click', function (e) {
                     e.preventDefault();
                     const bioText = this.previousElementSibling;
                     const fullText = bioText.getAttribute('data-full-text');
                     const isExpanded = this.textContent === 'Read Less';
-                    
+
                     if (isExpanded) {
                         bioText.textContent = fullText.substring(0, 120) + '...';
                         this.textContent = 'Read More';
