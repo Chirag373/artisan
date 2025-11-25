@@ -17,14 +17,11 @@ class ArtistSignupAPIView(APIView):
         if serializer.is_valid():
             user = serializer.save()
             
-            # Retrieve package from request data (default to basic if missing)
             package = request.data.get('package', 'basic')
             
-            # Create the associated ArtistProfile
-            # Note: We initialize with empty values for fields collected later in the dashboard
             ArtistProfile.objects.create(
                 user=user,
-                artist_name=user.username,  # Default to username initially
+                artist_name=user.username,
                 subscription_plan=package
             )
             
@@ -72,10 +69,8 @@ class FeaturedArtistsAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        # Fetch featured artists
         artists = ArtistProfile.objects.filter(is_featured=True)
         
-        # If no featured artists, fallback to showing recent ones (limit 6)
         if not artists.exists():
             artists = ArtistProfile.objects.all().order_by('-created_at')[:6]
             

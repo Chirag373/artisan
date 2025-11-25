@@ -23,16 +23,12 @@ from apps.artists.views import ViewProfileView, JoinArtistView
 urlpatterns = [
     path('admin/', admin.site.urls),
     
-    # Core app (shared/base views)
     path('', include('apps.core.urls')),
     
-    # Users app (Explorer logic and authentication)
     path('', include('apps.users.urls')),
     
-    # Artists app
     path('artists/', include('apps.artists.urls')),
     
-    # Legacy profile routes (for backward compatibility)
     path('profile/', ViewProfileView.as_view(), name='view_profile'),
     path('profile/<slug:slug>/', ViewProfileView.as_view(), name='view_profile_with_slug'),
     path('join-artist/', JoinArtistView.as_view(), name='join_artist'),
