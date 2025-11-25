@@ -41,12 +41,14 @@
     </div>
 </div>
 
-<div id="featured-artists-grid"
-    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 container mx-auto md:px-0">
-    <!-- Cards will be dynamically inserted here -->
-    <div class="col-span-full text-center py-12">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-        <p class="mt-2 text-gray-500">Loading artists...</p>
+<div class="container mx-auto">
+    <div id="featured-artists-grid"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 px-0 md:px-0">
+        <!-- Cards will be dynamically inserted here -->
+        <div class="col-span-full text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+            <p class="mt-2 text-gray-500">Loading artists...</p>
+        </div>
     </div>
 </div>
 
@@ -81,9 +83,9 @@
 
     function createSkeletonCard() {
         return `
-            <article class="skeleton-card bg-[#FEFCE8] rounded-2xl border border-gray-400 shadow-sm flex flex-col h-full overflow-hidden animate-pulse">
+            <article class="skeleton-card bg-[#FEFCE8] rounded-none md:rounded-2xl border-y border-x-0 border-gray-400 md:border md:border-gray-400 shadow-sm flex flex-col h-full overflow-hidden animate-pulse">
                 <div class="relative h-40 w-full bg-gray-200"></div>
-                <div class="px-6 pb-6 flex flex-col flex-grow relative">
+                <div class="px-2 md:px-6 pb-6 flex flex-col flex-grow relative">
                     <div class="-mt-10 mb-3">
                         <div class="w-20 h-20 rounded-2xl bg-gray-200 border-4 border-[#FEFCE8]"></div>
                     </div>
@@ -165,7 +167,7 @@
 
             // Append new artists to grid
             const artistsHTML = artists.map(artist => `
-                <article class="group bg-[#FEFCE8] rounded-2xl border border-gray-400 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 flex flex-col h-full overflow-hidden">
+                <article class="group bg-[#FEFCE8] rounded-none md:rounded-2xl border-y border-x-0 border-gray-400 md:border md:border-gray-400 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 flex flex-col h-full overflow-hidden">
                     <div class="relative h-40 w-full overflow-hidden bg-gray-100">
                         <img src="${artist.banner_image || 'https://images.unsplash.com/photo-1579783902614-a3fb39279c0f?q=80&w=800&auto=format&fit=crop'}"
                             alt="Cover" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -181,7 +183,7 @@
                         ` : ''}
                     </div>
 
-                    <div class="px-6 pb-6 flex flex-col flex-grow relative">
+                    <div class="px-2 md:px-6 pb-6 flex flex-col flex-grow relative">
                         <div class="-mt-10 mb-3 flex justify-between items-end">
                             <div class="relative">
                                 <img src="${artist.profile_image || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(artist.artist_name)}"
