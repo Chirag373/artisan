@@ -143,8 +143,11 @@
                     <h3 class="text-blue-900 font-semibold mb-2">Share this Profile</h3>
                     <p class="text-sm text-blue-700 mb-4">Help this artist get discovered!</p>
                     <div class="flex gap-2">
-                        <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied!');"
-                            class="flex-1 py-2 bg-[#FEFCE8] text-blue-600 font-medium rounded-lg border border-blue-200 hover:bg-blue-50 transition-colors text-sm">
+                        <button onclick="copyProfileLink()"
+                            class="flex-1 py-2 bg-[#FEFCE8] text-blue-600 font-medium rounded-lg border border-blue-200 hover:bg-blue-50 transition-colors text-sm flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
                             Copy Link
                         </button>
                     </div>
@@ -154,10 +157,33 @@
     </div>
 </div>
 
+<!-- Toast Notification -->
+<div id="toast" class="fixed bottom-6 right-6 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-32 transition-transform duration-300 ease-out flex items-center gap-3 z-50">
+    <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    <span class="font-medium">Link copied to clipboard!</span>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
 <script>
+    function copyProfileLink() {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-32');
+            toast.classList.add('translate-y-0');
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0');
+                toast.classList.add('translate-y-32');
+            }, 3000);
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
         // Get slug from template context
         const slug = "{{ slug|default:'' }}";

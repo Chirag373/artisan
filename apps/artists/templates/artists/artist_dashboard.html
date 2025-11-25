@@ -281,7 +281,41 @@
     </div>
 </div>
 
+<!-- Toast Notification -->
+<div id="toast"
+    class="fixed bottom-6 right-6 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-32 transition-transform duration-300 ease-out flex items-center gap-3 z-50">
+    <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    <span class="font-medium">Changes saved successfully!</span>
+</div>
+
 <script>
+    function showToast(message, isSuccess = true) {
+        const toast = document.getElementById('toast');
+        const icon = toast.querySelector('svg');
+        const text = toast.querySelector('span');
+
+        text.textContent = message;
+
+        // Change icon color based on success/error
+        if (isSuccess) {
+            icon.classList.remove('text-red-400');
+            icon.classList.add('text-green-400');
+        } else {
+            icon.classList.remove('text-green-400');
+            icon.classList.add('text-red-400');
+        }
+
+        toast.classList.remove('translate-y-32');
+        toast.classList.add('translate-y-0');
+
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0');
+            toast.classList.add('translate-y-32');
+        }, 3000);
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         const productKeywordsBtn = document.getElementById('save-product-keywords-btn');
         const profileForm = document.getElementById('artist-profile-form');
@@ -445,12 +479,15 @@
             })
                 .then(response => {
                     if (response.ok) {
-                        alert('Product keywords saved successfully!');
+                        showToast('Product keywords saved successfully!', true);
                     } else {
-                        alert('Failed to save product keywords.');
+                        showToast('Failed to save product keywords.', false);
                     }
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('An error occurred. Please try again.', false);
+                });
         });
 
         // Save Profile Settings
@@ -497,16 +534,21 @@
             })
                 .then(response => {
                     if (response.ok) {
-                        alert('Profile settings saved successfully!');
-                        location.reload(); // Reload to show updated images
+                        showToast('Profile settings saved successfully!', true);
+                        setTimeout(() => {
+                            location.reload(); // Reload to show updated images
+                        }, 1000);
                     } else {
                         return response.json().then(err => {
                             console.error('Validation errors:', err);
-                            alert('Failed to save profile settings. Please check the form.');
+                            showToast('Failed to save profile settings. Please check the form.', false);
                         });
                     }
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('An error occurred. Please try again.', false);
+                });
         });
     });
 </script>
