@@ -4,9 +4,9 @@ from . import views, api_views
 # No app_name to maintain backward compatibility with existing URL references
 urlpatterns = [
     # Template views - these are under /artists/ prefix from main urls.py
-    path('join/', views.join_artist, name='artists_join'),
-    path('dashboard/', views.artist_dashboard, name='artist_dashboard'),
-    path('profile/<slug:slug>/', views.view_profile, name='artists_view_profile'),
+    path('join/', views.JoinArtistView.as_view(), name='artists_join'),
+    path('dashboard/', views.ArtistDashboardView.as_view(), name='artist_dashboard'),
+    path('profile/<slug:slug>/', views.ViewProfileView.as_view(), name='artists_view_profile'),
     
     # API endpoints
     path('api/signup/', api_views.ArtistSignupAPIView.as_view(), name='api_signup_artist'),

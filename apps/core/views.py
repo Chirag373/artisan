@@ -1,16 +1,16 @@
-from django.shortcuts import render
+from django.views.generic import TemplateView
 
 
-def home(request):
+class HomeView(TemplateView):
     """Homepage view"""
-    return render(request, 'homepage.html')
+    template_name = 'homepage.html'
 
 
-def login_view(request):
+class LoginView(TemplateView):
     """Login page view"""
-    return render(request, 'login.html')
+    template_name = 'login.html'
 
 
-def services(request):
+class ServicesView(TemplateView):
     """Services page view"""
-    return render(request, 'services.html')
+    template_name = 'services.html'

@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from apps.artists import views as artist_views
+from apps.artists.views import ViewProfileView, JoinArtistView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,9 +33,9 @@ urlpatterns = [
     path('artists/', include('apps.artists.urls')),
     
     # Legacy profile routes (for backward compatibility)
-    path('profile/', artist_views.view_profile, name='view_profile'),
-    path('profile/<slug:slug>/', artist_views.view_profile, name='view_profile_with_slug'),
-    path('join-artist/', artist_views.join_artist, name='join_artist'),
+    path('profile/', ViewProfileView.as_view(), name='view_profile'),
+    path('profile/<slug:slug>/', ViewProfileView.as_view(), name='view_profile_with_slug'),
+    path('join-artist/', JoinArtistView.as_view(), name='join_artist'),
 ]
 
 if settings.DEBUG:
