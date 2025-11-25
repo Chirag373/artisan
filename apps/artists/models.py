@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class ArtistProfile(models.Model):
@@ -57,7 +58,7 @@ class ArtistProfile(models.Model):
     banner_image = models.ImageField(upload_to='artist_banners/', blank=True, null=True, help_text="Banner image")
 
     subscription_plan = models.CharField(max_length=20, choices=SUBSCRIPTION_CHOICES, default='basic')
-    rating = models.DecimalField(max_digits=3, decimal_places=1, default=5.0)
+    rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     is_featured = models.BooleanField(default=False)
     
     created_at = models.DateTimeField(auto_now_add=True)
@@ -74,3 +75,25 @@ class ArtistProfile(models.Model):
 
     def __str__(self):
         return f"Artist: {self.artist_name}"
+
+
+class Rating(models.Model):
+    """
+    Rating model for explorers to rate artists.
+    Only explorers can rate artists.
+    """
+    artist = models.ForeignKey(ArtistProfile, on_delete=models.CASCADE, related_name='ratings')
+    explorer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='given_ratings')
+    rating = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        help_text="Rating from 1 to 5 stars"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('artist', 'explorer')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.explorer.username} rated {self.artist.artist_name}: {self.rating} stars"

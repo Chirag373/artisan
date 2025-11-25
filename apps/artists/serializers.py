@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ArtistProfile
+from .models import ArtistProfile, Rating
 
 
 class ArtistProfileSerializer(serializers.ModelSerializer):
@@ -23,3 +23,12 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             pass
             
         return super().update(instance, validated_data)
+
+
+class RatingSerializer(serializers.ModelSerializer):
+    explorer_username = serializers.CharField(source='explorer.username', read_only=True)
+    
+    class Meta:
+        model = Rating
+        fields = ['id', 'artist', 'explorer', 'explorer_username', 'rating', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'explorer', 'created_at', 'updated_at']

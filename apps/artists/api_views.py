@@ -92,3 +92,84 @@ class ArtistProfileDetailAPIView(APIView):
             return Response(serializer.data)
         except ArtistProfile.DoesNotExist:
             return Response({"error": "Artist not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class RateArtistAPIView(APIView):
+    """
+    API endpoint for explorers to rate artists.
+    Only authenticated explorers can rate.
+    Artists cannot rate other artists.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, slug):
+        try:
+            artist_profile = ArtistProfile.objects.get(slug=slug)
+        except ArtistProfile.DoesNotExist:
+            return Response({"error": "Artist not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check if user is an artist (artists cannot rate)
+        if hasattr(request.user, 'artist_profile'):
+            return Response({
+                "error": "Artists cannot rate other artists"
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        # Check if user is an explorer
+        if not hasattr(request.user, 'explorer_profile'):
+            return Response({
+                "error": "Only explorers can rate artists"
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        rating_value = request.data.get('rating')
+        
+        if not rating_value:
+            return Response({"error": "Rating value is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            rating_value = int(rating_value)
+            if rating_value < 1 or rating_value > 5:
+                return Response({"error": "Rating must be between 1 and 5"}, status=status.HTTP_400_BAD_REQUEST)
+        except (ValueError, TypeError):
+            return Response({"error": "Invalid rating value"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create or update rating
+        from .models import Rating
+        rating, created = Rating.objects.update_or_create(
+            artist=artist_profile,
+            explorer=request.user,
+            defaults={'rating': rating_value}
+        )
+
+        # Update artist's average rating
+        from django.db.models import Avg
+        avg_rating = Rating.objects.filter(artist=artist_profile).aggregate(Avg('rating'))['rating__avg']
+        artist_profile.rating = round(avg_rating, 1) if avg_rating else None
+        artist_profile.save()
+
+        from .serializers import RatingSerializer
+        serializer = RatingSerializer(rating)
+        
+        return Response({
+            "message": "Rating submitted successfully" if created else "Rating updated successfully",
+            "rating": serializer.data,
+            "average_rating": float(artist_profile.rating) if artist_profile.rating else None
+        }, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+
+    def get(self, request, slug):
+        """Get the current user's rating for this artist"""
+        if not request.user.is_authenticated:
+            return Response({"error": "Authentication required"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            artist_profile = ArtistProfile.objects.get(slug=slug)
+        except ArtistProfile.DoesNotExist:
+            return Response({"error": "Artist not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        from .models import Rating
+        try:
+            rating = Rating.objects.get(artist=artist_profile, explorer=request.user)
+            from .serializers import RatingSerializer
+            serializer = RatingSerializer(rating)
+            return Response(serializer.data)
+        except Rating.DoesNotExist:
+            return Response({"rating": None}, status=status.HTTP_200_OK)

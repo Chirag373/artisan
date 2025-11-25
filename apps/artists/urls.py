@@ -8,7 +8,7 @@ urlpatterns = [
     path('dashboard/', views.ArtistDashboardView.as_view(), name='artist_dashboard'),
     path('profile/<slug:slug>/', views.ViewProfileView.as_view(), name='artists_view_profile'),
     
-    # API endpoints
+    # API endpoints (most are in main urls.py at root level)
     path('api/signup/', api_views.ArtistSignupAPIView.as_view(), name='api_signup_artist'),
     path('api/dashboard/', api_views.ArtistDashboardAPIView.as_view(), name='api_artist_dashboard'),
     path('api/featured/', api_views.FeaturedArtistsAPIView.as_view(), name='api_featured_artists'),

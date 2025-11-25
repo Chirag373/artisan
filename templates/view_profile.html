@@ -139,6 +139,39 @@
                     </div>
                 </div>
 
+                <!-- Rating Section -->
+                <div id="rating-section" class="bg-[#FEFCE8] rounded-2xl shadow-sm border border-gray-400 p-6 mb-6">
+                    <h3 class="font-semibold text-gray-900 mb-4">Rate this Artist</h3>
+                    <div id="rating-stars" class="flex gap-2 mb-4">
+                        <button class="star-btn text-gray-300 hover:text-amber-400 transition-colors" data-rating="1">
+                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                        </button>
+                        <button class="star-btn text-gray-300 hover:text-amber-400 transition-colors" data-rating="2">
+                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                        </button>
+                        <button class="star-btn text-gray-300 hover:text-amber-400 transition-colors" data-rating="3">
+                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                        </button>
+                        <button class="star-btn text-gray-300 hover:text-amber-400 transition-colors" data-rating="4">
+                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                        </button>
+                        <button class="star-btn text-gray-300 hover:text-amber-400 transition-colors" data-rating="5">
+                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p id="rating-message" class="text-sm text-gray-500"></p>
+                </div>
+
                 <div class="bg-blue-50 rounded-2xl p-6 border border-blue-100">
                     <h3 class="text-blue-900 font-semibold mb-2">Share this Profile</h3>
                     <p class="text-sm text-blue-700 mb-4">Help this artist get discovered!</p>
@@ -157,6 +190,34 @@
     </div>
 </div>
 
+<!-- Login/Signup Modal -->
+<div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
+        <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Login to Rate</h3>
+            <p class="text-gray-600">Please login or sign up to rate this artist</p>
+        </div>
+        <div class="space-y-3">
+            <a href="{% url 'login' %}" class="block w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors text-center">
+                Login
+            </a>
+            <a href="{% url 'signup' %}" class="block w-full py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors text-center">
+                Sign Up
+            </a>
+        </div>
+    </div>
+</div>
+
 <!-- Toast Notification -->
 <div id="toast" class="fixed bottom-6 right-6 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-32 transition-transform duration-300 ease-out flex items-center gap-3 z-50">
     <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -169,24 +230,191 @@
 
 {% block scripts %}
 <script>
+    let currentArtistSlug = null;
+    let currentUserRating = null;
+
     function copyProfileLink() {
         navigator.clipboard.writeText(window.location.href).then(() => {
-            const toast = document.getElementById('toast');
-            toast.classList.remove('translate-y-32');
-            toast.classList.add('translate-y-0');
-            
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0');
-                toast.classList.add('translate-y-32');
-            }, 3000);
+            showToast('Link copied to clipboard!');
         }).catch(err => {
             console.error('Failed to copy:', err);
+        });
+    }
+
+    function showToast(message, isError = false) {
+        const toast = document.getElementById('toast');
+        const toastText = toast.querySelector('span');
+        const toastIcon = toast.querySelector('svg');
+        
+        toastText.textContent = message;
+        
+        if (isError) {
+            toastIcon.classList.remove('text-green-400');
+            toastIcon.classList.add('text-red-400');
+        } else {
+            toastIcon.classList.remove('text-red-400');
+            toastIcon.classList.add('text-green-400');
+        }
+        
+        toast.classList.remove('translate-y-32');
+        toast.classList.add('translate-y-0');
+        
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0');
+            toast.classList.add('translate-y-32');
+        }, 3000);
+    }
+
+    function closeAuthModal() {
+        document.getElementById('auth-modal').classList.add('hidden');
+    }
+
+    function showAuthModal() {
+        document.getElementById('auth-modal').classList.remove('hidden');
+    }
+
+    async function submitRating(rating) {
+        const token = localStorage.getItem('access_token');
+        const userRole = localStorage.getItem('user_role');
+
+        // Check if user is logged in
+        if (!token) {
+            showAuthModal();
+            return;
+        }
+
+        // Check if user is an artist
+        if (userRole === 'artist') {
+            showToast('Artists cannot rate other artists', true);
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/artists/${currentArtistSlug}/rate/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ rating: rating })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                currentUserRating = rating;
+                updateStarDisplay(rating);
+                showToast(data.message);
+                
+                // Update the average rating display
+                const ratingContainer = document.getElementById('rating-container');
+                const ratingSpan = ratingContainer.querySelector('.text-amber-500');
+                
+                if (data.average_rating !== null && data.average_rating !== undefined) {
+                    ratingSpan.innerHTML = `
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <span id="rating-value">${data.average_rating.toFixed(1)}</span>
+                    `;
+                } else {
+                    ratingSpan.innerHTML = '<span class="text-gray-500 font-normal">No rating yet</span>';
+                }
+                ratingContainer.classList.remove('hidden');
+            } else {
+                showToast(data.error || 'Failed to submit rating', true);
+            }
+        } catch (error) {
+            console.error('Error submitting rating:', error);
+            showToast('Failed to submit rating', true);
+        }
+    }
+
+    function updateStarDisplay(rating) {
+        const stars = document.querySelectorAll('.star-btn');
+        stars.forEach((star, index) => {
+            if (index < rating) {
+                star.classList.remove('text-gray-300');
+                star.classList.add('text-amber-400');
+            } else {
+                star.classList.remove('text-amber-400');
+                star.classList.add('text-gray-300');
+            }
+        });
+
+        const message = document.getElementById('rating-message');
+        if (rating > 0) {
+            message.textContent = `You rated this artist ${rating} star${rating > 1 ? 's' : ''}`;
+            message.classList.remove('text-gray-500');
+            message.classList.add('text-amber-600', 'font-medium');
+        }
+    }
+
+    async function loadUserRating() {
+        const token = localStorage.getItem('access_token');
+        const userRole = localStorage.getItem('user_role');
+
+        if (!token || userRole === 'artist') {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/artists/${currentArtistSlug}/rate/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.rating) {
+                    currentUserRating = data.rating;
+                    updateStarDisplay(data.rating);
+                }
+            }
+        } catch (error) {
+            console.error('Error loading user rating:', error);
+        }
+    }
+
+    function initializeRatingStars() {
+        const stars = document.querySelectorAll('.star-btn');
+        
+        stars.forEach((star) => {
+            star.addEventListener('click', function() {
+                const rating = parseInt(this.getAttribute('data-rating'));
+                submitRating(rating);
+            });
+
+            star.addEventListener('mouseenter', function() {
+                const rating = parseInt(this.getAttribute('data-rating'));
+                stars.forEach((s, index) => {
+                    if (index < rating) {
+                        s.classList.add('text-amber-400');
+                        s.classList.remove('text-gray-300');
+                    }
+                });
+            });
+        });
+
+        const ratingSection = document.getElementById('rating-section');
+        ratingSection.addEventListener('mouseleave', function() {
+            if (currentUserRating) {
+                updateStarDisplay(currentUserRating);
+            } else {
+                stars.forEach(s => {
+                    s.classList.remove('text-amber-400');
+                    s.classList.add('text-gray-300');
+                });
+            }
         });
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
         // Get slug from template context
         const slug = "{{ slug|default:'' }}";
+        currentArtistSlug = slug;
 
         if (!slug) {
             // If no slug provided (e.g. accessed via /profile/ directly), maybe show current user's profile or redirect
@@ -205,6 +433,12 @@
 
             const artist = await response.json();
             renderProfile(artist);
+            
+            // Initialize rating functionality
+            initializeRatingStars();
+            
+            // Load user's existing rating if logged in
+            await loadUserRating();
 
         } catch (error) {
             console.error('Error fetching profile:', error);
@@ -236,9 +470,13 @@
         }
 
         // Rating
-        if (artist.rating) {
+        if (artist.rating !== null && artist.rating !== undefined) {
             document.getElementById('rating-container').classList.remove('hidden');
             document.getElementById('rating-value').innerText = artist.rating;
+        } else {
+            document.getElementById('rating-container').classList.remove('hidden');
+            const ratingSpan = document.getElementById('rating-container').querySelector('.text-amber-500');
+            ratingSpan.innerHTML = '<span class="text-gray-500 font-normal">No rating yet</span>';
         }
 
         // Categories

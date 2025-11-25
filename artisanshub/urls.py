@@ -24,6 +24,7 @@ from apps.artists.api_views import (
     ArtistSignupAPIView,
     ArtistDashboardAPIView,
     ArtistProfileDetailAPIView,
+    RateArtistAPIView,
 )
 
 urlpatterns = [
@@ -40,7 +41,7 @@ urlpatterns = [
     path('api/signup/artist/', ArtistSignupAPIView.as_view(), name='api_signup_artist'),
     path('api/artist/dashboard/', ArtistDashboardAPIView.as_view(), name='api_artist_dashboard'),
     path('api/artists/<slug:slug>/', ArtistProfileDetailAPIView.as_view(), name='api_artist_profile_detail'),
-    
+    path('api/artists/<slug:slug>/rate/', RateArtistAPIView.as_view(), name='api_rate_artist'),
     path('profile/', ViewProfileView.as_view(), name='view_profile'),
     path('profile/<slug:slug>/', ViewProfileView.as_view(), name='view_profile_with_slug'),
     path('join-artist/', JoinArtistView.as_view(), name='join_artist'),
