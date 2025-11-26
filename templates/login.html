@@ -107,10 +107,51 @@
     </div>
 </div>
 
+<!-- Toast Notification -->
+<div id="toast"
+    class="fixed bottom-6 right-6 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-32 transition-transform duration-300 ease-out flex items-center gap-3 z-50">
+    <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    <span class="font-medium">Notification</span>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
 <script>
+    function showToast(message, isError = false) {
+        const toast = document.getElementById('toast');
+        const toastText = toast.querySelector('span');
+        const toastIcon = toast.querySelector('svg');
+
+        toastText.textContent = message;
+
+        if (isError) {
+            toastIcon.classList.remove('text-green-400');
+            toastIcon.classList.add('text-red-400');
+        } else {
+            toastIcon.classList.remove('text-red-400');
+            toastIcon.classList.add('text-green-400');
+        }
+
+        toast.classList.remove('translate-y-32');
+        toast.classList.add('translate-y-0');
+
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0');
+            toast.classList.add('translate-y-32');
+        }, 3000);
+    }
+
+    // Check for payment success
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('payment_success') === 'true') {
+        // Wait a brief moment for the page to settle
+        setTimeout(() => {
+            showToast('Payment successful! Please log in to continue.');
+        }, 500);
+    }
     // Check if user is already logged in on page load
     (function checkExistingAuth() {
         const accessToken = localStorage.getItem('access_token');

@@ -37,13 +37,9 @@ class PaymentSuccessView(View):
                 user.artist_profile.subscription_plan = plan_name
                 user.artist_profile.save()
             
-            # 5. Log them in (Bypassing password check since they just paid)
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            
-            # 6. Show Success Page
-            return render(request, 'subscriptions/payment_success.html', {
-                'plan_name': plan_name
-            })
+            # 5. Redirect to Login with Success Alert
+            # We do NOT log them in automatically here, so they can log in via the form and get their JWT tokens.
+            return redirect('/login/?payment_success=true')
             
         except Exception as e:
             print(f"Payment verification failed: {e}")
