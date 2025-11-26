@@ -120,12 +120,8 @@ class FeaturedArtistsAPIView(APIView):
             
             queryset = queryset.order_by('-rating', '-created_at')
         else:
-            featured_queryset = queryset.filter(is_featured=True)
-            
-            if featured_queryset.exists():
-                queryset = featured_queryset
-            else:
-                queryset = queryset.order_by('-created_at')
+            # Order by is_featured (True first) then created_at (newest first)
+            queryset = queryset.order_by('-is_featured', '-created_at')
         
         total_count = queryset.count()
         artists = queryset[offset:offset + page_size]
