@@ -57,3 +57,25 @@ class StripeService:
     @staticmethod
     def retrieve_session(session_id):
         return stripe.checkout.Session.retrieve(session_id)
+
+    @staticmethod
+    def create_portal_session(user):
+        """
+        Creates a Stripe Customer Portal session for subscription management.
+        """
+        try:
+            # Get the subscription for the user to find the customer ID
+            from .models import Subscription
+            subscription = Subscription.objects.get(user=user)
+            
+            if not subscription.stripe_customer_id:
+                raise ValueError("No Stripe customer ID found for user")
+
+            portal_session = stripe.billing_portal.Session.create(
+                customer=subscription.stripe_customer_id,
+                return_url=f"{settings.BASE_URL}/artist/dashboard/",
+            )
+            return portal_session.url
+        except Exception as e:
+            print(f"Stripe Portal Error: {e}")
+            return None

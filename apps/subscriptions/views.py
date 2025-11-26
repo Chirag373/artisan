@@ -51,3 +51,16 @@ class PaymentSuccessView(View):
 
 class PaymentCancelView(TemplateView):
     template_name = 'subscriptions/payment_cancel.html'
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+class SubscriptionPortalView(LoginRequiredMixin, View):
+    """
+    Redirects to the Stripe Customer Portal for subscription management.
+    """
+    def get(self, request):
+        portal_url = StripeService.create_portal_session(request.user)
+        if portal_url:
+            return redirect(portal_url)
+        # Fallback if something goes wrong (e.g., no subscription found)
+        return redirect('artist_dashboard')
