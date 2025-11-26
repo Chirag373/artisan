@@ -326,7 +326,7 @@
                                 class="hidden block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
                                 Bookmarks
                             </a>
-                            <a href="{% url 'subscription_portal' %}"
+                            <a id="subscription-link" href="{% url 'subscription_portal' %}"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
                                 Subscription
                             </a>
@@ -443,7 +443,7 @@
                                 d="M5 5a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 19V5z" />
                         </svg>
                     </a>
-                    <a href="{% url 'subscription_portal' %}"
+                    <a id="mobile-subscription-link" href="{% url 'subscription_portal' %}"
                         class="group flex justify-between items-center py-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
                         <span
                             class="text-[17px] font-semibold text-gray-800 group-hover:text-blue-600">Subscription</span>
@@ -569,6 +569,13 @@
                 if (role === 'explorer') {
                     document.getElementById('bookmarks-link').classList.remove('hidden');
                     document.getElementById('mobile-bookmarks-link').classList.remove('hidden');
+                    // Hide subscription link for explorers
+                    document.getElementById('subscription-link').classList.add('hidden');
+                    document.getElementById('mobile-subscription-link').classList.add('hidden');
+                } else {
+                    // Show subscription link for artists (default)
+                    document.getElementById('subscription-link').classList.remove('hidden');
+                    document.getElementById('mobile-subscription-link').classList.remove('hidden');
                 }
 
                 // Dropdown toggle
