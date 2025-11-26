@@ -7,6 +7,7 @@ from django.db import transaction
 from .models import ArtistProfile, Rating
 from .serializers import ArtistProfileSerializer, RatingSerializer
 from apps.users.serializers import SignupSerializer
+from apps.subscriptions.services import StripeService
 
 
 class ArtistSignupAPIView(APIView):
@@ -32,11 +33,15 @@ class ArtistSignupAPIView(APIView):
                     artist_name=user.username,
                     subscription_plan=package
                 )
+                
+                # Create Stripe Checkout Session
+                checkout_url = StripeService.create_checkout_session(user, package)
 
             return Response({
                 "message": "Artist account created successfully",
                 "username": user.username,
-                "package": package
+                "package": package,
+                "checkout_url": checkout_url
             }, status=status.HTTP_201_CREATED)
 
         except Exception as e:

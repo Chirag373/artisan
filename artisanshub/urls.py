@@ -35,6 +35,7 @@ urlpatterns = [
     path('', include('apps.users.urls')),
     
     path('artists/', include('apps.artists.urls')),
+    path('subscriptions/', include('apps.subscriptions.urls')),
     
     # API endpoints at root level
     path('api/featured-artists/', FeaturedArtistsAPIView.as_view(), name='api_featured_artists'),
