@@ -100,7 +100,7 @@ class FeaturedArtistsAPIView(APIView):
         
         offset = (page - 1) * page_size
         
-        queryset = ArtistProfile.objects.select_related('user')
+        queryset = ArtistProfile.objects.filter(is_visible=True).select_related('user')
         
         if query or location:
             if query:

@@ -8,9 +8,21 @@
 </style>
 <div class="w-full">
     <!-- Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">Artist Dashboard</h1>
-        <p class="text-gray-600">Manage your profile, products, and SEO settings</p>
+    <div class="mb-8 flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Artist Dashboard</h1>
+            <p class="text-gray-600">Manage your profile, products, and SEO settings</p>
+        </div>
+        <div class="flex items-center gap-3 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
+            <span class="text-sm font-medium text-gray-700" id="visibility-status">Profile Visible</span>
+            <button type="button" id="visibility-toggle"
+                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-green-500"
+                role="switch" aria-checked="true">
+                <span class="sr-only">Toggle visibility</span>
+                <span aria-hidden="true"
+                    class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-5"></span>
+            </button>
+        </div>
     </div>
 
     <!-- Product Entry Section (Internal Only) -->
@@ -281,6 +293,14 @@
     </div>
 </div>
 
+<!-- Loader Overlay -->
+<div id="page-loader" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 hidden flex items-center justify-center">
+    <div class="flex flex-col items-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+        <p class="text-gray-600 font-medium">Updating profile visibility...</p>
+    </div>
+</div>
+
 <!-- Toast Notification -->
 <div id="toast"
     class="fixed bottom-6 right-6 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-32 transition-transform duration-300 ease-out flex items-center gap-3 z-50">
@@ -462,6 +482,80 @@
                         if (checkbox) checkbox.checked = true;
                     });
                 }
+
+                // Handle Visibility Toggle
+                const toggleBtn = document.getElementById('visibility-toggle');
+                const toggleSpan = toggleBtn.querySelector('span[aria-hidden="true"]');
+                const statusLabel = document.getElementById('visibility-status');
+
+                function updateToggleUI(isVisible) {
+                    if (isVisible) {
+                        toggleBtn.classList.remove('bg-gray-200');
+                        toggleBtn.classList.add('bg-green-500');
+                        toggleSpan.classList.remove('translate-x-0');
+                        toggleSpan.classList.add('translate-x-5');
+                        toggleBtn.setAttribute('aria-checked', 'true');
+                        statusLabel.textContent = 'Profile Visible';
+                        statusLabel.classList.remove('text-gray-500');
+                        statusLabel.classList.add('text-green-600');
+                    } else {
+                        toggleBtn.classList.remove('bg-green-500');
+                        toggleBtn.classList.add('bg-gray-200');
+                        toggleSpan.classList.remove('translate-x-5');
+                        toggleSpan.classList.add('translate-x-0');
+                        toggleBtn.setAttribute('aria-checked', 'false');
+                        statusLabel.textContent = 'Profile Hidden';
+                        statusLabel.classList.remove('text-green-600');
+                        statusLabel.classList.add('text-gray-500');
+                    }
+                }
+
+                updateToggleUI(data.is_visible !== false); // Default to true if undefined
+
+                // Toggle Event Listener
+                // Remove existing listener to avoid duplicates if any (though this runs once on load)
+                const newToggleBtn = toggleBtn.cloneNode(true);
+                toggleBtn.parentNode.replaceChild(newToggleBtn, toggleBtn);
+
+                // Re-select elements after clone
+                const activeToggleBtn = document.getElementById('visibility-toggle');
+
+                activeToggleBtn.addEventListener('click', function () {
+                    const isChecked = activeToggleBtn.getAttribute('aria-checked') === 'true';
+                    const newState = !isChecked;
+
+                    // Show loader immediately
+                    document.getElementById('page-loader').classList.remove('hidden');
+
+                    fetch('/api/artist/dashboard/', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: JSON.stringify({ is_visible: newState })
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                // Wait 4 seconds then reload
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 4000);
+                            } else {
+                                // Hide loader and revert UI on failure
+                                document.getElementById('page-loader').classList.add('hidden');
+                                updateToggleUI(!newState);
+                                showToast('Failed to update profile visibility', false);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            document.getElementById('page-loader').classList.add('hidden');
+                            // Revert on error
+                            updateToggleUI(!newState);
+                            showToast('An error occurred', false);
+                        });
+                });
             })
             .catch(error => console.error('Error:', error));
 
