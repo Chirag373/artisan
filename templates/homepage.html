@@ -42,14 +42,22 @@
 </div>
 
 <div class="container mx-auto">
-    <div id="featured-artists-grid"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 px-0 md:px-0">
+    <div id="featured-artists-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 px-0 md:px-0">
         <!-- Cards will be dynamically inserted here -->
         <div class="col-span-full text-center py-12">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
             <p class="mt-2 text-gray-500">Loading artists...</p>
         </div>
     </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast"
+    class="fixed bottom-6 right-6 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-32 transition-transform duration-300 ease-out flex items-center gap-3 z-50">
+    <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    <span class="font-medium">Action completed!</span>
 </div>
 
 {% endblock %}
@@ -80,6 +88,30 @@
         // Setup infinite scroll
         setupInfiniteScroll();
     });
+
+    function showToast(message, isError = false) {
+        const toast = document.getElementById('toast');
+        const toastText = toast.querySelector('span');
+        const toastIcon = toast.querySelector('svg');
+
+        toastText.textContent = message;
+
+        if (isError) {
+            toastIcon.classList.remove('text-green-400');
+            toastIcon.classList.add('text-red-400');
+        } else {
+            toastIcon.classList.remove('text-red-400');
+            toastIcon.classList.add('text-green-400');
+        }
+
+        toast.classList.remove('translate-y-32');
+        toast.classList.add('translate-y-0');
+
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0');
+            toast.classList.add('translate-y-32');
+        }, 3000);
+    }
 
     function createSkeletonCard() {
         return `
@@ -121,7 +153,7 @@
 
     async function loadArtists() {
         if (isLoading || !hasMore) return;
-        
+
         isLoading = true;
         const grid = document.getElementById('featured-artists-grid');
 
@@ -140,7 +172,7 @@
             params.set('page', currentPage);
             params.set('page_size', 6);
             const apiEndpoint = '/api/featured-artists/?' + params.toString();
-            
+
             const response = await fetch(apiEndpoint);
             if (!response.ok) throw new Error('Failed to fetch artists');
 
@@ -232,10 +264,22 @@
                         </div>
 
                         <div class="mt-auto pt-4 border-t border-gray-50">
-                            <a href="/profile/${artist.slug}/"
-                                class="w-full inline-flex items-center justify-center px-4 py-2.5 bg-[#FEFCE8] border border-gray-200 hover:border-blue-500 hover:text-blue-600 text-gray-700 text-sm font-semibold rounded-lg transition-all">
-                                View Profile
-                            </a>
+                            <div class="flex gap-2 items-center">
+                                <!-- View Profile Button (80%) -->
+                                <a href="/profile/${artist.slug}/"
+                                    class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-[#FEFCE8] border border-gray-200 hover:border-blue-500 hover:text-blue-600 text-gray-700 text-sm font-semibold rounded-lg transition-all" style="flex-basis: 80%">
+                                    View Profile
+                                </a>
+                                <!-- Bookmark Button (20%) -->
+                                <button class="bookmark-btn hidden flex-shrink-0 inline-flex items-center justify-center p-2.5 bg-white border border-gray-200 hover:border-red-500 rounded-lg transition-all" style="flex-basis: 20%" data-slug="${artist.slug}">
+                                    <svg class="bookmark-icon-outline w-5 h-5 text-gray-600" fill="none" viewBox="0 0 20 20" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 5a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 19V5z" />
+                                    </svg>
+                                    <svg class="bookmark-icon-filled hidden w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M5 5a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 19V5z" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </article>
@@ -264,6 +308,9 @@
                 });
             });
 
+            // Setup bookmarks for explorers
+            setupBookmarks();
+
         } catch (error) {
             console.error('Error loading artists:', error);
             removeLoadingCards();
@@ -281,16 +328,16 @@
 
     function setupInfiniteScroll() {
         let scrollTimeout;
-        
+
         window.addEventListener('scroll', () => {
             // Clear previous timeout
             clearTimeout(scrollTimeout);
-            
+
             // Set new timeout to check scroll position
             scrollTimeout = setTimeout(() => {
                 const scrollPosition = window.innerHeight + window.scrollY;
                 const pageHeight = document.documentElement.scrollHeight;
-                
+
                 // Load more when user is 300px from bottom
                 if (scrollPosition >= pageHeight - 300 && !isLoading && hasMore) {
                     loadArtists();
@@ -298,5 +345,131 @@
             }, 100);
         });
     }
+
+    // Helper to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    async function setupBookmarks() {
+        const role = localStorage.getItem('user_role');
+
+        // Only show bookmarks for explorers
+        if (role !== 'explorer') {
+            return;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+        // Select only uninitialized buttons to avoid duplicate listeners
+        const bookmarkButtons = document.querySelectorAll('.bookmark-btn:not([data-initialized="true"])');
+
+        if (bookmarkButtons.length === 0) return;
+
+        // Show buttons and mark initialized
+        bookmarkButtons.forEach(btn => {
+            btn.classList.remove('hidden');
+            btn.setAttribute('data-initialized', 'true');
+
+            // Add click handler immediately
+            btn.addEventListener('click', async function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const slug = this.getAttribute('data-slug');
+                const outlineIcon = this.querySelector('.bookmark-icon-outline');
+                const filledIcon = this.querySelector('.bookmark-icon-filled');
+                const wasBookmarked = this.classList.contains('bookmarked');
+
+                // Optimistic UI Update
+                if (wasBookmarked) {
+                    // Assume unbookmarking
+                    outlineIcon.classList.remove('hidden');
+                    filledIcon.classList.add('hidden');
+                    this.classList.remove('bookmarked');
+                } else {
+                    // Assume bookmarking
+                    outlineIcon.classList.add('hidden');
+                    filledIcon.classList.remove('hidden');
+                    this.classList.add('bookmarked');
+                }
+
+                try {
+                    const response = await fetch(`/api/bookmarks/toggle/${slug}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrftoken
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+
+                        // Verify state matches server
+                        if (data.is_bookmarked) {
+                            outlineIcon.classList.add('hidden');
+                            filledIcon.classList.remove('hidden');
+                            this.classList.add('bookmarked');
+                            showToast('Artist bookmarked!', false);
+                        } else {
+                            outlineIcon.classList.remove('hidden');
+                            filledIcon.classList.add('hidden');
+                            this.classList.remove('bookmarked');
+                            showToast('Bookmark removed', false);
+                        }
+                    } else {
+                        // Revert on failure
+                        throw new Error('Request failed');
+                    }
+                } catch (error) {
+                    console.error('Error toggling bookmark:', error);
+                    // Revert UI
+                    if (wasBookmarked) {
+                        outlineIcon.classList.add('hidden');
+                        filledIcon.classList.remove('hidden');
+                        this.classList.add('bookmarked');
+                    } else {
+                        outlineIcon.classList.remove('hidden');
+                        filledIcon.classList.add('hidden');
+                        this.classList.remove('bookmarked');
+                    }
+                    showToast('An error occurred', true);
+                }
+            });
+        });
+
+        // Fetch bookmark states for these new buttons
+        for (const btn of bookmarkButtons) {
+            const slug = btn.getAttribute('data-slug');
+            try {
+                const response = await fetch(`/api/bookmarks/check/${slug}/`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.is_bookmarked) {
+                        // Show filled icon
+                        btn.querySelector('.bookmark-icon-outline').classList.add('hidden');
+                        btn.querySelector('.bookmark-icon-filled').classList.remove('hidden');
+                        btn.classList.add('bookmarked');
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking bookmark status:', error);
+            }
+        }
+    }
 </script>
+<!-- Toast Notification Container -->
+<div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col space-y-2">
+    <!-- Toast messages will be inserted here by JavaScript -->
+</div>
 {% endblock %}

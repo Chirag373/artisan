@@ -27,3 +27,19 @@ class ExplorerProfile(models.Model):
 
     def __str__(self):
         return f"Explorer: {self.user.username}"
+
+
+class Bookmark(models.Model):
+    """
+    Model to track artist bookmarks by explorers.
+    """
+    explorer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookmarks')
+    artist = models.ForeignKey('artists.ArtistProfile', on_delete=models.CASCADE, related_name='bookmarked_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('explorer', 'artist')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.explorer.username} bookmarked {self.artist.artist_name}"

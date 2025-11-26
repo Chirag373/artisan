@@ -37,3 +37,9 @@ class SignupExplorerView(TemplateView):
 class ExplorerDashboardView(TemplateView):
     """Explorer dashboard page"""
     template_name = 'explorer_dashboard.html'
+
+
+@method_decorator(never_cache, name='dispatch')
+class BookmarksView(TemplateView):
+    """Bookmarks page for explorers"""
+    template_name = 'bookmarks.html'

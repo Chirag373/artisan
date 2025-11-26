@@ -322,6 +322,10 @@
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
                                 Dashboard
                             </a>
+                            <a id="bookmarks-link" href="{% url 'bookmarks' %}"
+                                class="hidden block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                                Bookmarks
+                            </a>
                             <a href="{% url 'subscription_portal' %}"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
                                 Subscription
@@ -428,6 +432,15 @@
                         <svg class="h-5 w-5 text-gray-400 group-hover:text-blue-600" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                    <a id="mobile-bookmarks-link" href="{% url 'bookmarks' %}"
+                        class="hidden group flex justify-between items-center py-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                        <span class="text-[17px] font-semibold text-gray-800 group-hover:text-blue-600">Bookmarks</span>
+                        <svg class="h-5 w-5 text-gray-400 group-hover:text-blue-600" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 5a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 19V5z" />
                         </svg>
                     </a>
                     <a href="{% url 'subscription_portal' %}"
@@ -551,6 +564,12 @@
                 const dashboardUrl = role === 'artist' ? "{% url 'artist_dashboard' %}" : "{% url 'explorer_dashboard' %}";
                 document.getElementById('dashboard-link').href = dashboardUrl;
                 document.getElementById('mobile-dashboard-link').href = dashboardUrl;
+
+                // Show bookmarks link only for explorers
+                if (role === 'explorer') {
+                    document.getElementById('bookmarks-link').classList.remove('hidden');
+                    document.getElementById('mobile-bookmarks-link').classList.remove('hidden');
+                }
 
                 // Dropdown toggle
                 const userMenuButton = document.getElementById('user-menu-button');
