@@ -16,25 +16,35 @@ class ArtistSignupAPIView(APIView):
     """
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
-        if serializer.is_valid():
-            package = request.data.get('package', 'basic')
-            
-            # Wrap in transaction to prevent zombie users
+        
+        # 1. Guard Clause: Return errors immediately if invalid
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # 2. Atomic Transaction: Ensures both User and Profile are created, or neither.
             with transaction.atomic():
                 user = serializer.save()
+                package = request.data.get('package', 'basic')
+                
                 ArtistProfile.objects.create(
                     user=user,
                     artist_name=user.username,
                     subscription_plan=package
                 )
-            
+
             return Response({
                 "message": "Artist account created successfully",
                 "username": user.username,
                 "package": package
             }, status=status.HTTP_201_CREATED)
-            
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            # No need to manually delete user; transaction.atomic handles the rollback
+            return Response(
+                {"error": f"Failed to create artist profile: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class ArtistDashboardAPIView(APIView):

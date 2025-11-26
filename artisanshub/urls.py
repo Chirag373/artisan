@@ -26,13 +26,6 @@ from apps.artists.api_views import (
     ArtistProfileDetailAPIView,
     RateArtistAPIView,
 )
-from apps.subscriptions.views import (
-    BasicPlanSignupView,
-    BasicPlanCheckoutAPIView,
-    PaymentSuccessView,
-    PaymentCancelView,
-    CustomerPortalView,
-)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -52,13 +45,6 @@ urlpatterns = [
     path('profile/', ViewProfileView.as_view(), name='view_profile'),
     path('profile/<slug:slug>/', ViewProfileView.as_view(), name='view_profile_with_slug'),
     path('join-artist/', JoinArtistView.as_view(), name='join_artist'),
-    
-    # Subscription URLs
-    path('signup/basic/', BasicPlanSignupView.as_view(), name='signup_basic'),
-    path('api/signup/basic/', BasicPlanCheckoutAPIView.as_view(), name='api_signup_basic'),
-    path('subscriptions/success/', PaymentSuccessView.as_view(), name='payment_success'),
-    path('subscriptions/cancel/', PaymentCancelView.as_view(), name='payment_cancel'),
-    path('subscriptions/portal/', CustomerPortalView.as_view(), name='customer_portal'),
 ]
 
 if settings.DEBUG:
