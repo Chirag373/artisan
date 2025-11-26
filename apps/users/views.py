@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
@@ -34,12 +35,14 @@ class SignupExplorerView(TemplateView):
 
 
 @method_decorator(never_cache, name='dispatch')
-class ExplorerDashboardView(TemplateView):
+class ExplorerDashboardView(LoginRequiredMixin, TemplateView):
     """Explorer dashboard page"""
     template_name = 'explorer_dashboard.html'
+    login_url = '/login/'
 
 
 @method_decorator(never_cache, name='dispatch')
-class BookmarksView(TemplateView):
+class BookmarksView(LoginRequiredMixin, TemplateView):
     """Bookmarks page for explorers"""
     template_name = 'bookmarks.html'
+    login_url = '/login/'

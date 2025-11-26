@@ -1,4 +1,5 @@
 from django.urls import path
+from django.contrib.auth.views import LogoutView
 from . import views, api_views
 
 # No app_name to maintain backward compatibility with existing URL references
@@ -8,6 +9,7 @@ urlpatterns = [
     path('signup/explorer/', views.SignupExplorerView.as_view(), name='signup_explorer'),
     path('explorer/dashboard/', views.ExplorerDashboardView.as_view(), name='explorer_dashboard'),
     path('bookmarks/', views.BookmarksView.as_view(), name='bookmarks'),
+    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     
     # API endpoints
     path('api/signup/explorer/', api_views.ExplorerSignupAPIView.as_view(), name='api_signup_explorer'),
