@@ -1,9 +1,17 @@
 from rest_framework import serializers
-from .models import ArtistProfile, Rating
+from .models import ArtistProfile, Rating, PortfolioImage
+
+
+class PortfolioImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PortfolioImage
+        fields = ['id', 'image', 'caption', 'created_at']
+        read_only_fields = ['created_at']
 
 
 class ArtistProfileSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(source='user.email', read_only=True)
+    portfolio_images = PortfolioImageSerializer(many=True, read_only=True)
     
     class Meta:
         model = ArtistProfile
@@ -12,7 +20,8 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             'product_keywords', 'seo_tags', 'categories',
             'etsy_url', 'shopify_url', 'instagram_url', 'tiktok_url',
             'profile_image', 'banner_image',
-            'subscription_plan', 'email', 'rating', 'is_featured', 'is_visible'
+            'subscription_plan', 'email', 'rating', 'is_featured', 'is_visible',
+            'portfolio_images'
         ]
         read_only_fields = ['subscription_plan', 'email']
 

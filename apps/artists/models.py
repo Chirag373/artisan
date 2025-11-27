@@ -98,3 +98,19 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"{self.explorer.username} rated {self.artist.artist_name}: {self.rating} stars"
+
+
+class PortfolioImage(models.Model):
+    """
+    Images for the artist's featured work portfolio.
+    """
+    artist = models.ForeignKey(ArtistProfile, on_delete=models.CASCADE, related_name='portfolio_images')
+    image = models.ImageField(upload_to='portfolio_images/')
+    caption = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Portfolio image for {self.artist.artist_name}"

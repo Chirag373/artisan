@@ -2,9 +2,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, Avg
 from django.db import transaction
-from .models import ArtistProfile, Rating
+from .models import ArtistProfile, Rating, PortfolioImage
 from .serializers import ArtistProfileSerializer, RatingSerializer
 from apps.users.serializers import SignupSerializer
 from apps.subscriptions.services import StripeService
@@ -215,3 +216,69 @@ class RateArtistAPIView(APIView):
             return Response(RatingSerializer(rating).data)
         except Rating.DoesNotExist:
             return Response({"rating": None}, status=status.HTTP_200_OK)
+
+
+class PortfolioUploadAPIView(APIView):
+    """
+    API endpoint for uploading portfolio images.
+    Handles bulk uploads and enforces plan limits.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            artist_profile = request.user.artist_profile
+        except (AttributeError, ObjectDoesNotExist):
+            return Response({"error": "Artist profile not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # 1. Check Plan Limits
+        plan = artist_profile.subscription_plan
+        current_count = artist_profile.portfolio_images.count()
+        
+        # Define limits
+        LIMITS = {
+            'basic': 6,
+            'express': 6,
+            'premium': 50
+        }
+        
+        limit = LIMITS.get(plan, 6)
+        
+        # 2. Get Files
+        images = request.FILES.getlist('images')
+        if not images:
+            return Response({"error": "No images provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if current_count + len(images) > limit:
+            return Response({
+                "error": f"Upload exceeds plan limit. You can upload {limit - current_count} more images."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # 3. Save Images
+        created_images = []
+        for image in images:
+            # Basic validation could go here (size, type)
+            portfolio_image = PortfolioImage.objects.create(
+                artist=artist_profile,
+                image=image
+            )
+            created_images.append(portfolio_image)
+
+        # 4. Return Response
+        from .serializers import PortfolioImageSerializer  # Local import to avoid circular dependency if any
+        serializer = PortfolioImageSerializer(created_images, many=True)
+        
+        return Response({
+            "message": f"Successfully uploaded {len(created_images)} images",
+            "images": serializer.data
+        }, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, image_id):
+        """Delete a portfolio image"""
+        try:
+            artist_profile = request.user.artist_profile
+            image = PortfolioImage.objects.get(id=image_id, artist=artist_profile)
+            image.delete()
+            return Response({"message": "Image deleted successfully"}, status=status.HTTP_200_OK)
+        except (PortfolioImage.DoesNotExist, AttributeError):
+            return Response({"error": "Image not found"}, status=status.HTTP_404_NOT_FOUND)
