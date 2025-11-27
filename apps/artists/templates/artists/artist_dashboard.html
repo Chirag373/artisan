@@ -7,7 +7,6 @@
     }
 </style>
 <div class="w-full">
-    <!-- Header -->
     <div class="mb-8 flex flex-col md:flex-row md:justify-between md:items-start gap-4">
         <div>
             <h1 class="text-3xl font-bold text-gray-900 mb-2">Artist Dashboard</h1>
@@ -25,7 +24,6 @@
         </div>
     </div>
 
-    <!-- Product Entry Section (Internal Only) -->
     <div class="bg-[#FEFCE8] rounded-lg shadow-sm border border-gray-400 p-4 md:p-6 mb-8">
         <div class="mb-4">
             <h2 class="text-xl font-semibold text-gray-900 mb-2">Product Entry</h2>
@@ -53,7 +51,6 @@
         </div>
     </div>
 
-    <!-- Artist Profile & SEO Data Entry -->
     <div class="bg-[#FEFCE8] rounded-lg shadow-sm border border-gray-400 p-4 md:p-6 mb-8">
         <div class="mb-6">
             <h2 class="text-xl font-semibold text-gray-900 mb-2">Artist Profile & SEO Settings</h2>
@@ -61,7 +58,6 @@
         </div>
 
         <form class="space-y-8" id="artist-profile-form">
-            <!-- Basic Information -->
             <div class="border-b border-gray-400 pb-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -93,7 +89,6 @@
                 </div>
             </div>
 
-            <!-- Location -->
             <div class="border-b border-gray-400 pb-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Location</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -119,7 +114,6 @@
                 </div>
             </div>
 
-            <!-- Bio -->
             <div class="border-b border-gray-400 pb-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Biography</h3>
                 <div>
@@ -134,7 +128,6 @@
                 </div>
             </div>
 
-            <!-- Categories -->
             <div class="border-b border-gray-400 pb-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Categories</h3>
                 <div>
@@ -191,7 +184,6 @@
                 </div>
             </div>
 
-            <!-- Tags -->
             <div class="border-b border-gray-400 pb-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">SEO Tags</h3>
                 <div>
@@ -206,7 +198,6 @@
                 </div>
             </div>
 
-            <!-- External Links -->
             <div class="border-b border-gray-400 pb-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">External Links</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -248,7 +239,6 @@
                 </div>
             </div>
 
-            <!-- Images -->
             <div>
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Profile Images</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -282,7 +272,6 @@
                 </div>
             </div>
 
-            <!-- Submit Button -->
             <div class="flex justify-end pt-6 border-t border-gray-400">
                 <button type="submit"
                     class="bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 font-medium">
@@ -293,7 +282,6 @@
     </div>
 </div>
 
-<!-- Loader Overlay -->
 <div id="page-loader" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 hidden flex items-center justify-center">
     <div class="flex flex-col items-center">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
@@ -301,7 +289,6 @@
     </div>
 </div>
 
-<!-- Toast Notification -->
 <div id="toast"
     class="fixed bottom-6 right-6 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-32 transition-transform duration-300 ease-out flex items-center gap-3 z-50">
     <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

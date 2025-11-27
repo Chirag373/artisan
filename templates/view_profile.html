@@ -12,13 +12,11 @@
 </style>
 
 <div id="profile-container" class="container mx-auto mb-12 min-h-[60vh]">
-    <!-- Loading State -->
     <div id="loading-state" class="flex flex-col items-center justify-center py-20">
         <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
         <p class="mt-4 text-gray-500">Loading profile...</p>
     </div>
 
-    <!-- Error State -->
     <div id="error-state" class="hidden flex flex-col items-center justify-center py-20">
         <div class="text-red-500 text-xl font-semibold mb-2">Profile not found</div>
         <p class="text-gray-500 mb-6">The artist profile you are looking for does not exist or has been removed.</p>
@@ -27,7 +25,6 @@
         </a>
     </div>
 
-    <!-- Content (Hidden initially) -->
     <div id="profile-content" class="hidden">
         <div class="bg-[#FEFCE8] rounded-2xl shadow-sm border border-gray-400 overflow-hidden mb-8">
             <div class="px-6 pb-6 pt-6">
@@ -79,7 +76,6 @@
 
                             <div id="categories-container"
                                 class="flex flex-wrap justify-center md:justify-start gap-2 mb-2">
-                                <!-- Categories inserted here -->
                             </div>
                         </div>
                     </div>
@@ -108,15 +104,12 @@
                     </h2>
                     <div id="full-bio"
                         class="prose prose-blue max-w-none text-gray-600 leading-relaxed whitespace-pre-line">
-                        <!-- Bio inserted here -->
                     </div>
                 </div>
 
-                <!-- Placeholder for Featured Work (Static for now as we don't have a Portfolio model yet) -->
                 <div class="bg-[#FEFCE8] rounded-2xl shadow-sm border border-gray-400 p-6 md:p-8">
                     <h2 class="text-xl font-bold text-gray-900 mb-6">Featured Work</h2>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <!-- Static placeholders for visual completeness -->
                         <div class="aspect-square rounded-xl overflow-hidden bg-gray-100"><img
                                 src="https://images.unsplash.com/photo-1579783902614-a3fb39279c0f?q=80&w=400&auto=format&fit=crop"
                                 class="w-full h-full object-cover"></div>
@@ -135,11 +128,9 @@
                 <div class="bg-[#FEFCE8] rounded-2xl shadow-sm border border-gray-400 p-6">
                     <h3 class="font-semibold text-gray-900 mb-4">Connect</h3>
                     <div class="space-y-3" id="social-links">
-                        <!-- Social links inserted here -->
                     </div>
                 </div>
 
-                <!-- Rating Section -->
                 <div id="rating-section" class="bg-[#FEFCE8] rounded-2xl shadow-sm border border-gray-400 p-6 mb-6">
                     <h3 class="font-semibold text-gray-900 mb-4">Rate this Artist</h3>
                     <div id="rating-stars" class="flex gap-2 mb-4">
@@ -190,7 +181,6 @@
     </div>
 </div>
 
-<!-- Login/Signup Modal -->
 <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
         <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
@@ -218,7 +208,6 @@
     </div>
 </div>
 
-<!-- Toast Notification -->
 <div id="toast" class="fixed bottom-6 right-6 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-32 transition-transform duration-300 ease-out flex items-center gap-3 z-50">
     <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
