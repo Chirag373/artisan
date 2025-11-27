@@ -172,70 +172,28 @@
             <div class="border-b border-gray-400 pb-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Categories</h3>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-3">
-                        Item Types (Select all that apply)
+                    <label for="categories" class="block text-sm font-medium text-gray-700 mb-2">
+                        Please enter your products items in keywords, what category as many as you can
                     </label>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="stickers"
-                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <span class="ml-2 text-sm text-gray-700">Stickers</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="fan_art"
-                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <span class="ml-2 text-sm text-gray-700">Fan Art</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="keychains"
-                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <span class="ml-2 text-sm text-gray-700">Keychains</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="prints"
-                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <span class="ml-2 text-sm text-gray-700">Prints</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="t-shirts"
-                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <span class="ml-2 text-sm text-gray-700">T-Shirts</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="posters"
-                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <span class="ml-2 text-sm text-gray-700">Posters</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="pins"
-                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <span class="ml-2 text-sm text-gray-700">Pins</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="mugs"
-                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <span class="ml-2 text-sm text-gray-700">Mugs</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="categories" value="other"
-                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <span class="ml-2 text-sm text-gray-700">Other</span>
-                        </label>
-                    </div>
+                    <textarea id="categories" name="categories" rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
+                        placeholder="stickers, keychain, posters, ..." maxlength="1000"></textarea>
+                    <p class="mt-1 text-sm text-gray-500">Separate categories with commas.</p>
                 </div>
             </div>
 
             <div class="border-b border-gray-400 pb-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">SEO Tags</h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Product Keywords</h3>
                 <div>
                     <label for="seo_tags" class="block text-sm font-medium text-gray-700 mb-2">
-                        SEO Keywords
+                        Please enter your product keywords, as many and as complete as you can (separate by comma)
                     </label>
                     <input type="text" id="seo_tags" name="seo_tags"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="art, illustration, digital art, fan art, stickers, custom design..."
                         maxlength="500">
-                    <p class="mt-1 text-sm text-gray-500">Comma-separated keywords for search engine optimization</p>
+                    <p class="mt-1 text-sm text-gray-500">Add keywords that describe your products to help customers
+                        find you</p>
                 </div>
             </div>
 
@@ -505,10 +463,10 @@
 
                 // Populate Categories
                 if (data.categories && Array.isArray(data.categories)) {
-                    data.categories.forEach(category => {
-                        const checkbox = document.querySelector(`input[name="categories"][value="${category}"]`);
-                        if (checkbox) checkbox.checked = true;
-                    });
+                    const categoriesInput = document.getElementById('categories');
+                    if (categoriesInput) {
+                        categoriesInput.value = data.categories.join(', ');
+                    }
                 }
 
                 // Handle Visibility Toggle
@@ -751,8 +709,11 @@
             });
 
             // Handle categories - add as JSON string
-            const categories = Array.from(document.querySelectorAll('input[name="categories"]:checked'))
-                .map(cb => cb.value);
+            const categoriesInput = document.getElementById('categories');
+            let categories = [];
+            if (categoriesInput && categoriesInput.value) {
+                categories = categoriesInput.value.split(',').map(c => c.trim()).filter(c => c.length > 0);
+            }
             formData.append('categories', JSON.stringify(categories));
 
             // Only add file fields if new files are selected

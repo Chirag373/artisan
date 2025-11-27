@@ -45,4 +45,9 @@ class ViewProfileView(TemplateView):
         slug = kwargs.get('slug')
         if slug:
             context['slug'] = slug
+            try:
+                from .models import ArtistProfile
+                context['artist'] = ArtistProfile.objects.get(slug=slug)
+            except ArtistProfile.DoesNotExist:
+                pass
         return context

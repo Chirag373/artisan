@@ -1,7 +1,32 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Artist Profile - ArtisansHub{% endblock %}
+{% block title %}{{ artist.artist_name|default:"Artist Profile" }} - ArtisansHub{% endblock %}
+
+{% block meta_tags %}
+{% if artist %}
+<meta name="description" content="{{ artist.full_bio|striptags|truncatechars:160 }}">
+<meta name="keywords" content="{{ artist.seo_tags }}">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="profile">
+<meta property="og:title" content="{{ artist.artist_name }} - ArtisansHub">
+<meta property="og:description" content="{{ artist.full_bio|striptags|truncatechars:160 }}">
+{% if artist.profile_image %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ artist.profile_image.url }}">
+{% endif %}
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:title" content="{{ artist.artist_name }} - ArtisansHub">
+<meta property="twitter:description" content="{{ artist.full_bio|striptags|truncatechars:160 }}">
+{% if artist.profile_image %}
+<meta property="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ artist.profile_image.url }}">
+{% endif %}
+{% else %}
+{{ block.super }}
+{% endif %}
+{% endblock %}
 
 {% block content %}
 
@@ -103,7 +128,7 @@
                         About the Artist
                     </h2>
                     <div id="full-bio"
-                        class="prose prose-blue max-w-none text-gray-600 leading-relaxed whitespace-pre-line">
+                        class="prose prose-blue max-w-none text-gray-600 leading-relaxed whitespace-pre-line break-words">
                     </div>
                 </div>
 
