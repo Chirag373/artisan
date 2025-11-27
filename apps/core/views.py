@@ -14,3 +14,23 @@ class LoginView(TemplateView):
 class ServicesView(TemplateView):
     """Services page view"""
     template_name = 'services.html'
+
+
+class TermsView(TemplateView):
+    """Terms of Use page view"""
+    template_name = 'terms.html'
+
+
+class RefundView(TemplateView):
+    """Refund & Cancellation Policy page view"""
+    template_name = 'refund.html'
+
+
+class ContentPolicyView(TemplateView):
+    """Artist & Content Policy page view"""
+    template_name = 'content-policy.html'
+
+
+class PrivacyView(TemplateView):
+    """Privacy Policy page view"""
+    template_name = 'privacy.html'

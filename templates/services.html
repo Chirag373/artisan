@@ -1,14 +1,115 @@
 {% extends 'base.html' %}
 
-{% block title %}Services - ArtisansHub{% endblock %}
+{% block title %}About Us - ArtisansHub{% endblock %}
 
 {% block content %}
 <style>
-    .hero-banner {
-        display: none !important;
-    }
+    .hero-banner { display: none !important; }
 </style>
-<div class="container mx-auto px-4 py-12">
-    <h1 class="text-4xl font-bold text-gray-900 text-center">Service Page</h1>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-[#FEFCE8] rounded-2xl border border-gray-400 p-6 md:p-10">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">About Us — ArtistaHub.com</h1>
+        <p class="text-xl text-blue-600 font-medium mb-8">Empowering Artists Beyond the Convention Booth</p>
+
+        <p class="text-gray-700 mb-6 text-lg">
+            ArtistaHub was created with one mission in mind: <span class="font-semibold">to help artists thrive beyond local events and crowded online marketplaces.</span>
+        </p>
+
+        <p class="text-gray-700 mb-4">
+            For years, we've seen talented artists—sticker makers, keychain designers, fanart creators, anime illustrators, print makers, and more—depend entirely on weekend conventions or rely on competitive platforms like Etsy, TikTok Shop, or Shopify.
+        </p>
+
+        <p class="text-gray-700 mb-4">But these artists face real challenges:</p>
+        <ul class="list-disc list-inside text-gray-700 mb-6 space-y-1">
+            <li>If there's no local event, there are no sales</li>
+            <li>Large platforms are overcrowded, making it easy to get buried under millions of sellers</li>
+            <li>Most artists cannot afford marketing or SEO services</li>
+            <li>Getting noticed online feels impossible without paid ads or full-time marketing work</li>
+        </ul>
+
+        <p class="text-gray-700 mb-8 text-lg font-medium">We built ArtistaHub to change that.</p>
+
+        <h2 class="text-2xl font-bold text-gray-900 mt-10 mb-4">Our Vision</h2>
+        <p class="text-gray-700 mb-4">
+            ArtistaHub aims to become the central online hub where independent artists can grow, get discovered, and build sustainable income — even on days when no events are happening.
+        </p>
+        <p class="text-gray-700 mb-4">We believe every artist deserves:</p>
+        <ul class="list-disc list-inside text-gray-700 mb-6 space-y-1">
+            <li>Global visibility, not just local exposure</li>
+            <li>Affordable online presence, without paying thousands for marketing</li>
+            <li>A professional profile page optimized for discovery</li>
+            <li>SEO tools normally available only to big businesses</li>
+            <li>A community-focused platform built specifically for artist success</li>
+        </ul>
+
+        <h2 class="text-2xl font-bold text-gray-900 mt-10 mb-4">Why We Exist</h2>
+        <p class="text-gray-700 mb-4">
+            Traditional online marketplaces are not built for discovery — they are built for competition.
+        </p>
+        <p class="text-gray-700 mb-6">
+            Your art may be amazing, but on Etsy or Shopify, you're competing with millions of sellers, ads, and algorithm changes you can't control.
+        </p>
+        <p class="text-gray-700 mb-4 font-medium">ArtistaHub takes a different approach:</p>
+
+        <div class="space-y-6 mb-8">
+            <div class="flex items-start gap-3">
+                <span class="text-green-500 text-xl">✔</span>
+                <div>
+                    <p class="font-semibold text-gray-900">We make you discoverable</p>
+                    <p class="text-gray-700">Every artist gets a dedicated profile page designed with professional-grade SEO and keyword optimization. This helps your page appear in Google searches so potential customers can find your art organically.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <span class="text-green-500 text-xl">✔</span>
+                <div>
+                    <p class="font-semibold text-gray-900">We do the marketing work for you</p>
+                    <p class="text-gray-700">You don't need to hire an SEO expert or learn digital marketing. We handle the core setup so your art becomes searchable and visible online.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <span class="text-green-500 text-xl">✔</span>
+                <div>
+                    <p class="font-semibold text-gray-900">Your business grows even when you're sleeping</p>
+                    <p class="text-gray-700">Whether you're at a convention or relaxing at home, your ArtistaHub profile continues working for you — bringing visitors, letting collectors discover your art, and driving traffic directly to your shop.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-2xl font-bold text-gray-900 mt-10 mb-4">Who We Serve</h2>
+        <p class="text-gray-700 mb-4">ArtistaHub is built for:</p>
+        <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
+            <li>Anime artists</li>
+            <li>Fanart creators</li>
+            <li>Sticker makers</li>
+            <li>Keychain and charm designers</li>
+            <li>Print artists</li>
+            <li>Framed art sellers</li>
+            <li>Handmade & custom creators</li>
+            <li>Small independent studios</li>
+            <li>Anyone who sells at conventions, craft fairs, and pop-up markets</li>
+        </ul>
+        <p class="text-gray-700 mb-8 text-lg font-medium">If you create art, we help you get discovered.</p>
+
+        <h2 class="text-2xl font-bold text-gray-900 mt-10 mb-4">Our Promise</h2>
+        <p class="text-gray-700 mb-4">At ArtistaHub, we promise to:</p>
+        <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
+            <li>Advocate for small artists</li>
+            <li>Provide affordable digital tools</li>
+            <li>Level the playing field against big marketplaces</li>
+            <li>Continuously improve our technology to increase your visibility</li>
+            <li>Prioritize community, fairness, and transparency</li>
+        </ul>
+        <p class="text-gray-700 mb-8 text-lg font-semibold text-blue-600">Your success is our mission.</p>
+
+        <h2 class="text-2xl font-bold text-gray-900 mt-10 mb-4">Join the ArtistaHub Community</h2>
+        <p class="text-gray-700 mb-4">
+            Whether you're an artist looking for a bigger audience, or a collector searching for unique work, ArtistaHub is here to connect you.
+        </p>
+        <p class="text-gray-700 mb-4">
+            Together, we can build a global stage where creativity is seen, appreciated, and supported.
+        </p>
+        <p class="text-xl font-bold text-gray-900 mt-6">Welcome to ArtistaHub — where artists rise.</p>
+    </div>
 </div>
 {% endblock %}

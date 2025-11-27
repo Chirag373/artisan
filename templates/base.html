@@ -516,10 +516,11 @@
 
                 <div class="text-center md:text-right">
                     <p class="text-sm text-gray-500 mb-2">&copy; 2025 ArtisansHub Global Inc.</p>
-                    <div class="flex space-x-4 justify-center md:justify-end">
-                        <a href="#" class="text-xs text-gray-400 hover:text-white transition-colors">Terms of
-                            Service</a>
-                        <a href="#" class="text-xs text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 justify-center md:justify-end">
+                        <a href="{% url 'terms' %}" class="text-xs text-gray-400 hover:text-white transition-colors">Terms of Service</a>
+                        <a href="{% url 'privacy' %}" class="text-xs text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+                        <a href="{% url 'refund' %}" class="text-xs text-gray-400 hover:text-white transition-colors">Refund Policy</a>
+                        <a href="{% url 'content_policy' %}" class="text-xs text-gray-400 hover:text-white transition-colors">Content Policy</a>
                     </div>
                 </div>
             </div>

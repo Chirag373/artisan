@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .hero-banner { display: none !important; }
+</style>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-[#FEFCE8] rounded-2xl border border-gray-400 p-6 md:p-10">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Artist & Content Policy</h1>
+        <p class="text-sm text-gray-500 mb-8">Effective Date: November 27, 2025</p>
+
+        <p class="text-gray-700 mb-6">
+            Welcome to ArtistaHub.com. We are committed to building a creative, safe, and trustworthy community for artists and fans. This Artist & Content Policy outlines the standards all creators must follow when using our platform.
+        </p>
+        <p class="text-gray-700 mb-6">
+            By creating an account or posting any content on ArtistaHub, you agree to comply with this policy in addition to our Terms of Use and Privacy Policy.
+        </p>
+
+        <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">1. Acceptable Use</h2>
+        <p class="text-gray-700 mb-4">Artists may upload and display original creative works, including:</p>
+        <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
+            <li>Stickers</li>
+            <li>Keychains</li>
+            <li>Prints (fan art or original art)</li>
+            <li>Animation artwork</li>
+            <li>Fan merchandise</li>
+            <li>Handmade goods</li>
+            <li>Digital art</li>
+        </ul>
+        <p class="text-gray-700 mb-6">All content must follow the rules below.</p>
+
+        <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">2. Prohibited Content</h2>
+        <p class="text-gray-700 mb-4">You may NOT upload, post, or display:</p>
+
+        <h3 class="text-lg font-medium text-gray-800 mt-6 mb-3">2.1 Explicit Adult Content</h3>
+        <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
+            <li>Nudity or pornography</li>
+            <li>Explicit sexual acts or poses</li>
+            <li>Suggestive content intended for adult audiences</li>
+            <li>Fetish, erotic, or NSFW illustrations</li>
+        </ul>
+        <p class="text-gray-600 text-sm mb-4 italic">Note: Slightly stylized or "cute" artistic depictions are okay if they are not sexualized or adult-oriented.</p>
+
+        <h3 class="text-lg font-medium text-gray-800 mt-6 mb-3">2.2 Violent or Graphic Content</h3>
+        <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
+            <li>Gore</li>
+            <li>Excessive blood</li>
+            <li>Depictions of self-harm or harm to others</li>
+            <li>Extreme horror imagery intended to disturb</li>
+        </ul>
+
+        <h3 class="text-lg font-medium text-gray-800 mt-6 mb-3">2.3 Hateful or Abusive Content</h3>
+        <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
+            <li>Art promoting hate speech</li>
+            <li>Racist, sexist, homophobic, or discriminatory themes</li>
+            <li>Harassment or targeted bullying</li>
+            <li>Violent political propaganda</li>
+        </ul>
+
+        <h3 class="text-lg font-medium text-gray-800 mt-6 mb-3">2.4 Dangerous or Illegal Content</h3>
+        <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
+            <li>Fraudulent listings</li>
+            <li>Scam attempts</li>
+            <li>Sale of illegal items</li>
+            <li>Weapons, drugs, counterfeit items</li>
+        </ul>
+
+        <h3 class="text-lg font-medium text-gray-800 mt-6 mb-3">2.5 Misleading, Spam, or Low-Quality Content</h3>
+        <ul class="list-disc list-inside text-gray-700 mb-6 space-y-1">
+            <li>Mass-produced AI images with no artistic value</li>
+            <li>AI art posted without disclosure (see 3.3)</li>
+            <li>Repetitive spam listings</li>
+            <li>Misleading information</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">3. Copyright, Ownership & AI Art</h2>
+
+        <h3 class="text-lg font-medium text-gray-800 mt-6 mb-3">3.1 You Must Own the Rights</h3>
+        <p class="text-gray-700 mb-4">Artists may only upload content they created or own the rights to. No stolen artwork, traced art, copied designs, or copyright violations.</p>
+
+        <h3 class="text-lg font-medium text-gray-800 mt-6 mb-3">3.2 Fan Art</h3>
+        <p class="text-gray-700 mb-4">Fan art is permitted as long as:</p>
+        <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
+            <li>It is clearly transformative</li>
+            <li>It does not violate the trademarks or copyrights of major brands</li>
+            <li>It does not claim official affiliation with the IP owner</li>
+        </ul>
+
+        <h3 class="text-lg font-medium text-gray-800 mt-6 mb-3">3.3 AI-Generated Art</h3>
+        <p class="text-gray-700 mb-4">AI art is allowed ONLY if:</p>
+        <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
+            <li>You created it personally</li>
+            <li>You significantly edited or transformed it</li>
+            <li>You clearly label it as "AI-Assisted Artwork"</li>
+        </ul>
+        <p class="text-gray-700 mb-6">No automated mass posting of AI images.</p>
+
+        <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">4. Artist Behavior & Marketplace Conduct</h2>
+        <p class="text-gray-700 mb-4">All artists must act professionally and respectfully:</p>
+        <ul class="list-disc list-inside text-gray-700 mb-6 space-y-1">
+            <li>No harassment or abusive communication</li>
+            <li>No impersonation of another artist</li>
+            <li>No fake identity, fake shops, or stolen social profiles</li>
+            <li>No manipulating search rankings</li>
+            <li>No posting false claims about other creators</li>
+            <li>No scam practices (fake sales, fake orders, fake reviews)</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">5. Listing Requirements</h2>
+        <p class="text-gray-700 mb-4">Every listing must include:</p>
+        <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
+            <li>Accurate title</li>
+            <li>Proper category</li>
+            <li>Clear description</li>
+            <li>Original images (no watermarks from other platforms)</li>
+            <li>Transparent pricing</li>
+        </ul>
+        <p class="text-gray-700 mb-6">Listings must not redirect users to external marketplaces to bypass ArtistaHub.</p>
+
+        <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">6. Account Enforcement & Penalties</h2>
+        <p class="text-gray-700 mb-4">If a creator violates this policy, ArtistaHub may take any of the following actions:</p>
+        <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
+            <li>Remove specific listings</li>
+            <li>Issue warnings</li>
+            <li>Apply temporary account restriction</li>
+            <li>Disable or suspend the account</li>
+            <li>Permanently terminate the account for severe or repeat violations</li>
+        </ul>
+        <p class="text-gray-700 mb-6">ArtistaHub reserves the right to make final decisions on content suitability.</p>
+
+        <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">7. Reporting Violations</h2>
+        <p class="text-gray-700 mb-6">
+            If you find content or a user violating this policy, please report it at: <a href="mailto:support@ArtistaHub.com" class="text-blue-600 hover:underline">support@ArtistaHub.com</a>
+        </p>
+
+        <h2 class="text-xl font-semibold text-gray-900 mt-8 mb-4">8. Updates to This Policy</h2>
+        <p class="text-gray-700">ArtistaHub may update this policy at any time to reflect changes in safety standards or community needs. Continued use of the platform constitutes acceptance of the revised terms.</p>
+    </div>
+</div>
+{% endblock %}
