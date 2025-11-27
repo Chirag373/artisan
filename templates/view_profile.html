@@ -109,9 +109,22 @@
 
                 <div class="bg-[#FEFCE8] rounded-2xl shadow-sm border border-gray-400 p-6 md:p-8">
                     <h2 class="text-xl font-bold text-gray-900 mb-6">Featured Work</h2>
-                    <div id="featured-work-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+
+                    <!-- Loading Skeleton -->
+                    <div id="featured-work-skeleton" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="aspect-square rounded-xl overflow-hidden bg-gray-200 animate-pulse"></div>
+                        <div class="aspect-square rounded-xl overflow-hidden bg-gray-200 animate-pulse"></div>
+                        <div class="aspect-square rounded-xl overflow-hidden bg-gray-200 animate-pulse"></div>
+                        <div class="aspect-square rounded-xl overflow-hidden bg-gray-200 animate-pulse"></div>
+                        <div class="aspect-square rounded-xl overflow-hidden bg-gray-200 animate-pulse"></div>
+                        <div class="aspect-square rounded-xl overflow-hidden bg-gray-200 animate-pulse"></div>
+                    </div>
+
+                    <!-- Actual Images Grid -->
+                    <div id="featured-work-grid" class="hidden grid-cols-2 md:grid-cols-3 gap-4">
                         <!-- Images will be injected here -->
                     </div>
+
                     <p id="no-featured-work" class="text-sm text-gray-500 mt-4 italic text-center hidden">No featured
                         work available yet.</p>
                 </div>
@@ -541,22 +554,33 @@
 
         socialContainer.innerHTML = socialHtml;
 
-        // Featured Work
+        // Featured Work - Delayed Load with Skeleton
         const featuredGrid = document.getElementById('featured-work-grid');
+        const featuredSkeleton = document.getElementById('featured-work-skeleton');
         const noFeaturedMsg = document.getElementById('no-featured-work');
 
-        if (artist.portfolio_images && artist.portfolio_images.length > 0) {
-            featuredGrid.innerHTML = artist.portfolio_images.map(img => `
-                <div class="aspect-square rounded-xl overflow-hidden bg-gray-100 relative group cursor-pointer" onclick="openImageModal('${img.image}')">
-                    <img src="${img.image}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" alt="${img.caption || 'Featured work'}">
-                    ${img.caption ? `<div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-2 opacity-0 group-hover:opacity-100 transition-opacity truncate">${img.caption}</div>` : ''}
-                </div>
-            `).join('');
-            noFeaturedMsg.classList.add('hidden');
-        } else {
-            featuredGrid.innerHTML = '';
-            noFeaturedMsg.classList.remove('hidden');
-        }
+        // Delay rendering by 3 seconds
+        setTimeout(() => {
+            if (artist.portfolio_images && artist.portfolio_images.length > 0) {
+                featuredGrid.innerHTML = artist.portfolio_images.map(img => `
+                    <div class="aspect-square rounded-xl overflow-hidden bg-gray-100 relative group cursor-pointer" onclick="openImageModal('${img.image}')">
+                        <img src="${img.image}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" alt="${img.caption || 'Featured work'}">
+                        ${img.caption ? `<div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-2 opacity-0 group-hover:opacity-100 transition-opacity truncate">${img.caption}</div>` : ''}
+                    </div>
+                `).join('');
+
+                // Hide skeleton and show grid
+                featuredSkeleton.classList.add('hidden');
+                featuredGrid.classList.remove('hidden');
+                featuredGrid.classList.add('grid');
+                noFeaturedMsg.classList.add('hidden');
+            } else {
+                featuredGrid.innerHTML = '';
+                featuredSkeleton.classList.add('hidden');
+                featuredGrid.classList.remove('hidden');
+                noFeaturedMsg.classList.remove('hidden');
+            }
+        }, 3000); // 3-second delay
     }
 
     function openImageModal(src) {
