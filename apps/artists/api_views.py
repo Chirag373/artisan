@@ -5,7 +5,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, Avg
 from django.db import transaction
-from .models import ArtistProfile, Rating, PortfolioImage
+from django.contrib.auth.hashers import make_password
+from .models import ArtistProfile, Rating, PortfolioImage, PendingArtist
 from .serializers import ArtistProfileSerializer, RatingSerializer
 from apps.users.serializers import SignupSerializer
 from apps.subscriptions.services import StripeService
@@ -18,6 +19,7 @@ class ArtistSignupAPIView(APIView):
     """
     API endpoint for Artist signup.
     Handles the subscription package selection and initiates OTP verification.
+    Stores data in PendingArtist until payment is confirmed.
     """
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
@@ -32,40 +34,28 @@ class ArtistSignupAPIView(APIView):
             package = request.data.get('package', 'basic')
 
             # 2. Check if user exists
-            try:
-                user = User.objects.get(email=email)
-                if user.is_active:
-                     return Response({"error": "User with this email already exists."}, status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    # User exists but inactive, update password if needed
-                    user.set_password(password)
-                    user.save()
-                    # Update or create profile if it doesn't exist
-                    ArtistProfile.objects.update_or_create(
-                        user=user,
-                        defaults={'subscription_plan': package, 'artist_name': user.username}
-                    )
-            except User.DoesNotExist:
-                # Generate unique username
-                base_username = email.split('@')[0]
-                username = base_username
-                counter = 0
-                while User.objects.filter(username=username).exists():
-                    counter += 1
-                    username = f"{base_username}{counter}"
+            if User.objects.filter(email=email).exists():
+                 return Response({"error": "User with this email already exists."}, status=status.HTTP_400_BAD_REQUEST)
 
-                # Create inactive user
-                user = User.objects.create_user(username=username, email=email, password=password)
-                user.is_active = False
-                user.save()
-                
-                ArtistProfile.objects.create(
-                    user=user,
-                    artist_name=user.username,
-                    subscription_plan=package
-                )
+            # 3. Generate unique username
+            base_username = email.split('@')[0]
+            username = base_username
+            counter = 0
+            while User.objects.filter(username=username).exists() or PendingArtist.objects.filter(username=username).exists():
+                counter += 1
+                username = f"{base_username}{counter}"
 
-            # 3. Generate and Send OTP
+            # 4. Create/Update PendingArtist
+            PendingArtist.objects.update_or_create(
+                email=email,
+                defaults={
+                    'username': username,
+                    'password': make_password(password),
+                    'package': package
+                }
+            )
+
+            # 5. Generate and Send OTP
             otp = OTPService.generate_otp()
             OTPService.store_otp(email, otp)
             sent = OTPService.send_otp_email(email, otp)
@@ -87,7 +77,8 @@ class ArtistSignupAPIView(APIView):
 
 class ArtistVerifyOTPAPIView(APIView):
     """
-    API endpoint to verify OTP, activate the artist account, and generate Stripe session.
+    API endpoint to verify OTP.
+    Verifies OTP and generates Stripe session using PendingArtist data.
     """
     def post(self, request):
         email = request.data.get('email')
@@ -98,26 +89,22 @@ class ArtistVerifyOTPAPIView(APIView):
 
         if OTPService.verify_otp(email, otp):
             try:
-                user = User.objects.get(email=email)
-                user.is_active = True
-                user.save()
+                pending_artist = PendingArtist.objects.get(email=email)
                 
-                # Log the user in
-                login(request, user)
-                
-                # Get profile and create Stripe session
-                profile = user.artist_profile
-                checkout_url = StripeService.create_checkout_session(user, profile.subscription_plan)
+                # Create Stripe session using PendingArtist
+                # StripeService expects an object with .id and .email
+                checkout_url = StripeService.create_checkout_session(pending_artist, pending_artist.package)
                 
                 return Response({
-                    "message": "Account verified successfully.",
-                    "username": user.username,
+                    "message": "OTP Verified. Proceed to payment.",
+                    "username": pending_artist.username,
                     "checkout_url": checkout_url
                 }, status=status.HTTP_200_OK)
-            except User.DoesNotExist:
-                 return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+                
+            except PendingArtist.DoesNotExist:
+                 return Response({"error": "Pending signup not found. Please signup again."}, status=status.HTTP_404_NOT_FOUND)
             except Exception as e:
-                return Response({"error": f"Error during activation: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response({"error": f"Error generation payment link: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response({"error": "Invalid or expired OTP."}, status=status.HTTP_400_BAD_REQUEST)
 

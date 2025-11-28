@@ -114,3 +114,17 @@ class PortfolioImage(models.Model):
 
     def __str__(self):
         return f"Portfolio image for {self.artist.artist_name}"
+
+
+class PendingArtist(models.Model):
+    """
+    Temporary storage for artist signup data until payment is confirmed.
+    """
+    email = models.EmailField(unique=True)
+    username = models.CharField(max_length=150)
+    password = models.CharField(max_length=128)  # Hashed password
+    package = models.CharField(max_length=20)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Pending: {self.email}"

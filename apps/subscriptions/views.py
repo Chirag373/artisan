@@ -16,31 +16,53 @@ class PaymentSuccessView(View):
             return redirect('signup')
 
         try:
-            # 1. Verify with Stripe (Double-check)
+            # 1. Verify with Stripe
             session = StripeService.retrieve_session(session_id)
-            user_id = session.client_reference_id
+            pending_id = session.client_reference_id
             
-            # 2. Get the User
-            user = User.objects.get(id=user_id)
-            plan_name = session.metadata.get('plan_name', 'basic')
+            # 2. Get Pending Artist
+            # We assume client_reference_id is the PendingArtist ID for new signups
+            # Note: For future upgrades of existing users, we'd need to check if user exists first
+            from apps.artists.models import PendingArtist, ArtistProfile
             
-            # 3. Activate Subscription locally
-            subscription, _ = Subscription.objects.get_or_create(user=user)
-            subscription.stripe_customer_id = session.customer
-            subscription.stripe_subscription_id = session.subscription
-            subscription.plan_name = plan_name
-            subscription.is_active = True
-            subscription.save()
-            
-            # 4. Update Profile metadata if needed
-            if hasattr(user, 'artist_profile'):
-                user.artist_profile.subscription_plan = plan_name
-                user.artist_profile.save()
-            
-            # 5. Redirect to Login with Success Alert
-            # We do NOT log them in automatically here, so they can log in via the form and get their JWT tokens.
-            return redirect('/login/?payment_success=true')
-            
+            try:
+                pending_artist = PendingArtist.objects.get(id=pending_id)
+                
+                # 3. Create User
+                user = User(
+                    username=pending_artist.username,
+                    email=pending_artist.email,
+                    is_active=True
+                )
+                user.password = pending_artist.password # Already hashed
+                user.save()
+                
+                # 4. Create Profile
+                ArtistProfile.objects.create(
+                    user=user,
+                    artist_name=user.username,
+                    subscription_plan=pending_artist.package
+                )
+                
+                # 5. Create Subscription
+                Subscription.objects.create(
+                    user=user,
+                    stripe_customer_id=session.customer,
+                    stripe_subscription_id=session.subscription,
+                    plan_name=pending_artist.package,
+                    is_active=True
+                )
+                
+                # 6. Cleanup
+                pending_artist.delete()
+                
+                return redirect('/login/?payment_success=true')
+                
+            except PendingArtist.DoesNotExist:
+                # Handle case where it might be an existing user (future proofing) or error
+                print(f"Pending artist not found for ID: {pending_id}")
+                return redirect('signup')
+
         except Exception as e:
             print(f"Payment verification failed: {e}")
             return redirect('login')
