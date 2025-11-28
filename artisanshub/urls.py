@@ -22,6 +22,7 @@ from apps.artists.views import ViewProfileView, JoinArtistView
 from apps.artists.api_views import (
     FeaturedArtistsAPIView,
     ArtistSignupAPIView,
+    ArtistVerifyOTPAPIView,
     ArtistDashboardAPIView,
     ArtistProfileDetailAPIView,
     RateArtistAPIView,
@@ -41,6 +42,7 @@ urlpatterns = [
     # API endpoints at root level
     path('api/featured-artists/', FeaturedArtistsAPIView.as_view(), name='api_featured_artists'),
     path('api/signup/artist/', ArtistSignupAPIView.as_view(), name='api_signup_artist'),
+    path('api/signup/artist/verify/', ArtistVerifyOTPAPIView.as_view(), name='api_signup_artist_verify'),
     path('api/artist/dashboard/', ArtistDashboardAPIView.as_view(), name='api_artist_dashboard'),
     path('api/artists/<slug:slug>/', ArtistProfileDetailAPIView.as_view(), name='api_artist_profile_detail'),
     path('api/artists/<slug:slug>/rate/', RateArtistAPIView.as_view(), name='api_rate_artist'),

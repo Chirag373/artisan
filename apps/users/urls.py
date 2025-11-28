@@ -13,6 +13,7 @@ urlpatterns = [
     
     # API endpoints
     path('api/signup/explorer/', api_views.ExplorerSignupAPIView.as_view(), name='api_signup_explorer'),
+    path('api/signup/explorer/verify/', api_views.ExplorerVerifyOTPAPIView.as_view(), name='api_signup_explorer_verify'),
     path('api/login/', api_views.CustomTokenObtainPairView.as_view(), name='api_login'),
     path('api/explorer/profile/', api_views.ExplorerProfileDetailView.as_view(), name='api_explorer_profile'),
     

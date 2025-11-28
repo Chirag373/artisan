@@ -132,7 +132,26 @@
 
                     <button type="submit"
                         class="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
-                        Create Explorer Account
+                        Sign Up & Get Code
+                    </button>
+                </form>
+
+                <form id="otpForm" class="space-y-6 hidden">
+                    <div class="text-center mb-4">
+                        <h3 class="text-lg font-medium text-gray-900">Enter Verification Code</h3>
+                        <p class="text-sm text-gray-500">We sent an 8-digit code to <span id="otp-email-display"
+                                class="font-semibold"></span></p>
+                    </div>
+                    <div>
+                        <label for="otp_code" class="block text-sm font-semibold text-gray-700 mb-2">Verification
+                            Code</label>
+                        <input type="text" id="otp_code" name="otp" required maxlength="8" pattern="\d{8}"
+                            class="block w-full px-3 py-3 border border-gray-200 rounded-xl leading-5 bg-[#FEFCE8] placeholder-gray-400 focus:outline-none focus:bg-[#FEFCE8] focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm text-center tracking-[0.5em] text-xl"
+                            placeholder="00000000">
+                    </div>
+                    <button type="submit"
+                        class="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                        Verify Account
                     </button>
                 </form>
 
@@ -331,6 +350,12 @@
         }
     });
 
+    // Get OTP elements
+    const otpForm = document.getElementById('otpForm');
+    const otpInput = document.getElementById('otp_code');
+    const otpEmailDisplay = document.getElementById('otp-email-display');
+    let signupEmail = '';
+
     // Form submission
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
@@ -392,6 +417,7 @@
         // If all validations pass, submit the form
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
+        signupEmail = data.email;
 
         try {
             const response = await fetch('/api/signup/explorer/', {
@@ -406,15 +432,18 @@
             const result = await response.json();
 
             if (response.ok) {
-                // Show success message and redirect after a short delay
+                // Show success message and switch to OTP form
                 errorDiv.classList.add('hidden');
                 const successDiv = document.getElementById('success-message');
                 successDiv.classList.remove('hidden');
-                // Optional: scroll to top to make sure user sees the message
+                document.getElementById('success-text').textContent = result.message;
+
+                // Hide signup form, show OTP form
+                form.classList.add('hidden');
+                otpForm.classList.remove('hidden');
+                otpEmailDisplay.textContent = signupEmail;
+
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                setTimeout(() => {
-                    window.location.href = "{% url 'login' %}";
-                }, 2000);
             } else {
                 // Show errors from backend
                 errorDiv.classList.remove('hidden');
@@ -437,6 +466,54 @@
             errorDiv.classList.remove('hidden');
             errorText.innerText = 'An unexpected error occurred. Please try again later.';
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
+
+    // OTP Form Submission
+    otpForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const otp = otpInput.value.trim();
+        if (otp.length !== 8) {
+            errorDiv.classList.remove('hidden');
+            errorText.innerText = 'Please enter a valid 8-digit code.';
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/signup/explorer/verify/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({
+                    email: signupEmail,
+                    otp: otp
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                const successDiv = document.getElementById('success-message');
+                successDiv.classList.remove('hidden');
+                document.getElementById('success-text').textContent = "Account verified! Redirecting to dashboard...";
+                otpForm.classList.add('hidden');
+                errorDiv.classList.add('hidden');
+
+                setTimeout(() => {
+                    window.location.href = "{% url 'explorer_dashboard' %}";
+                }, 2000);
+            } else {
+                errorDiv.classList.remove('hidden');
+                errorText.innerText = result.error || 'Verification failed. Please check the code and try again.';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        } catch (error) {
+            console.error(error);
+            errorDiv.classList.remove('hidden');
+            errorText.innerText = 'An error occurred during verification.';
         }
     });
 </script>

@@ -5,29 +5,91 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import login
 from django.db import transaction
+from django.contrib.auth.models import User
 from .models import ExplorerProfile
+from .otp_service import OTPService
 from .serializers import SignupSerializer, CustomTokenObtainPairSerializer, ExplorerProfileSerializer
 
 
 class ExplorerSignupAPIView(APIView):
     """
     API endpoint for Explorer (general user) signup.
+    Initiates the signup process by sending an OTP to the provided email.
     """
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
-            # Wrap in transaction to prevent zombie users
-            with transaction.atomic():
-                user = serializer.save()
-                # Create the associated ExplorerProfile
-                ExplorerProfile.objects.create(user=user)
+            email = serializer.validated_data['email']
+            password = serializer.validated_data['password']
             
-            return Response({
-                "message": "Explorer account created successfully",
-                "username": user.username
-            }, status=status.HTTP_201_CREATED)
+            # Check if user exists
+            try:
+                user = User.objects.get(email=email)
+                if user.is_active:
+                     return Response({"error": "User with this email already exists."}, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    # User exists but inactive, update password if needed
+                    user.set_password(password)
+                    user.save()
+            except User.DoesNotExist:
+                # Generate unique username
+                base_username = email.split('@')[0]
+                username = base_username
+                counter = 0
+                while User.objects.filter(username=username).exists():
+                    counter += 1
+                    username = f"{base_username}{counter}"
+
+                # Create inactive user
+                user = User.objects.create_user(username=username, email=email, password=password)
+                user.is_active = False
+                user.save()
+                ExplorerProfile.objects.create(user=user)
+
+            # Generate and Send OTP
+            otp = OTPService.generate_otp()
+            OTPService.store_otp(email, otp)
+            sent = OTPService.send_otp_email(email, otp)
+
+            if sent:
+                return Response({
+                    "message": "OTP sent to email. Please verify to complete signup.",
+                    "email": email
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Failed to send OTP email."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ExplorerVerifyOTPAPIView(APIView):
+    """
+    API endpoint to verify OTP and activate the explorer account.
+    """
+    def post(self, request):
+        email = request.data.get('email')
+        otp = request.data.get('otp')
+        
+        if not email or not otp:
+             return Response({"error": "Email and OTP are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if OTPService.verify_otp(email, otp):
+            try:
+                user = User.objects.get(email=email)
+                user.is_active = True
+                user.save()
+                
+                # Log the user in
+                login(request, user)
+                
+                return Response({
+                    "message": "Account verified successfully. You are now logged in.",
+                    "username": user.username
+                }, status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                 return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({"error": "Invalid or expired OTP."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):

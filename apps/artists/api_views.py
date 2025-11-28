@@ -9,12 +9,15 @@ from .models import ArtistProfile, Rating, PortfolioImage
 from .serializers import ArtistProfileSerializer, RatingSerializer
 from apps.users.serializers import SignupSerializer
 from apps.subscriptions.services import StripeService
+from apps.users.otp_service import OTPService
+from django.contrib.auth.models import User
+from django.contrib.auth import login
 
 
 class ArtistSignupAPIView(APIView):
     """
     API endpoint for Artist signup.
-    Handles the subscription package selection.
+    Handles the subscription package selection and initiates OTP verification.
     """
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
@@ -24,33 +27,99 @@ class ArtistSignupAPIView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            # 2. Atomic Transaction: Ensures both User and Profile are created, or neither.
-            with transaction.atomic():
-                user = serializer.save()
-                package = request.data.get('package', 'basic')
+            email = serializer.validated_data['email']
+            password = serializer.validated_data['password']
+            package = request.data.get('package', 'basic')
+
+            # 2. Check if user exists
+            try:
+                user = User.objects.get(email=email)
+                if user.is_active:
+                     return Response({"error": "User with this email already exists."}, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    # User exists but inactive, update password if needed
+                    user.set_password(password)
+                    user.save()
+                    # Update or create profile if it doesn't exist
+                    ArtistProfile.objects.update_or_create(
+                        user=user,
+                        defaults={'subscription_plan': package, 'artist_name': user.username}
+                    )
+            except User.DoesNotExist:
+                # Generate unique username
+                base_username = email.split('@')[0]
+                username = base_username
+                counter = 0
+                while User.objects.filter(username=username).exists():
+                    counter += 1
+                    username = f"{base_username}{counter}"
+
+                # Create inactive user
+                user = User.objects.create_user(username=username, email=email, password=password)
+                user.is_active = False
+                user.save()
                 
                 ArtistProfile.objects.create(
                     user=user,
                     artist_name=user.username,
                     subscription_plan=package
                 )
-                
-                # Create Stripe Checkout Session
-                checkout_url = StripeService.create_checkout_session(user, package)
 
-            return Response({
-                "message": "Artist account created successfully",
-                "username": user.username,
-                "package": package,
-                "checkout_url": checkout_url
-            }, status=status.HTTP_201_CREATED)
+            # 3. Generate and Send OTP
+            otp = OTPService.generate_otp()
+            OTPService.store_otp(email, otp)
+            sent = OTPService.send_otp_email(email, otp)
+
+            if sent:
+                return Response({
+                    "message": "OTP sent to email. Please verify to complete signup.",
+                    "email": email
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Failed to send OTP email."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         except Exception as e:
-            # No need to manually delete user; transaction.atomic handles the rollback
             return Response(
                 {"error": f"Failed to create artist profile: {str(e)}"}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+class ArtistVerifyOTPAPIView(APIView):
+    """
+    API endpoint to verify OTP, activate the artist account, and generate Stripe session.
+    """
+    def post(self, request):
+        email = request.data.get('email')
+        otp = request.data.get('otp')
+        
+        if not email or not otp:
+             return Response({"error": "Email and OTP are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if OTPService.verify_otp(email, otp):
+            try:
+                user = User.objects.get(email=email)
+                user.is_active = True
+                user.save()
+                
+                # Log the user in
+                login(request, user)
+                
+                # Get profile and create Stripe session
+                profile = user.artist_profile
+                checkout_url = StripeService.create_checkout_session(user, profile.subscription_plan)
+                
+                return Response({
+                    "message": "Account verified successfully.",
+                    "username": user.username,
+                    "checkout_url": checkout_url
+                }, status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                 return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+            except Exception as e:
+                return Response({"error": f"Error during activation: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response({"error": "Invalid or expired OTP."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ArtistDashboardAPIView(APIView):

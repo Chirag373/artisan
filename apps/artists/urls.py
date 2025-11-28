@@ -10,6 +10,7 @@ urlpatterns = [
     
     # API endpoints (most are in main urls.py at root level)
     path('api/signup/', api_views.ArtistSignupAPIView.as_view(), name='api_signup_artist'),
+    path('api/signup/verify/', api_views.ArtistVerifyOTPAPIView.as_view(), name='api_signup_artist_verify'),
     path('api/dashboard/', api_views.ArtistDashboardAPIView.as_view(), name='api_artist_dashboard'),
     path('api/featured/', api_views.FeaturedArtistsAPIView.as_view(), name='api_featured_artists'),
     path('api/<slug:slug>/', api_views.ArtistProfileDetailAPIView.as_view(), name='api_artist_profile_detail'),
