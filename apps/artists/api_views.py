@@ -146,6 +146,7 @@ class FeaturedArtistsAPIView(APIView):
     def get(self, request):
         query = request.query_params.get('q')
         location = request.query_params.get('location')
+        featured_only = request.query_params.get('featured_only', '').lower() == 'true'
         
         try:
             page = int(request.query_params.get('page', 1))
@@ -158,6 +159,10 @@ class FeaturedArtistsAPIView(APIView):
         offset = (page - 1) * page_size
         
         queryset = ArtistProfile.objects.filter(is_visible=True).select_related('user')
+        
+        # Filter for featured/premium artists only if requested
+        if featured_only:
+            queryset = queryset.filter(subscription_plan='premium')
         
         if query or location:
             if query:

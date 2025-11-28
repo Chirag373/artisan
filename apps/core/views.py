@@ -34,3 +34,8 @@ class ContentPolicyView(TemplateView):
 class PrivacyView(TemplateView):
     """Privacy Policy page view"""
     template_name = 'privacy.html'
+
+
+class PremiumArtistsView(TemplateView):
+    """Premium Artists page view"""
+    template_name = 'premium_artists.html'
