@@ -486,7 +486,7 @@
                 const textFields = [
                     'artist_name', 'slug', 'full_bio', 'short_bio', 'seo_tags',
                     'etsy_url', 'shopify_url', 'instagram_url', 'tiktok_url',
-                    'first_name', 'last_name', 'contact_email', 'website_url'
+                    'first_name', 'last_name', 'website_url'
                 ];
 
                 textFields.forEach(field => {
@@ -495,6 +495,12 @@
                         if (input) input.value = data[field];
                     }
                 });
+
+                // Populate Contact Email with User Email (Signup Email)
+                if (data.email) {
+                    const emailInput = document.getElementById('contact_email');
+                    if (emailInput) emailInput.value = data.email;
+                }
 
                 // Handle location fields with cascading
                 const stateValue = data.location_state || '';
