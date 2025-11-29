@@ -243,16 +243,16 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="profile_image" class="block text-sm font-medium text-gray-700 mb-2">
-                            Profile Image *
+                            Business Card *
                         </label>
                         <div class="mb-2">
-                            <img id="current_profile_image" src="" alt="Current Profile Image"
-                                class="w-32 h-32 object-cover rounded-md hidden">
+                            <img id="current_profile_image" src="" alt="Current Business Card"
+                                class="w-auto h-32 object-contain rounded-md hidden">
                         </div>
                         <input type="file" id="profile_image" name="profile_image"
                             accept="image/jpeg,image/png,image/jpg,image/webp"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <p class="mt-1 text-sm text-gray-500">Square image recommended (400x400px)</p>
+                        <p class="mt-1 text-sm text-gray-500">Prefer horizontal business card</p>
                     </div>
 
                     <div>
@@ -574,8 +574,8 @@
             }
 
             portfolioGrid.innerHTML = images.map(img => `
-                <div class="relative group aspect-square rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
-                    <img src="${img.image}" class="w-full h-full object-cover" alt="Portfolio Image">
+                <div class="relative group rounded-lg overflow-hidden bg-gray-100 border border-gray-200 flex flex-col justify-center h-full">
+                    <img src="${img.image}" class="w-full h-auto object-contain" alt="Portfolio Image">
                     <button onclick="deletePortfolioImage(${img.id})" 
                         class="peer absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700 focus:outline-none z-10">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
