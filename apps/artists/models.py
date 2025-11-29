@@ -54,6 +54,8 @@ class ArtistProfile(models.Model):
     shopify_url = models.URLField(blank=True, max_length=500)
     instagram_url = models.URLField(blank=True, max_length=500)
     tiktok_url = models.URLField(blank=True, max_length=500)
+    website_url = models.URLField(blank=True, max_length=500, help_text="Personal website URL")
+    contact_email = models.EmailField(blank=True, max_length=255, help_text="Public contact email")
 
     profile_image = models.ImageField(upload_to='artist_profiles/', blank=True, null=True, help_text="Profile image (400x400px)")
     banner_image = models.ImageField(upload_to='artist_banners/', blank=True, null=True, help_text="Banner image")

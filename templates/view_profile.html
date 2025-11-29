@@ -85,9 +85,10 @@
 
                         <div class="pb-1 md:pb-4 text-center md:text-left">
                             <h1
-                                class="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center md:justify-start gap-2">
+                                class="text-3xl font-bold text-gray-900 mb-1 flex items-center justify-center md:justify-start gap-2">
                                 <span id="artist-name"></span>
                             </h1>
+                            <p id="artist-real-name" class="text-lg text-gray-600 mb-2 hidden font-medium"></p>
 
                             <div
                                 class="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-2 text-sm text-gray-600">
@@ -111,7 +112,7 @@
                                     </span>
                                 </span>
                             </div>
-                            <p id="short-bio" class="text-gray-700 mt-2 max-w-2xl hidden"></p>
+
 
                             <div id="categories-container"
                                 class="flex flex-wrap justify-center md:justify-start gap-2 mb-2">
@@ -513,14 +514,19 @@
         document.title = `${artist.artist_name} - ArtistaHub Profile`;
 
         // Basic Info
+        // Basic Info
         document.getElementById('artist-name').innerText = artist.artist_name;
+
+        if (artist.first_name || artist.last_name) {
+            const realName = [artist.first_name, artist.last_name].filter(Boolean).join(' ');
+            const realNameEl = document.getElementById('artist-real-name');
+            realNameEl.innerText = realName;
+            realNameEl.classList.remove('hidden');
+        }
+
         document.getElementById('location-text').innerText = `${artist.location_city || 'Unknown'}, ${artist.location_state || ''}`;
 
-        if (artist.short_bio) {
-            const shortBioEl = document.getElementById('short-bio');
-            shortBioEl.textContent = artist.short_bio;
-            shortBioEl.classList.remove('hidden');
-        }
+
 
         // Images
         const profileImg = document.getElementById('profile-image');
@@ -565,6 +571,26 @@
         // Social Links
         const socialContainer = document.getElementById('social-links');
         let socialHtml = '';
+
+        if (artist.website_url) {
+            socialHtml += `
+                <a href="${artist.website_url}" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group border border-transparent hover:border-gray-100">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white shrink-0">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                    </div>
+                    <span class="font-medium text-gray-700 group-hover:text-blue-600">Official Website</span>
+                </a>`;
+        }
+
+        if (artist.contact_email) {
+            socialHtml += `
+                <a href="mailto:${artist.contact_email}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group border border-transparent hover:border-gray-100">
+                    <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white shrink-0">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </div>
+                    <span class="font-medium text-gray-700 group-hover:text-gray-900">Contact Email</span>
+                </a>`;
+        }
 
         if (artist.etsy_url) {
             socialHtml += `
