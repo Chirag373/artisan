@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ artist.artist_name|default:"Artist Profile" }} - ArtisansHub{% endblock %}
+{% block title %}{{ artist.artist_name|default:"Artist Profile" }} - ArtistaHub{% endblock %}
 
 {% block meta_tags %}
 {% if artist %}
@@ -10,7 +10,7 @@
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="profile">
-<meta property="og:title" content="{{ artist.artist_name }} - ArtisansHub">
+<meta property="og:title" content="{{ artist.artist_name }} - ArtistaHub">
 <meta property="og:description" content="{{ artist.full_bio|striptags|truncatechars:160 }}">
 {% if artist.profile_image %}
 <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ artist.profile_image.url }}">
@@ -18,7 +18,7 @@
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:title" content="{{ artist.artist_name }} - ArtisansHub">
+<meta property="twitter:title" content="{{ artist.artist_name }} - ArtistaHub">
 <meta property="twitter:description" content="{{ artist.full_bio|striptags|truncatechars:160 }}">
 {% if artist.profile_image %}
 <meta property="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ artist.profile_image.url }}">
@@ -483,7 +483,7 @@
         document.getElementById('profile-content').classList.remove('hidden');
 
         // Update Page Title
-        document.title = `${artist.artist_name} - ArtisansHub Profile`;
+        document.title = `${artist.artist_name} - ArtistaHub Profile`;
 
         // Basic Info
         document.getElementById('artist-name').innerText = artist.artist_name;
