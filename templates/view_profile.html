@@ -1,28 +1,41 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ artist.artist_name|default:"Artist Profile" }} - ArtistaHub{% endblock %}
+{% block title %}{{ artist.artist_name }} – {{ artist.categories|join:", " }} | ArtistaHub{% endblock %}
 
 {% block meta_tags %}
 {% if artist %}
-<meta name="description" content="{{ artist.full_bio|striptags|truncatechars:160 }}">
-<meta name="keywords" content="{{ artist.seo_tags }}">
+<!-- Dynamic SEO Title -->
+<!-- Note: Title is handled in block title -->
 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="profile">
-<meta property="og:title" content="{{ artist.artist_name }} - ArtistaHub">
-<meta property="og:description" content="{{ artist.full_bio|striptags|truncatechars:160 }}">
+<!-- Dynamic Meta Description -->
+<meta name="description" content="{{ artist.short_bio|default:artist.full_bio|striptags|truncatechars:160 }}">
+
+<!-- Open Graph / Social Sharing -->
+<meta property="og:title" content="{{ artist.artist_name }} – {{ artist.categories|join:" , " }}">
+<meta property="og:description" content="{{ artist.short_bio|default:artist.full_bio|striptags|truncatechars:160 }}">
 {% if artist.profile_image %}
 <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ artist.profile_image.url }}">
 {% endif %}
 
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:title" content="{{ artist.artist_name }} - ArtistaHub">
-<meta property="twitter:description" content="{{ artist.full_bio|striptags|truncatechars:160 }}">
-{% if artist.profile_image %}
-<meta property="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ artist.profile_image.url }}">
-{% endif %}
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "{{ artist.artist_name }}",
+      "url": "{{ request.build_absolute_uri }}",
+      {% if artist.profile_image %}"image": "{{ request.scheme }}://{{ request.get_host }}{{ artist.profile_image.url }}",{% endif %}
+      "sameAs": [
+        {% if artist.etsy_url %}"{{ artist.etsy_url }}",{% endif %}
+        {% if artist.shopify_url %}"{{ artist.shopify_url }}",{% endif %}
+        {% if artist.instagram_url %}"{{ artist.instagram_url }}",{% endif %}
+        {% if artist.tiktok_url %}"{{ artist.tiktok_url }}"{% endif %}
+      ],
+      "jobTitle": "Independent Artist",
+      "description": "{{ artist.full_bio|striptags|escapejs }}"
+    }
+    </script>
 {% else %}
 {{ block.super }}
 {% endif %}
@@ -51,7 +64,7 @@
     </div>
 
     <div id="profile-content" class="hidden">
-        <div class="bg-[#FEFCE8] rounded-2xl shadow-sm border border-gray-400 overflow-hidden mb-8">
+        <header class="bg-[#FEFCE8] rounded-2xl shadow-sm border border-gray-400 overflow-hidden mb-8">
             <div class="px-6 pb-6 pt-6">
                 <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-2">
                     <div class="flex flex-col md:flex-row md:items-end gap-6">
@@ -120,10 +133,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2 space-y-8">
+            <section class="lg:col-span-2 space-y-8">
                 <div class="bg-[#FEFCE8] rounded-2xl shadow-sm border border-gray-400 p-6 md:p-8">
                     <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                         About the Artist
@@ -154,9 +167,9 @@
                     <p id="no-featured-work" class="text-sm text-gray-500 mt-4 italic text-center hidden">No featured
                         work available yet.</p>
                 </div>
-            </div>
+            </section>
 
-            <div class="space-y-6">
+            <aside class="space-y-6">
                 <div class="bg-[#FEFCE8] rounded-2xl shadow-sm border border-gray-400 p-6">
                     <h3 class="font-semibold text-gray-900 mb-4">Connect</h3>
                     <div class="space-y-3" id="social-links">
@@ -214,7 +227,20 @@
                         </button>
                     </div>
                 </div>
-            </div>
+
+                <!-- Related / Category links -->
+                {% if related_artists %}
+                <div class="bg-[#FEFCE8] rounded-2xl shadow-sm border border-gray-400 p-6">
+                    <h3 class="font-semibold text-gray-900 mb-4">Other {{ artist.categories|join:", " }} Artists</h3>
+                    <ul class="space-y-2">
+                        {% for other in related_artists %}
+                        <li><a href="/artists/{{ other.slug }}/" class="text-blue-600 hover:underline">{{
+                                other.artist_name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </aside>
         </div>
     </div>
 </div>
