@@ -48,8 +48,8 @@ urlpatterns = [
     path('api/artists/<slug:slug>/rate/', RateArtistAPIView.as_view(), name='api_rate_artist'),
     path('api/portfolio/upload/', PortfolioUploadAPIView.as_view(), name='api_portfolio_upload'),
     path('api/portfolio/<int:image_id>/', PortfolioUploadAPIView.as_view(), name='api_portfolio_delete'),
-    path('profile/', ViewProfileView.as_view(), name='view_profile'),
-    path('profile/<slug:slug>/', ViewProfileView.as_view(), name='view_profile_with_slug'),
+    path('artist/', ViewProfileView.as_view(), name='view_profile'),
+    path('artist/<slug:slug>/', ViewProfileView.as_view(), name='view_profile_with_slug'),
     path('join-artist/', JoinArtistView.as_view(), name='join_artist'),
 ]
 
