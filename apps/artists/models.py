@@ -63,10 +63,31 @@ class ArtistProfile(models.Model):
     subscription_plan = models.CharField(max_length=20, choices=SUBSCRIPTION_CHOICES, default='basic')
     rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     is_featured = models.BooleanField(default=False)
-    is_visible = models.BooleanField(default=True, help_text="Toggle to show/hide profile from public listings")
+    is_visible = models.BooleanField(default=False, help_text="Toggle to show/hide profile from public listings")
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def check_completeness(self):
+        """
+        Checks if all mandatory fields are filled.
+        Returns (is_complete, missing_fields)
+        """
+        mandatory_fields = [
+            'artist_name', 'slug', 'location_state', 'location_city', 
+            'short_bio', 'full_bio', 'categories', 'profile_image'
+        ]
+        missing_fields = []
+        
+        for field in mandatory_fields:
+            value = getattr(self, field)
+            if not value:
+                # Special handling for list/json fields if needed, but 'not []' works for empty list
+                missing_fields.append(field)
+            elif field == 'profile_image' and not value:
+                missing_fields.append(field)
+                
+        return len(missing_fields) == 0, missing_fields
 
     def save(self, *args, **kwargs):
         # Auto-generate slug only if it doesn't exist

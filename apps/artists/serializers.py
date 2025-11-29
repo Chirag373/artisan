@@ -15,6 +15,9 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(source='user.last_name', required=False)
     portfolio_images = PortfolioImageSerializer(many=True, read_only=True)
     
+    is_complete = serializers.SerializerMethodField()
+    missing_fields = serializers.SerializerMethodField()
+    
     class Meta:
         model = ArtistProfile
         fields = [
@@ -23,9 +26,17 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             'etsy_url', 'shopify_url', 'instagram_url', 'tiktok_url', 'website_url', 'contact_email',
             'profile_image', 'banner_image',
             'subscription_plan', 'email', 'first_name', 'last_name', 'rating', 'is_featured', 'is_visible',
-            'portfolio_images'
+            'portfolio_images', 'is_complete', 'missing_fields'
         ]
-        read_only_fields = ['subscription_plan', 'email']
+        read_only_fields = ['subscription_plan', 'email', 'is_complete', 'missing_fields']
+
+    def get_is_complete(self, obj):
+        is_complete, _ = obj.check_completeness()
+        return is_complete
+
+    def get_missing_fields(self, obj):
+        _, missing = obj.check_completeness()
+        return missing
 
     def update(self, instance, validated_data):
         # Handle User fields
@@ -39,12 +50,18 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
                 user.last_name = user_data['last_name']
             user.save()
 
-        # Categories are expected to be a list
-        if 'categories' in validated_data:
-            # Ensure it's a list (though JSONField/ListField usually handles this)
-            pass
+        # Update instance first
+        instance = super().update(instance, validated_data)
+        
+        # Check completeness after update
+        is_complete, _ = instance.check_completeness()
+        
+        # If not complete, force is_visible to False
+        if not is_complete and instance.is_visible:
+            instance.is_visible = False
+            instance.save(update_fields=['is_visible'])
             
-        return super().update(instance, validated_data)
+        return instance
 
 
 class RatingSerializer(serializers.ModelSerializer):
