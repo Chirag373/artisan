@@ -16,7 +16,7 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArtistProfile
         fields = [
-            'artist_name', 'slug', 'full_bio', 'location_city', 'location_state',
+            'artist_name', 'slug', 'full_bio', 'short_bio', 'location_city', 'location_state',
             'product_keywords', 'seo_tags', 'categories',
             'etsy_url', 'shopify_url', 'instagram_url', 'tiktok_url',
             'profile_image', 'banner_image',

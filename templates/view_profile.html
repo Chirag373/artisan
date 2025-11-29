@@ -98,6 +98,7 @@
                                     </span>
                                 </span>
                             </div>
+                            <p id="short-bio" class="text-gray-700 mt-2 max-w-2xl hidden"></p>
 
                             <div id="categories-container"
                                 class="flex flex-wrap justify-center md:justify-start gap-2 mb-2">
@@ -488,6 +489,12 @@
         // Basic Info
         document.getElementById('artist-name').innerText = artist.artist_name;
         document.getElementById('location-text').innerText = `${artist.location_city || 'Unknown'}, ${artist.location_state || ''}`;
+
+        if (artist.short_bio) {
+            const shortBioEl = document.getElementById('short-bio');
+            shortBioEl.textContent = artist.short_bio;
+            shortBioEl.classList.remove('hidden');
+        }
 
         // Images
         const profileImg = document.getElementById('profile-image');

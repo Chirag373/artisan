@@ -158,6 +158,14 @@
             <div class="border-b border-gray-400 pb-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Biography</h3>
                 <div>
+                    <label for="short_bio" class="block text-sm font-medium text-gray-700 mb-2">
+                        Short Bio
+                    </label>
+                    <input type="text" id="short_bio" name="short_bio"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-4"
+                        placeholder="A brief summary of who you are (max 255 chars)" maxlength="255">
+                </div>
+                <div>
                     <label for="full_bio" class="block text-sm font-medium text-gray-700 mb-2">
                         Full Bio *
                     </label>
@@ -427,7 +435,7 @@
 
                 // Populate Text Inputs (excluding location fields)
                 const textFields = [
-                    'artist_name', 'slug', 'full_bio', 'seo_tags',
+                    'artist_name', 'slug', 'full_bio', 'short_bio', 'seo_tags',
                     'etsy_url', 'shopify_url', 'instagram_url', 'tiktok_url'
                 ];
 
@@ -700,7 +708,7 @@
 
             // Add text fields
             const textFields = [
-                'artist_name', 'slug', 'full_bio', 'location_city', 'location_state',
+                'artist_name', 'slug', 'full_bio', 'short_bio', 'location_city', 'location_state',
                 'seo_tags', 'etsy_url', 'shopify_url', 'instagram_url', 'tiktok_url'
             ];
 

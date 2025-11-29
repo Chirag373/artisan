@@ -235,9 +235,13 @@
 
                         <!-- Bio -->
                         <div class="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-2">
-                            <p>${artist.full_bio && artist.full_bio.length > 100
+                            ${artist.short_bio ? `
+                                <p>${artist.short_bio}</p>
+                            ` : `
+                                <p>${artist.full_bio && artist.full_bio.length > 100
                         ? artist.full_bio.substring(0, 100) + '...'
                         : (artist.full_bio || 'No bio available.')}</p>
+                            `}
                         </div>
 
                         <!-- Portfolio Preview Grid (8 images behind View Profile) -->

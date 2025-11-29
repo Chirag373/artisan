@@ -32,6 +32,7 @@ class ArtistProfile(models.Model):
     artist_name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, max_length=255, help_text="URL-friendly version of artist name")
     full_bio = models.TextField(help_text="Full biography for SEO", blank=True)
+    short_bio = models.CharField(max_length=255, blank=True, help_text="Short bio for cards and summaries")
     
     location_city = models.CharField(max_length=100, blank=True)
     location_state = models.CharField(max_length=100, blank=True)
