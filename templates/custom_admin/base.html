@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin - ArtistaHub{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-link.active { background-color: rgb(37 99 235 / 0.1); color: rgb(37 99 235); }
+    </style>
+</head>
+<body class="bg-[#FEFCE8] min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-gray-200 fixed h-full hidden lg:block">
+            <div class="p-6 border-b border-gray-200">
+                <h1 class="text-xl font-bold text-blue-600">ArtistaHub</h1>
+                <p class="text-xs text-gray-500 mt-1">Admin Panel</p>
+            </div>
+            <nav class="p-4 space-y-1">
+                <a href="{% url 'custom_admin:dashboard' %}" 
+                   class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="{% url 'custom_admin:user_list' %}" 
+                   class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors {% if 'user' in request.resolver_match.url_name %}active{% endif %}">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    Users
+                </a>
+                <a href="{% url 'custom_admin:payment_list' %}" 
+                   class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors {% if request.resolver_match.url_name == 'payment_list' %}active{% endif %}">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                    </svg>
+                    Payments
+                </a>
+                <a href="{% url 'custom_admin:plan_pricing' %}" 
+                   class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors {% if request.resolver_match.url_name == 'plan_pricing' %}active{% endif %}">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Plan Pricing
+                </a>
+                <a href="{% url 'custom_admin:stripe_promo' %}" 
+                   class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors {% if request.resolver_match.url_name == 'stripe_promo' %}active{% endif %}">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                    </svg>
+                    Promo Codes
+                </a>
+                <a href="{% url 'custom_admin:visitor_stats' %}" 
+                   class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors {% if request.resolver_match.url_name == 'visitor_stats' %}active{% endif %}">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    Visitors
+                </a>
+            </nav>
+            <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                        {{ request.user.username|slice:":1"|upper }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900">{{ request.user.username }}</p>
+                        <p class="text-xs text-gray-500">Administrator</p>
+                    </div>
+                </div>
+                <a href="{% url 'custom_admin:logout' %}" 
+                   class="flex items-center gap-2 text-sm text-red-600 hover:text-red-700">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Mobile Header -->
+        <div class="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
+            <div class="flex items-center justify-between p-4">
+                <h1 class="text-lg font-bold text-blue-600">ArtistaHub Admin</h1>
+                <button id="mobile-menu-btn" class="p-2 text-gray-600">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Sidebar Overlay -->
+        <div id="mobile-sidebar" class="lg:hidden fixed inset-0 z-50 hidden">
+            <div class="absolute inset-0 bg-black/50" onclick="document.getElementById('mobile-sidebar').classList.add('hidden')"></div>
+            <aside class="absolute left-0 top-0 bottom-0 w-64 bg-white">
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <div>
+                        <h1 class="text-xl font-bold text-blue-600">ArtistaHub</h1>
+                        <p class="text-xs text-gray-500 mt-1">Admin Panel</p>
+                    </div>
+                    <button onclick="document.getElementById('mobile-sidebar').classList.add('hidden')" class="p-2">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <nav class="p-4 space-y-1">
+                    <a href="{% url 'custom_admin:dashboard' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100">Dashboard</a>
+                    <a href="{% url 'custom_admin:user_list' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100">Users</a>
+                    <a href="{% url 'custom_admin:payment_list' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100">Payments</a>
+                    <a href="{% url 'custom_admin:plan_pricing' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100">Plan Pricing</a>
+                    <a href="{% url 'custom_admin:stripe_promo' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100">Promo Codes</a>
+                    <a href="{% url 'custom_admin:visitor_stats' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100">Visitors</a>
+                </nav>
+                <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+                    <a href="{% url 'custom_admin:logout' %}" class="flex items-center gap-2 text-sm text-red-600">Logout</a>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Main Content -->
+        <main class="flex-1 lg:ml-64 pt-16 lg:pt-0">
+            <div class="p-6 lg:p-8">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', function() {
+            document.getElementById('mobile-sidebar').classList.remove('hidden');
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

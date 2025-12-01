@@ -1,0 +1,108 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Users - Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">Users</h1>
+    <p class="text-gray-500 mt-1">Manage all registered users</p>
+</div>
+
+<!-- Filters -->
+<div class="bg-white rounded-xl border border-gray-200 p-4 mb-6">
+    <form method="GET" class="flex flex-col sm:flex-row gap-4">
+        <div class="flex-1">
+            <input type="text" name="search" value="{{ search }}" placeholder="Search by username, email..."
+                class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm">
+        </div>
+        <div class="flex gap-2">
+            <select name="role" class="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 text-sm bg-white">
+                <option value="all" {% if role_filter == 'all' %}selected{% endif %}>All Roles</option>
+                <option value="artist" {% if role_filter == 'artist' %}selected{% endif %}>Artists</option>
+                <option value="explorer" {% if role_filter == 'explorer' %}selected{% endif %}>Explorers</option>
+            </select>
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition">
+                Filter
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- User Table -->
+<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">User</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Subscription</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden lg:table-cell">Joined</th>
+                    <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for item in users %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-medium flex-shrink-0">
+                                {{ item.user.username|slice:":1"|upper }}
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">{{ item.user.username }}</p>
+                                <p class="text-xs text-gray-500 truncate">{{ item.user.email }}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        {% if item.role == 'artist' %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            Artist
+                        </span>
+                        {% elif item.role == 'explorer' %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Explorer
+                        </span>
+                        {% else %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            Unknown
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 hidden md:table-cell">
+                        {% if item.subscription %}
+                        <div>
+                            <span class="text-sm text-gray-900 capitalize">{{ item.subscription.plan_name }}</span>
+                            {% if item.subscription.is_active %}
+                            <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700">Active</span>
+                            {% else %}
+                            <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-red-100 text-red-700">Inactive</span>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <span class="text-sm text-gray-400">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 hidden lg:table-cell">
+                        <span class="text-sm text-gray-500">{{ item.user.date_joined|date:"M d, Y" }}</span>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="{% url 'custom_admin:user_detail' item.user.id %}" 
+                           class="inline-flex items-center px-3 py-1.5 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition">
+                            View
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                        No users found
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

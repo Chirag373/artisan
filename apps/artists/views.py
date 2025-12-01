@@ -18,6 +18,16 @@ class JoinArtistView(TemplateView):
             return redirect('signup')
         
         return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            from apps.custom_admin.models import PlanPricing
+            plans = PlanPricing.objects.all()
+            context['pricing'] = {p.plan_name: p.price_dollars for p in plans}
+        except:
+            context['pricing'] = {'basic': 29, 'express': 59, 'premium': 99}
+        return context
 
 
 @method_decorator(never_cache, name='dispatch')

@@ -5,18 +5,25 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class StripeService:
     @staticmethod
+    def get_plan_price(plan_name):
+        """
+        Get plan price from database, fallback to defaults.
+        """
+        try:
+            from apps.custom_admin.models import PlanPricing
+            plan = PlanPricing.objects.get(plan_name=plan_name.lower())
+            return plan.price_cents
+        except:
+            # Fallback pricing
+            defaults = {'basic': 2900, 'express': 5900, 'premium': 9900}
+            return defaults.get(plan_name.lower(), 2900)
+
+    @staticmethod
     def create_checkout_session(user, plan_name):
         """
         Creates a Stripe Checkout Session for a new subscription.
         """
-        # Pricing Map (In cents)
-        prices = {
-            'basic': 2900,   # $29.00
-            'express': 5900, # $59.00
-            'premium': 9900  # $99.00
-        }
-        
-        amount = prices.get(plan_name.lower(), 2900)
+        amount = StripeService.get_plan_price(plan_name)
         
         # Where to go after Stripe
         success_url = f"{settings.BASE_URL}/subscriptions/success/?session_id={{CHECKOUT_SESSION_ID}}"

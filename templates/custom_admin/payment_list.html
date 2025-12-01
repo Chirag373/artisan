@@ -1,0 +1,109 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Payments - Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">Payments & Subscriptions</h1>
+    <p class="text-gray-500 mt-1">View all user subscriptions and payment details</p>
+</div>
+
+<!-- Quick Stats -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+    <div class="bg-white rounded-xl p-4 border border-gray-200">
+        <p class="text-sm text-gray-500">Total Subscriptions</p>
+        <p class="text-2xl font-bold text-gray-900">{{ subscriptions.count }}</p>
+    </div>
+    <div class="bg-white rounded-xl p-4 border border-gray-200">
+        <p class="text-sm text-gray-500">Active</p>
+        <p class="text-2xl font-bold text-green-600">{{ subscriptions|length }}</p>
+    </div>
+    <div class="bg-white rounded-xl p-4 border border-gray-200">
+        <p class="text-sm text-gray-500">Stripe Dashboard</p>
+        <a href="https://dashboard.stripe.com/subscriptions" target="_blank" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+            View in Stripe →
+        </a>
+    </div>
+</div>
+
+<!-- Subscriptions Table -->
+<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">User</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Plan</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Created</th>
+                    <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for sub in subscriptions %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-medium flex-shrink-0">
+                                {{ sub.user.username|slice:":1"|upper }}
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">{{ sub.user.username }}</p>
+                                <p class="text-xs text-gray-500 truncate">{{ sub.user.email }}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize
+                            {% if sub.plan_name == 'premium' %}bg-purple-100 text-purple-800
+                            {% elif sub.plan_name == 'express' %}bg-blue-100 text-blue-800
+                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {{ sub.plan_name }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        {% if sub.is_active %}
+                        <span class="inline-flex items-center gap-1 text-sm text-green-600">
+                            <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                            Active
+                        </span>
+                        {% else %}
+                        <span class="inline-flex items-center gap-1 text-sm text-red-600">
+                            <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                            Inactive
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 hidden md:table-cell">
+                        <span class="text-sm text-gray-500">{{ sub.created_at|date:"M d, Y" }}</span>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                            <a href="{% url 'custom_admin:user_detail' sub.user.id %}" 
+                               class="text-sm text-blue-600 hover:text-blue-700">
+                                View User
+                            </a>
+                            {% if sub.stripe_customer_id %}
+                            <a href="https://dashboard.stripe.com/customers/{{ sub.stripe_customer_id }}" 
+                               target="_blank"
+                               class="text-sm text-gray-500 hover:text-gray-700">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                </svg>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                        No subscriptions found
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

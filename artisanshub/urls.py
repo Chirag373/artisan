@@ -31,6 +31,7 @@ from apps.artists.api_views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('custom-admin/', include('apps.custom_admin.urls', namespace='custom_admin')),
     
     path('', include('apps.core.urls')),
     

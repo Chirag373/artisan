@@ -26,7 +26,7 @@
                     <h3 class="text-2xl font-bold text-gray-900 mb-2">Basic</h3>
                     <div class="flex items-baseline justify-center">
                         <span class="text-4xl font-bold text-gray-900">$</span>
-                        <span class="text-5xl font-bold text-gray-900">29</span>
+                        <span class="text-5xl font-bold text-gray-900">{{ pricing.basic|floatformat:0|default:"29" }}</span>
                         <span class="text-gray-500 ml-2">/month</span>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                     <h3 class="text-2xl font-bold text-gray-900 mb-2">Express</h3>
                     <div class="flex items-baseline justify-center">
                         <span class="text-4xl font-bold text-gray-900">$</span>
-                        <span class="text-5xl font-bold text-gray-900">59</span>
+                        <span class="text-5xl font-bold text-gray-900">{{ pricing.express|floatformat:0|default:"59" }}</span>
                         <span class="text-gray-500 ml-2">/month</span>
                     </div>
                 </div>
@@ -123,7 +123,7 @@
                     <h3 class="text-2xl font-bold text-gray-900 mb-2">Premium</h3>
                     <div class="flex items-baseline justify-center">
                         <span class="text-4xl font-bold text-gray-900">$</span>
-                        <span class="text-5xl font-bold text-gray-900">99</span>
+                        <span class="text-5xl font-bold text-gray-900">{{ pricing.premium|floatformat:0|default:"99" }}</span>
                         <span class="text-gray-500 ml-2">/month</span>
                     </div>
                 </div>

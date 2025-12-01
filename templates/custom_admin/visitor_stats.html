@@ -1,0 +1,95 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Visitor Stats - Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">Visitor Statistics</h1>
+    <p class="text-gray-500 mt-1">Track public visitors on your website</p>
+</div>
+
+<!-- Time Period Stats -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <div class="bg-white rounded-xl border border-gray-200 p-6">
+        <h3 class="text-sm font-medium text-gray-500 mb-4">Last 24 Hours</h3>
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <p class="text-2xl font-bold text-gray-900">{{ stats.today.total }}</p>
+                <p class="text-xs text-gray-500">Total Visits</p>
+            </div>
+            <div>
+                <p class="text-2xl font-bold text-blue-600">{{ stats.today.unique }}</p>
+                <p class="text-xs text-gray-500">Unique Visitors</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 p-6">
+        <h3 class="text-sm font-medium text-gray-500 mb-4">Last 7 Days</h3>
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <p class="text-2xl font-bold text-gray-900">{{ stats.week.total }}</p>
+                <p class="text-xs text-gray-500">Total Visits</p>
+            </div>
+            <div>
+                <p class="text-2xl font-bold text-blue-600">{{ stats.week.unique }}</p>
+                <p class="text-xs text-gray-500">Unique Visitors</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 p-6">
+        <h3 class="text-sm font-medium text-gray-500 mb-4">Last 30 Days</h3>
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <p class="text-2xl font-bold text-gray-900">{{ stats.month.total }}</p>
+                <p class="text-xs text-gray-500">Total Visits</p>
+            </div>
+            <div>
+                <p class="text-2xl font-bold text-blue-600">{{ stats.month.unique }}</p>
+                <p class="text-xs text-gray-500">Unique Visitors</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Top Pages -->
+<div class="bg-white rounded-xl border border-gray-200">
+    <div class="p-6 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-900">Top Pages (Last 7 Days)</h2>
+    </div>
+    <div class="divide-y divide-gray-100">
+        {% for page in top_pages %}
+        <div class="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
+            <div class="flex items-center gap-3 min-w-0">
+                <span class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center text-sm font-medium text-gray-600 flex-shrink-0">
+                    {{ forloop.counter }}
+                </span>
+                <span class="text-sm text-gray-900 truncate">{{ page.path }}</span>
+            </div>
+            <span class="text-sm font-medium text-gray-600 flex-shrink-0 ml-4">{{ page.count }} visits</span>
+        </div>
+        {% empty %}
+        <div class="px-6 py-12 text-center text-gray-500">
+            No visitor data yet
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="mt-6 bg-gray-50 border border-gray-200 rounded-xl p-6">
+    <div class="flex gap-3">
+        <svg class="w-6 h-6 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div>
+            <h4 class="font-semibold text-gray-700">About Visitor Tracking</h4>
+            <p class="text-sm text-gray-600 mt-1">
+                This tracks anonymous public visitors (non-logged-in users) to help you understand traffic patterns. 
+                Admin, API, and static file requests are excluded. For more detailed analytics, consider integrating 
+                Google Analytics or a similar service.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

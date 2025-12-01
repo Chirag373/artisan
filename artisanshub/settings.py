@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.artists',
     'apps.subscriptions',
+    'apps.custom_admin',
     'rest_framework',
     'rest_framework_simplejwt',
 ]
@@ -72,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.custom_admin.middleware.VisitorTrackingMiddleware',
 ]
 
 ROOT_URLCONF = 'artisanshub.urls'
