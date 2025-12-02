@@ -106,25 +106,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
 
-                    <div>
-                        <label for="slug" class="block text-sm font-medium text-gray-700 mb-2">
-                            URL Slug *
-                        </label>
-                        <div class="flex">
-                            <span
-                                class="inline-flex items-center px-2 sm:px-3 py-2 border border-r-0 border-gray-300 bg-[#FEFCE8] text-gray-500 text-xs sm:text-sm rounded-l-md whitespace-nowrap">
-                                ArtisansHub.com/artist/
-                            </span>
-                            <input type="text" id="slug" name="slug"
-                                class="flex-1 px-3 py-2 border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-0"
-                                placeholder="your-artist-name" required pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$"
-                                title="Only lowercase letters, numbers, and hyphens. Must start and end with letter or number.">
-                        </div>
-                        <p class="mt-1 text-sm text-gray-500">URL-friendly version of your name</p>
-                    </div>
-                </div>
             </div>
 
             <div class="border-b border-gray-400 pb-6">
@@ -484,7 +466,7 @@
 
                 // Populate Text Inputs (excluding location fields)
                 const textFields = [
-                    'artist_name', 'slug', 'full_bio', 'short_bio', 'seo_tags',
+                    'artist_name', 'full_bio', 'short_bio', 'seo_tags',
                     'etsy_url', 'shopify_url', 'instagram_url', 'tiktok_url',
                     'first_name', 'last_name', 'website_url'
                 ];
@@ -542,20 +524,13 @@
                     const warningEl = document.getElementById('visibility-warning');
 
                     if (!isComplete) {
-                        // Force hidden state if incomplete
-                        toggleBtn.classList.remove('bg-green-500');
-                        toggleBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
-                        toggleSpan.classList.remove('translate-x-5');
-                        toggleSpan.classList.add('translate-x-0');
-                        toggleBtn.setAttribute('aria-checked', 'false');
-                        toggleBtn.disabled = true;
-
+                        // Warning only, don't force hidden
                         statusLabel.textContent = 'Profile Incomplete';
                         statusLabel.classList.remove('text-green-600');
                         statusLabel.classList.add('text-gray-500');
-
                         warningEl.classList.remove('hidden');
-                        return;
+                    } else {
+                        warningEl.classList.add('hidden');
                     }
 
                     // Enable button if complete
@@ -788,14 +763,14 @@
 
             // Add text fields
             const textFields = [
-                'artist_name', 'slug', 'full_bio', 'short_bio', 'location_city', 'location_state',
+                'artist_name', 'full_bio', 'short_bio', 'location_city', 'location_state',
                 'seo_tags', 'etsy_url', 'shopify_url', 'instagram_url', 'tiktok_url',
                 'first_name', 'last_name', 'contact_email', 'website_url'
             ];
 
             textFields.forEach(field => {
                 const input = document.getElementById(field);
-                if (input && input.value) {
+                if (input) {
                     formData.append(field, input.value);
                 }
             });

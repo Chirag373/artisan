@@ -63,7 +63,7 @@ class ArtistProfile(models.Model):
     subscription_plan = models.CharField(max_length=20, choices=SUBSCRIPTION_CHOICES, default='basic')
     rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     is_featured = models.BooleanField(default=False)
-    is_visible = models.BooleanField(default=False, help_text="Toggle to show/hide profile from public listings")
+    is_visible = models.BooleanField(default=True, help_text="Toggle to show/hide profile from public listings")
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

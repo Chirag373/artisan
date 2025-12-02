@@ -57,9 +57,9 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
         is_complete, _ = instance.check_completeness()
         
         # If not complete, force is_visible to False
-        if not is_complete and instance.is_visible:
-            instance.is_visible = False
-            instance.save(update_fields=['is_visible'])
+        # if not is_complete and instance.is_visible:
+        #     instance.is_visible = False
+        #     instance.save(update_fields=['is_visible'])
             
         return instance
 
