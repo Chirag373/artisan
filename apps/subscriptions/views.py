@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login
 from .services import StripeService
 from .models import Subscription
+from apps.core.telegram import send_telegram_notification
 
 class PaymentSuccessView(View):
     """
@@ -52,6 +53,23 @@ class PaymentSuccessView(View):
                     plan_name=pending_artist.package,
                     is_active=True
                 )
+
+                # Send Telegram Notification
+                try:
+                    price_paid = session.amount_total / 100 if session.amount_total else 0
+                    user_data = {
+                        'user_Id': user.id,
+                        'email': user.email,
+                        'created_at': user.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
+                        'payment_details': {
+                            'plan': pending_artist.package,
+                            'price_paid': f"${price_paid:.2f}",
+                            'stripe_id': session.subscription
+                        }
+                    }
+                    send_telegram_notification(user_data)
+                except Exception as e:
+                    print(f"Error sending telegram notification: {e}")
                 
                 # 6. Cleanup
                 pending_artist.delete()

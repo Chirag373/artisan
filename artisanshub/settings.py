@@ -168,6 +168,10 @@ STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', '')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
 BASE_URL = 'http://127.0.0.1:8000'
 
+# Telegram Configuration
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', '5971268607')
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '8559973587:AAHaqmix05-FCMvL-ttH37VQg87wWFOYjjc')
+
 
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
