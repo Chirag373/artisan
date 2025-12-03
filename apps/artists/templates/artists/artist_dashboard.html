@@ -738,37 +738,55 @@
                 formData.append('images', files[i]);
             }
 
-            // Show progress (fake for now as fetch doesn't support progress easily without XHR)
             const progressContainer = document.getElementById('upload-progress');
             const progressBar = progressContainer.querySelector('div');
             progressContainer.classList.remove('hidden');
-            progressBar.style.width = '50%';
+            progressBar.style.width = '0%';
 
-            fetch('/api/portfolio/upload/', {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrftoken
-                },
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    progressBar.style.width = '100%';
-                    setTimeout(() => progressContainer.classList.add('hidden'), 500);
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/portfolio/upload/', true);
+            xhr.setRequestHeader('X-CSRFToken', csrftoken);
 
-                    if (data.error) {
-                        showToast(data.error, false);
-                    } else {
-                        showToast(data.message, true);
-                        loadPortfolio(); // Reload to show new images
-                        portfolioUploadInput.value = ''; // Clear input
+            xhr.upload.onprogress = function (e) {
+                if (e.lengthComputable) {
+                    const percentComplete = (e.loaded / e.total) * 100;
+                    progressBar.style.width = percentComplete + '%';
+                }
+            };
+
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    try {
+                        const data = JSON.parse(xhr.responseText);
+                        progressBar.style.width = '100%';
+                        setTimeout(() => progressContainer.classList.add('hidden'), 500);
+
+                        if (data.error) {
+                            showToast(data.error, false);
+                        } else {
+                            showToast(data.message, true);
+                            loadPortfolio(); // Reload to show new images
+                            portfolioUploadInput.value = ''; // Clear input
+                        }
+                    } catch (e) {
+                        console.error('Error parsing response:', e);
+                        showToast('Upload failed: Invalid server response', false);
+                        progressContainer.classList.add('hidden');
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
+                } else {
+                    console.error('Upload failed with status:', xhr.status);
                     showToast('Upload failed', false);
                     progressContainer.classList.add('hidden');
-                });
+                }
+            };
+
+            xhr.onerror = function () {
+                console.error('Error during upload');
+                showToast('Upload failed', false);
+                progressContainer.classList.add('hidden');
+            };
+
+            xhr.send(formData);
         });
 
         // Initial Load
