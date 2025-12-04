@@ -4,3 +4,7 @@ sqlparse==0.5.3
 psycopg2-binary
 python-dotenv
 requests
+stripe
+djangorestframework
+djangorestframework-simplejwt
+Pillow

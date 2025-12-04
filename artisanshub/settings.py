@@ -28,9 +28,12 @@ load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = 'django-insecure-d%8lz2f6ou%e3sjvt_^36n!88b71q=$@m*&n%a6+ets728s%)k'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+
+CSRF_TRUSTED_ORIGINS = ['https://artistahub.com', 'https://www.artistahub.com']
 
 
 # Application definition
@@ -150,6 +153,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -166,7 +171,7 @@ LOGIN_REDIRECT_URL = '/'
 # Stripe Configuration
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', '')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
-BASE_URL = 'http://127.0.0.1:8000'
+BASE_URL = 'https://artistahub.com'
 
 # Telegram Configuration
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', '5971268607')
@@ -192,3 +197,7 @@ CACHES = {
 }
 
 
+
+# File Upload Settings
+# Increase max request body size to 100MB to allow bulk uploads
+DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600  
