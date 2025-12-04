@@ -327,6 +327,21 @@
     </div>
 </div>
 
+<div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-2">Profile Saved!</h3>
+        <p class="text-gray-600 mb-6">Your profile has been updated successfully. Please logout to start using the site.</p>
+        <button id="modal-logout-btn" class="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+            Logout & Go to Home
+        </button>
+    </div>
+</div>
+
 <div id="toast"
     class="fixed bottom-6 right-6 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-32 transition-transform duration-300 ease-out flex items-center gap-3 z-50">
     <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -755,6 +770,23 @@
                 });
         });
 
+        // Success Modal Logout Handler
+        document.getElementById('modal-logout-btn').addEventListener('click', function () {
+            // Clear local storage
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('username');
+            localStorage.removeItem('user_role');
+
+            // Submit logout form (defined in base.html)
+            const logoutForm = document.getElementById('logout-form');
+            if (logoutForm) {
+                logoutForm.submit();
+            } else {
+                window.location.href = '/';
+            }
+        });
+
         // Save Profile Settings
         profileForm.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -803,10 +835,8 @@
             })
                 .then(response => {
                     if (response.ok) {
-                        showToast('Profile settings saved successfully!', true);
-                        setTimeout(() => {
-                            location.reload(); // Reload to show updated images
-                        }, 1000);
+                        // Show success modal instead of toast/reload
+                        document.getElementById('success-modal').classList.remove('hidden');
                     } else {
                         return response.json().then(err => {
                             console.error('Validation errors:', err);
