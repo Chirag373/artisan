@@ -31,7 +31,7 @@ class StripeService:
 
         try:
             checkout_session = stripe.checkout.Session.create(
-                payment_method_types=['card'],
+                payment_method_collection='if_required',
                 allow_promotion_codes=True,
                 line_items=[{
                     'price_data': {

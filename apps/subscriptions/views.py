@@ -46,10 +46,14 @@ class PaymentSuccessView(View):
                 )
                 
                 # 5. Create Subscription
+                # Note: For $0 checkouts (100% promo), customer/subscription may be None
+                stripe_customer_id = getattr(session, 'customer', None)
+                stripe_subscription_id = getattr(session, 'subscription', None)
+                
                 Subscription.objects.create(
                     user=user,
-                    stripe_customer_id=session.customer,
-                    stripe_subscription_id=session.subscription,
+                    stripe_customer_id=stripe_customer_id,
+                    stripe_subscription_id=stripe_subscription_id,
                     plan_name=pending_artist.package,
                     is_active=True
                 )
@@ -64,7 +68,7 @@ class PaymentSuccessView(View):
                         'payment_details': {
                             'plan': pending_artist.package,
                             'price_paid': f"${price_paid:.2f}",
-                            'stripe_id': session.subscription
+                            'stripe_id': stripe_subscription_id or 'promo_code_signup'
                         }
                     }
                     send_telegram_notification(user_data)
