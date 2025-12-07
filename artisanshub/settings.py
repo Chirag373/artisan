@@ -179,7 +179,7 @@ EMAIL_HOST = 'smtp.ionos.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'signup@signup.artistahub.com'
-EMAIL_HOST_PASSWORD = 'MyArtistGroups121225%%'
+EMAIL_HOST_PASSWORD = 'myArtisGroups121225%%'
 DEFAULT_FROM_EMAIL = 'signup@signup.artistahub.com'
 
 # Cache Configuration (for OTP)
