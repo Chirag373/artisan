@@ -90,12 +90,16 @@ class ArtistProfile(models.Model):
         return len(missing_fields) == 0, missing_fields
 
     def save(self, *args, **kwargs):
-        # Auto-generate slug only if it doesn't exist
+        # Always update slug to match artist_name (Business Name)
+        if self.artist_name:
+            new_slug = slugify(self.artist_name)
+            if self.slug != new_slug:
+                self.slug = new_slug
+        
+        # Fallback if slug is still empty (e.g. artist_name was empty)
         if not self.slug:
-            self.slug = slugify(self.artist_name)
-        # If slug is provided but empty string, generate from artist_name
-        elif self.slug == '':
-            self.slug = slugify(self.artist_name)
+             self.slug = slugify(self.artist_name)
+             
         super().save(*args, **kwargs)
 
     def __str__(self):
