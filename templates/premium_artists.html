@@ -180,6 +180,7 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/20 to-transparent"></div>
                         
                         <!-- Premium Badge -->
+                        ${artist.subscription_plan === 'premium' ? `
                         <div class="absolute top-4 right-4">
                             <span class="bg-gradient-to-r from-amber-500 to-yellow-500 text-gray-900 text-xs font-bold px-4 py-2 rounded-full shadow-lg flex items-center gap-2 border-2 border-yellow-600">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -188,6 +189,7 @@
                                 ELITE
                             </span>
                         </div>
+                        ` : ''}
                     </div>
 
                     <div class="px-2 md:px-6 pb-6 flex flex-col flex-grow relative">
