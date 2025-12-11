@@ -10,27 +10,27 @@
     }
 </style>
 
-<div class="container mx-auto py-12 px-4">
-    <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">Join ArtistaHub</h1>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+<div class="w-full md:container md:mx-auto py-6 md:py-12 px-0 md:px-4">
+    <div class="text-center mb-8 md:mb-12 px-4">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Join ArtistaHub</h1>
+        <p class="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
             Choose the perfect plan to showcase your art and grow your creative business
         </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-8 mb-12">
         <div
-            class="bg-[#FEFCE8] rounded-2xl border-0 md:border-2 md:border-gray-300 shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300">
-            <div class="px-6 py-8">
+            class="bg-[#FEFCE8] md:rounded-2xl border-0 md:border-2 md:border-gray-300 md:shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full border-b border-gray-200 md:border-b-0">
+            <div class="px-4 py-6 md:px-6 md:py-8 flex flex-col h-full">
                 <div class="text-center mb-6">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Basic</h3>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Essentials</h3>
                     <div class="flex items-baseline justify-center">
                         <span class="text-4xl font-bold text-gray-900">$</span>
                         <span class="text-5xl font-bold text-gray-900">{{ pricing.basic|floatformat:0|default:"29" }}</span>
                         <span class="text-gray-500 ml-2">/month</span>
                     </div>
                 </div>
-                <ul class="space-y-4 mb-8">
+                <ul class="space-y-4 mb-8 flex-grow">
                     <li class="flex items-start">
                         <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
                             viewBox="0 0 20 20">
@@ -38,7 +38,7 @@
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                 clip-rule="evenodd" />
                         </svg>
-                        <span class="text-gray-600">BD Page</span>
+                        <span class="text-gray-600">Individual creator profile business name URL to boost SEO indexing</span>
                     </li>
                     <li class="flex items-start">
                         <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
@@ -47,7 +47,7 @@
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                 clip-rule="evenodd" />
                         </svg>
-                        <span class="text-gray-600">SEO Indexing</span>
+                        <span class="text-gray-600">Upload up to 6 photos</span>
                     </li>
                     <li class="flex items-start">
                         <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
@@ -56,31 +56,49 @@
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                 clip-rule="evenodd" />
                         </svg>
-                        <span class="text-gray-600">Profile Page</span>
+                        <span class="text-gray-600">Page description customization</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
+                            viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-gray-600">Link your website and social media</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
+                            viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-gray-600">Listed in “All Creators” business directory</span>
                     </li>
                 </ul>
-                <a href="{% url 'signup' %}?package=basic"
-                    class="block w-full py-3 px-4 bg-gray-800 text-white font-semibold rounded-xl hover:bg-gray-900 transition-colors text-center">
+                <a href="{% url 'signup' %}?package=essentials"
+                    class="block w-full py-3 px-4 bg-gray-800 text-white font-semibold rounded-xl hover:bg-gray-900 transition-colors text-center mt-auto">
                     Get Started
                 </a>
             </div>
         </div>
 
         <div
-            class="bg-[#FEFCE8] rounded-2xl border-0 md:border-2 md:border-blue-500 shadow-lg overflow-hidden relative hover:shadow-xl transition-shadow duration-300">
+            class="bg-[#FEFCE8] rounded-2xl border-0 md:border-2 md:border-blue-500 shadow-lg overflow-hidden relative hover:shadow-xl transition-shadow duration-300 flex flex-col h-full mx-4 md:mx-0 my-4 md:my-0">
             <div class="absolute top-0 left-0 right-0 bg-blue-500 text-white text-center py-2 text-sm font-semibold">
                 Most Popular
             </div>
-            <div class="px-6 py-8 pt-12">
+            <div class="px-4 py-6 pt-12 md:px-6 md:py-8 md:pt-12 flex flex-col h-full">
                 <div class="text-center mb-6">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Express</h3>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Pro</h3>
                     <div class="flex items-baseline justify-center">
                         <span class="text-4xl font-bold text-gray-900">$</span>
                         <span class="text-5xl font-bold text-gray-900">{{ pricing.express|floatformat:0|default:"59" }}</span>
                         <span class="text-gray-500 ml-2">/month</span>
                     </div>
                 </div>
-                <ul class="space-y-4 mb-8">
+                <ul class="space-y-4 mb-8 flex-grow">
                     <li class="flex items-start">
                         <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
                             viewBox="0 0 20 20">
@@ -88,7 +106,7 @@
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                 clip-rule="evenodd" />
                         </svg>
-                        <span class="text-gray-600">Everything in Basic</span>
+                        <span class="text-gray-600">Everything in Essentials</span>
                     </li>
                     <li class="flex items-start">
                         <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
@@ -97,7 +115,7 @@
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                 clip-rule="evenodd" />
                         </svg>
-                        <span class="text-gray-600">SEO Ranking</span>
+                        <span class="text-gray-600">Full SEO Ranking for your artist profile page</span>
                     </li>
                     <li class="flex items-start">
                         <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
@@ -106,28 +124,28 @@
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                 clip-rule="evenodd" />
                         </svg>
-                        <span class="text-gray-600">Advanced SEO Setup in Profile</span>
+                        <span class="text-gray-600">Upload up to 12 photos</span>
                     </li>
                 </ul>
-                <a href="{% url 'signup' %}?package=express"
-                    class="block w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors text-center">
+                <a href="{% url 'signup' %}?package=pro"
+                    class="block w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors text-center mt-auto">
                     Get Started
                 </a>
             </div>
         </div>
 
         <div
-            class="bg-[#FEFCE8] rounded-2xl border-0 md:border-2 md:border-amber-500 shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300">
-            <div class="px-6 py-8">
+            class="bg-[#FEFCE8] md:rounded-2xl border-0 md:border-2 md:border-amber-500 md:shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
+            <div class="px-4 py-6 md:px-6 md:py-8 flex flex-col h-full">
                 <div class="text-center mb-6">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Premium</h3>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Elite</h3>
                     <div class="flex items-baseline justify-center">
                         <span class="text-4xl font-bold text-gray-900">$</span>
                         <span class="text-5xl font-bold text-gray-900">{{ pricing.premium|floatformat:0|default:"99" }}</span>
                         <span class="text-gray-500 ml-2">/month</span>
                     </div>
                 </div>
-                <ul class="space-y-4 mb-8">
+                <ul class="space-y-4 mb-8 flex-grow">
                     <li class="flex items-start">
                         <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
                             viewBox="0 0 20 20">
@@ -135,7 +153,7 @@
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                 clip-rule="evenodd" />
                         </svg>
-                        <span class="text-gray-600">Everything in Express</span>
+                        <span class="text-gray-600">Everything in Essentials and Pro</span>
                     </li>
                     <li class="flex items-start">
                         <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
@@ -144,7 +162,7 @@
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                 clip-rule="evenodd" />
                         </svg>
-                        <span class="text-gray-600">50 Photos to Showcase</span>
+                        <span class="text-gray-600">Highlight your profile in “Our Elite Creators” list</span>
                     </li>
                     <li class="flex items-start">
                         <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
@@ -153,11 +171,20 @@
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                 clip-rule="evenodd" />
                         </svg>
-                        <span class="text-gray-600">Premium Profile Page</span>
+                        <span class="text-gray-600">Get a verified “Elite” status icon to stand out from non-elite profiles</span>
+                    </li>
+                     <li class="flex items-start">
+                        <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
+                            viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-gray-600">Upload up to 18 photos</span>
                     </li>
                 </ul>
-                <a href="{% url 'signup' %}?package=premium"
-                    class="block w-full py-3 px-4 bg-amber-600 text-white font-semibold rounded-xl hover:bg-amber-700 transition-colors text-center">
+                <a href="{% url 'signup' %}?package=elite"
+                    class="block w-full py-3 px-4 bg-amber-600 text-white font-semibold rounded-xl hover:bg-amber-700 transition-colors text-center mt-auto">
                     Get Started
                 </a>
             </div>

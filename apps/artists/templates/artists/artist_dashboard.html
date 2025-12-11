@@ -9,7 +9,12 @@
 <div class="w-full">
     <div class="mb-8 flex flex-col md:flex-row md:justify-between md:items-start gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Artist Dashboard</h1>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                Artist Dashboard
+                <span id="plan-badge" class="hidden ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800 align-middle">
+                    Basic
+                </span>
+            </h1>
             <p class="text-gray-600">Manage your profile, products, and SEO settings</p>
         </div>
         <div class="flex flex-col items-end gap-2">
@@ -479,6 +484,30 @@
                     document.getElementById('product_keywords').value = data.product_keywords;
                 }
 
+                // Show Subscription Plan Badge
+                if (data.subscription_plan) {
+                    const badge = document.getElementById('plan-badge');
+                    const planName = data.subscription_plan;
+                    
+                    let displayName = 'Basic';
+                    let badgeClass = 'bg-blue-100 text-blue-800';
+
+                    if (planName === 'basic') {
+                        displayName = 'Essentials';
+                        badgeClass = 'bg-gray-100 text-gray-800';
+                    } else if (planName === 'express') {
+                        displayName = 'Pro';
+                        badgeClass = 'bg-blue-100 text-blue-800';
+                    } else if (planName === 'premium') {
+                        displayName = 'Elite';
+                        badgeClass = 'bg-amber-100 text-amber-800';
+                    }
+
+                    badge.textContent = displayName;
+                    badge.className = `ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium align-middle ${badgeClass}`;
+                    badge.classList.remove('hidden');
+                }
+
                 // Populate Text Inputs (excluding location fields)
                 const textFields = [
                     'artist_name', 'full_bio', 'short_bio', 'seo_tags',
@@ -629,7 +658,7 @@
         const portfolioUsage = document.getElementById('portfolio-usage');
 
         function renderPortfolio(images, plan) {
-            const limits = { 'basic': 6, 'express': 6, 'premium': 50 };
+            const limits = { 'basic': 6, 'express': 12, 'premium': 18 };
             const limit = limits[plan] || 6;
 
             portfolioUsage.textContent = `${images.length} / ${limit} images used`;

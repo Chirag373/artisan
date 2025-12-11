@@ -199,6 +199,12 @@
             }
         }
 
+        @media (max-width: 1024px) {
+            .hero-banner {
+                padding-top: 0 !important;
+            }
+        }
+
         @media (max-width: 640px) {
             .tri.t3 {
                 display: none;
@@ -208,7 +214,7 @@
                 min-height: auto !important;
                 height: auto !important;
                 align-items: flex-start !important;
-                padding-top: 2rem !important;
+                padding-top: 0 !important;
                 padding-bottom: 0.5rem !important;
                 padding-left: 0 !important;
                 padding-right: 0 !important;
@@ -468,9 +474,9 @@
     </div>
 
     <div class="hero-banner relative w-full overflow-hidden">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <img src="{% static 'images/artisan-banner.png' %}" alt="ArtistaHub Banner"
-                class="w-full h-auto object-contain rounded-2xl">
+        <div class="w-full lg:container lg:mx-auto lg:px-8">
+            <img src="{% static 'images/artistahub-banner.png' %}" alt="ArtistaHub Banner"
+                class="w-full h-auto object-contain rounded-none lg:rounded-2xl">
         </div>
     </div>
 

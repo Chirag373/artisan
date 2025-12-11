@@ -31,7 +31,15 @@ class ArtistSignupAPIView(APIView):
         try:
             email = serializer.validated_data['email']
             password = serializer.validated_data['password']
-            package = request.data.get('package', 'basic')
+            raw_package = request.data.get('package', 'basic')
+            
+            # Map frontend package names to DB values
+            package_mapping = {
+                'essentials': 'basic',
+                'pro': 'express', 
+                'elite': 'premium'
+            }
+            package = package_mapping.get(raw_package, raw_package)
 
             # 2. Check if user exists
             if User.objects.filter(email=email).exists():
@@ -299,8 +307,8 @@ class PortfolioUploadAPIView(APIView):
         # Define limits
         LIMITS = {
             'basic': 6,
-            'express': 6,
-            'premium': 50
+            'express': 12,
+            'premium': 18
         }
         
         limit = LIMITS.get(plan, 6)

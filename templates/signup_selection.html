@@ -21,8 +21,8 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 max-w-5xl mx-auto">
             <a href="{% url 'signup_explorer' %}"
-                class="bg-[#FEFCE8] rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:border-blue-500 cursor-pointer group block">
-                <div class="px-4 py-6 md:px-8 md:py-10 text-center">
+                class="bg-[#FEFCE8] rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:border-blue-500 cursor-pointer group flex flex-col h-full">
+                <div class="px-4 py-6 md:px-8 md:py-10 text-center flex flex-col h-full">
                     <div class="mb-6">
                         <div
                             class="w-20 h-20 mx-auto bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition-colors">
@@ -34,9 +34,9 @@
                     </div>
                     <h3 class="text-2xl font-bold text-gray-900 mb-3">Explorer</h3>
                     <p class="text-gray-600 mb-6">
-                        For general users who want to discover and explore amazing artwork from talented artists
+                        For general users who want to find new works and creators
                     </p>
-                    <ul class="text-left space-y-3 mb-8 text-gray-600">
+                    <ul class="text-left space-y-3 mb-8 text-gray-600 flex-grow">
                         <li class="flex items-start">
                             <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
                                 viewBox="0 0 20 20">
@@ -44,7 +44,7 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd" />
                             </svg>
-                            <span>Browse and discover artists</span>
+                            <span>Browse and discover artists, makers, and more</span>
                         </li>
                         <li class="flex items-start">
                             <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
@@ -53,7 +53,7 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd" />
                             </svg>
-                            <span>Save favorite artworks</span>
+                            <span>Save your favorite artist profiles</span>
                         </li>
                         <li class="flex items-start">
                             <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
@@ -62,19 +62,37 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd" />
                             </svg>
-                            <span>Connect with artists</span>
+                            <span>Connect with creators</span>
+                        </li>
+                         <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span>Automatically receive alerts when your favorite artist run a promotion</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span>Forever Free!</span>
                         </li>
                     </ul>
                     <div
-                        class="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors text-center group-hover:bg-blue-700">
-                        Sign Up as Explorer
+                        class="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors text-center group-hover:bg-blue-700 mt-auto">
+                        Join as a Explorer
                     </div>
                 </div>
             </a>
 
             <a href="{% url 'join_artist' %}?from=signup"
-                class="bg-[#FEFCE8] rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:border-purple-500 cursor-pointer group block">
-                <div class="px-4 py-6 md:px-8 md:py-10 text-center">
+                class="bg-[#FEFCE8] rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:border-purple-500 cursor-pointer group flex flex-col h-full">
+                <div class="px-4 py-6 md:px-8 md:py-10 text-center flex flex-col h-full">
                     <div class="mb-6">
                         <div
                             class="w-20 h-20 mx-auto bg-purple-100 rounded-full flex items-center justify-center group-hover:bg-purple-200 transition-colors">
@@ -85,11 +103,11 @@
                             </svg>
                         </div>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Join as Artist</h3>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Creator</h3>
                     <p class="text-gray-600 mb-6">
-                        For artists who want to showcase their work and grow their creative business
+                        For creators who want to showcase their products and grow their creative business
                     </p>
-                    <ul class="text-left space-y-3 mb-8 text-gray-600">
+                    <ul class="text-left space-y-3 mb-8 text-gray-600 flex-grow">
                         <li class="flex items-start">
                             <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
                                 viewBox="0 0 20 20">
@@ -97,7 +115,7 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd" />
                             </svg>
-                            <span>Showcase your portfolio</span>
+                            <span>Display your works</span>
                         </li>
                         <li class="flex items-start">
                             <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
@@ -106,7 +124,7 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd" />
                             </svg>
-                            <span>SEO-optimized profile</span>
+                            <span>Receive an SEO-optimized profile page</span>
                         </li>
                         <li class="flex items-start">
                             <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
@@ -115,12 +133,21 @@
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd" />
                             </svg>
-                            <span>Multiple subscription plans</span>
+                            <span>Affordable subscription plans to fit your needs</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span>Automatically deliver your promotion to Consumers</span>
                         </li>
                     </ul>
                     <div
-                        class="w-full py-3 px-4 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 transition-colors text-center group-hover:bg-purple-700">
-                        Join as Artist
+                        class="w-full py-3 px-4 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 transition-colors text-center group-hover:bg-purple-700 mt-auto">
+                        Join as a Creator
                     </div>
                 </div>
             </a>
