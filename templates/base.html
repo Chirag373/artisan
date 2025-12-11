@@ -5,10 +5,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}ArtistaHub - Artist Discovery{% endblock %}</title>
+    <title>{% block title %}ArtistaHub - Log In or Sign Up{% endblock %}</title>
     {% block meta_tags %}
-    <meta name="description" content="Discover unique artists and their work at ArtistaHub.">
-    <meta name="keywords" content="art, artisans, handmade, creative, portfolio">
+    <meta name="description" content="Create an account or log in to ArtistaHub. Share photos and videos, send messages and get updates. Connect with friends, family and other people you know.">
+    <meta name="keywords" content="art, artisans, handmade, creative, portfolio, social network, artist discovery">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.artistahub.com/">
+    <meta property="og:title" content="ArtistaHub - Log In or Sign Up">
+    <meta property="og:description" content="Create an account or log in to ArtistaHub. Share photos and videos, send messages and get updates. Connect with friends, family and other people you know.">
+    <meta property="og:image" content="{% static 'images/artistahub-banner.png' %}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.artistahub.com/">
+    <meta property="twitter:title" content="ArtistaHub - Log In or Sign Up">
+    <meta property="twitter:description" content="Create an account or log in to ArtistaHub. Share photos and videos, send messages and get updates. Connect with friends, family and other people you know.">
+    <meta property="twitter:image" content="{% static 'images/artistahub-banner.png' %}">
     {% endblock %}
 
     <script src="https://cdn.tailwindcss.com"></script>
