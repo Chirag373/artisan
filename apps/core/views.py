@@ -2,7 +2,7 @@ from django.views.generic import TemplateView
 
 
 class HomeView(TemplateView):
-    """Homepage view"""
+    """Homepage view - data is loaded via JavaScript API calls"""
     template_name = 'homepage.html'
 
 
@@ -37,5 +37,5 @@ class PrivacyView(TemplateView):
 
 
 class PremiumArtistsView(TemplateView):
-    """Premium Artists page view"""
+    """Premium Artists page view - data is loaded via JavaScript API calls"""
     template_name = 'premium_artists.html'

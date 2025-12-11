@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /custom_admin/
+
+# Disallow API endpoints (if not intended for public crawling)
+Disallow: /api/
+
+# Disallow user-specific areas
+Disallow: /login/
+Disallow: /signup/
+Disallow: /join_artist/
+
+# Allow sitemaps (if you add one later)
+# Sitemap: https://yourdomain.com/sitemap.xml

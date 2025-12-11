@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, Avg
 from django.db import transaction
@@ -13,6 +14,7 @@ from apps.subscriptions.services import StripeService
 from apps.users.otp_service import OTPService
 from django.contrib.auth.models import User
 from django.contrib.auth import login
+import hashlib
 
 
 class ArtistSignupAPIView(APIView):
@@ -148,6 +150,7 @@ class FeaturedArtistsAPIView(APIView):
     """
     API endpoint to retrieve featured artists for the homepage.
     Returns a list of artists marked as featured.
+    Caches JSON response to skip DB queries and serialization.
     """
     permission_classes = [AllowAny]
 
@@ -163,6 +166,17 @@ class FeaturedArtistsAPIView(APIView):
                 raise ValueError
         except (ValueError, TypeError):
             return Response({"error": "Invalid pagination parameters"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Generate cache key based on all query parameters
+        # Only cache when there's no search query (homepage/elite page default loads)
+        cache_key = None
+        if not query and not location:
+            key_parts = f"featured_api_p{page}_ps{page_size}_fo{featured_only}"
+            cache_key = f"api_featured_artists_{hashlib.md5(key_parts.encode()).hexdigest()}"
+            
+            cached_response = cache.get(cache_key)
+            if cached_response is not None:
+                return Response(cached_response)
         
         offset = (page - 1) * page_size
         
@@ -198,28 +212,46 @@ class FeaturedArtistsAPIView(APIView):
         
         serializer = ArtistProfileSerializer(artists, many=True, context={'request': request})
         
-        return Response({
+        response_data = {
             'results': serializer.data,
             'count': total_count,
             'page': page,
             'page_size': page_size,
             'has_more': offset + page_size < total_count
-        })
+        }
+        
+        # Cache for 24 hours if no search query
+        if cache_key:
+            cache.set(cache_key, response_data, timeout=86400)
+        
+        return Response(response_data)
 
 
 class ArtistProfileDetailAPIView(APIView):
     """
     API endpoint to retrieve a single artist profile by slug.
-    Publicly accessible.
+    Publicly accessible. Caches the full JSON response including portfolio.
     """
     permission_classes = [AllowAny]
 
     def get(self, request, slug):
+        # Check cache first
+        cache_key = f"api_artist_profile_{slug}"
+        cached_response = cache.get(cache_key)
+        
+        if cached_response is not None:
+            return Response(cached_response)
+        
         try:
-            # Fix N+1 query problem with select_related
-            profile = ArtistProfile.objects.select_related('user').get(slug=slug)
+            # Fix N+1 query problem with select_related and prefetch_related
+            profile = ArtistProfile.objects.select_related('user').prefetch_related('portfolio_images').get(slug=slug)
             serializer = ArtistProfileSerializer(profile, context={'request': request})
-            return Response(serializer.data)
+            response_data = serializer.data
+            
+            # Cache for 24 hours
+            cache.set(cache_key, response_data, timeout=86400)
+            
+            return Response(response_data)
         except ArtistProfile.DoesNotExist:
             return Response({"error": "Artist not found"}, status=status.HTTP_404_NOT_FOUND)
 

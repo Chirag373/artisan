@@ -47,7 +47,11 @@ class ArtistDashboardView(LoginRequiredMixin, TemplateView):
 
 
 class ViewProfileView(TemplateView):
-    """View profile page"""
+    """
+    View profile page - data is loaded via JavaScript API calls.
+    The API endpoint handles caching of the full JSON response.
+    We only pass the slug to the template for the JS to use.
+    """
     template_name = 'view_profile.html'
     
     def get_context_data(self, **kwargs):
@@ -55,9 +59,13 @@ class ViewProfileView(TemplateView):
         slug = kwargs.get('slug')
         if slug:
             context['slug'] = slug
+            # Artist data for SEO meta tags (minimal DB query)
             try:
                 from .models import ArtistProfile
-                context['artist'] = ArtistProfile.objects.get(slug=slug)
+                context['artist'] = ArtistProfile.objects.only(
+                    'artist_name', 'short_bio', 'full_bio', 'categories',
+                    'profile_image', 'etsy_url', 'shopify_url', 'instagram_url', 'tiktok_url'
+                ).get(slug=slug)
             except ArtistProfile.DoesNotExist:
                 pass
         return context

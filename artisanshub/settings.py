@@ -185,8 +185,9 @@ DEFAULT_FROM_EMAIL = 'signup@signup.artistahub.com'
 # Cache Configuration (for OTP)
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+        'TIMEOUT': 86400,  # Default 24 hours (in seconds)
     }
 }
 
