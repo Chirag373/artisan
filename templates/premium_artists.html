@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Premium Artists - ArtistaHub{% endblock %}
+{% block title %}Our Elite Creators - ArtistaHub{% endblock %}
 
 {% block content %}
 
@@ -15,14 +15,14 @@
                 </svg>
                 <h1
                     class="text-4xl font-bold bg-gradient-to-r from-amber-600 to-yellow-600 bg-clip-text text-transparent">
-                    Premium Artists</h1>
+                    Our Elite Creators</h1>
                 <svg class="w-8 h-8 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
                     <path
                         d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
             </div>
             <p class="text-xl text-gray-700 text-center max-w-3xl">
-                Discover our handpicked selection of exceptional artists with verified portfolios
+                Discover our handpicked selection of exceptional creators with verified portfolios
             </p>
         </div>
     </div>
@@ -32,7 +32,7 @@
     <div id="premium-artists-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 px-0 md:px-0">
         <div class="col-span-full text-center py-12">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div>
-            <p class="mt-2 text-gray-500">Loading premium artists...</p>
+            <p class="mt-2 text-gray-500">Loading elite creators...</p>
         </div>
     </div>
 </div>
@@ -144,7 +144,7 @@
             const apiEndpoint = '/api/featured-artists/?' + params.toString();
 
             const response = await fetch(apiEndpoint);
-            if (!response.ok) throw new Error('Failed to fetch premium artists');
+            if (!response.ok) throw new Error('Failed to fetch elite creators');
 
             const data = await response.json();
             const artists = data.results || data;
@@ -154,8 +154,8 @@
             if (artists.length === 0 && currentPage === 1) {
                 grid.innerHTML = `
                     <div class="col-span-full text-center py-12">
-                        <p class="text-gray-500 text-lg">No premium artists available at the moment.</p>
-                        <a href="/" class="mt-4 inline-block text-purple-600 hover:underline">Browse All Artists</a>
+                        <p class="text-gray-500 text-lg">No elite creators available at the moment.</p>
+                        <a href="/" class="mt-4 inline-block text-purple-600 hover:underline">Browse All Creators</a>
                     </div>
                 `;
                 hasMore = false;
@@ -185,7 +185,7 @@
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                 </svg>
-                                PREMIUM
+                                ELITE
                             </span>
                         </div>
                     </div>
@@ -306,12 +306,12 @@
             setupBookmarks();
 
         } catch (error) {
-            console.error('Error loading premium artists:', error);
+            console.error('Error loading elite creators:', error);
             removeLoadingCards();
             if (currentPage === 1) {
                 grid.innerHTML = `
                     <div class="col-span-full text-center py-12">
-                        <p class="text-red-500">Failed to load premium artists. Please try again later.</p>
+                        <p class="text-red-500">Failed to load elite creators. Please try again later.</p>
                     </div>
                 `;
             }
