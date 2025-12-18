@@ -13,4 +13,5 @@ urlpatterns = [
     path('promo-codes/', views.StripePromoView.as_view(), name='stripe_promo'),
     path('payments/', views.PaymentListView.as_view(), name='payment_list'),
     path('visitors/', views.VisitorStatsView.as_view(), name='visitor_stats'),
+    path('announcements/', views.AnnouncementView.as_view(), name='announcements'),
 ]

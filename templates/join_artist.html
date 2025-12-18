@@ -18,6 +18,26 @@
         </p>
     </div>
 
+    {% if announcement %}
+    <div id="announcement-banner" class="max-w-3xl mx-auto mb-10 px-4 relative">
+        {% if announcement.label %}
+        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-sm uppercase tracking-wide">
+            {{ announcement.label }}
+        </div>
+        {% endif %}
+        <div class="bg-[#FEFCE8] border-2 border-gray-300 rounded-xl p-5 pt-7 text-center shadow-sm relative overflow-hidden">
+            <button onclick="document.getElementById('announcement-banner').style.display='none'" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100 z-20">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <div class="text-gray-800 text-sm md:text-base leading-relaxed">
+                {{ announcement.content|safe }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-8 mb-12">
         <div
             class="bg-[#FEFCE8] md:rounded-2xl border-0 md:border-2 md:border-gray-300 md:shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full border-b border-gray-200 md:border-b-0">

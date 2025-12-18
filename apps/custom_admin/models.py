@@ -30,6 +30,23 @@ class PlanPricing(models.Model):
         return self.price_cents / 100
 
 
+class Announcement(models.Model):
+    """
+    Model to manage site-wide or page-specific announcements.
+    """
+    LOCATION_CHOICES = [
+        ('join_artist', 'Join Artist Page'),
+    ]
+    location = models.CharField(max_length=50, choices=LOCATION_CHOICES, default='join_artist', unique=True)
+    label = models.CharField(max_length=50, blank=True, help_text="Label for the announcement (e.g. Christmas Offer)")
+    content = models.TextField(help_text="HTML content allowed")
+    is_active = models.BooleanField(default=False)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Announcement for {self.get_location_display()}"
+
+
 class SiteVisitor(models.Model):
     """
     Model to track public visitors on the website.
