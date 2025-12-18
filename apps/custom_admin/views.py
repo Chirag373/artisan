@@ -12,7 +12,7 @@ import json
 from apps.artists.models import ArtistProfile
 from apps.users.models import ExplorerProfile
 from apps.subscriptions.models import Subscription
-from .models import PlanPricing, SiteVisitor
+from .models import PlanPricing, SiteVisitor, Announcement
 
 
 class AdminRequiredMixin(UserPassesTestMixin):
@@ -289,3 +289,37 @@ class VisitorStatsView(AdminRequiredMixin, TemplateView):
         })
         
         return context
+
+
+class AnnouncementView(AdminRequiredMixin, TemplateView):
+    """Manage announcements."""
+    template_name = 'custom_admin/announcements.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Ensure default announcement exists
+        announcement, created = Announcement.objects.get_or_create(
+            location='join_artist',
+            defaults={
+                'label': 'Special Offer',
+                'content': '<p>We are running soft opening, if you sign up elite plan, use promo code <strong>NEWARTIST60</strong> for the first 60 signup for only 1$ per month, for the next 3 months , if you continue to join... the $3 will be credited, if not join, we will refund the 3$, (For elite plan only )</p><p>Amd , for first come first serve basis, Another line, or, use <strong>NEWARTIST30</strong> to get 30% discount, for the 3 months ,</p>',
+                'is_active': False
+            }
+        )
+        context['announcement'] = announcement
+        return context
+
+    def post(self, request):
+        content = request.POST.get('content', '')
+        label = request.POST.get('label', '')
+        is_active = request.POST.get('is_active') == 'on'
+
+        try:
+            announcement = Announcement.objects.get(location='join_artist')
+            announcement.content = content
+            announcement.label = label
+            announcement.is_active = is_active
+            announcement.save()
+            return JsonResponse({'success': True})
+        except Announcement.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Announcement not found'}, status=404)

@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.core.exceptions import ObjectDoesNotExist
+from apps.custom_admin.models import PlanPricing, Announcement
 
 
 class JoinArtistView(TemplateView):
@@ -22,10 +23,15 @@ class JoinArtistView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         try:
-            from apps.custom_admin.models import PlanPricing
             plans = PlanPricing.objects.all()
             context['pricing'] = {p.plan_name: p.price_dollars for p in plans}
+            
+            # Add announcement
+            announcement = Announcement.objects.filter(location='join_artist', is_active=True).first()
+            if announcement:
+                context['announcement'] = announcement
         except:
+            # Fallback pricing
             context['pricing'] = {'basic': 29, 'express': 59, 'premium': 99}
         return context
 
