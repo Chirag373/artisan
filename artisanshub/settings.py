@@ -53,7 +53,11 @@ INSTALLED_APPS = [
     'apps.custom_admin',
     'rest_framework',
     'rest_framework_simplejwt',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
 ]
+
+SITE_ID = 1
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

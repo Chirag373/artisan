@@ -59,3 +59,15 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     # Test route for 404 page
     urlpatterns.append(path('404/', TemplateView.as_view(template_name='404.html')))
+
+from django.contrib.sitemaps.views import sitemap
+from apps.core.sitemaps import StaticViewSitemap, ArtistProfileSitemap
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'artists': ArtistProfileSitemap,
+}
+
+urlpatterns += [
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+]
