@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import login
 from django.db import transaction
 from django.contrib.auth.models import User
@@ -82,9 +83,15 @@ class ExplorerVerifyOTPAPIView(APIView):
                 # Log the user in
                 login(request, user)
                 
+                # Generate JWT tokens
+                refresh = RefreshToken.for_user(user)
+                
                 return Response({
                     "message": "Account verified successfully. You are now logged in.",
-                    "username": user.username
+                    "username": user.username,
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
+                    "role": "explorer"
                 }, status=status.HTTP_200_OK)
             except User.DoesNotExist:
                  return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)

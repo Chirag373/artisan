@@ -200,4 +200,4 @@ CACHES = {
 
 # File Upload Settings
 # Increase max request body size to 100MB to allow bulk uploads
-DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600  
+DATA_UPLOAD_MAX_MEMORY_SIZE = 41943040  

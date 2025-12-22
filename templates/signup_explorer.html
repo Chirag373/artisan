@@ -496,6 +496,14 @@
             const result = await response.json();
 
             if (response.ok) {
+                // Save tokens
+                if (result.access) {
+                    localStorage.setItem('access_token', result.access);
+                    localStorage.setItem('refresh_token', result.refresh);
+                    localStorage.setItem('user_role', result.role);
+                    localStorage.setItem('username', result.username);
+                }
+
                 const successDiv = document.getElementById('success-message');
                 successDiv.classList.remove('hidden');
                 document.getElementById('success-text').textContent = "Account verified! Redirecting to dashboard...";
